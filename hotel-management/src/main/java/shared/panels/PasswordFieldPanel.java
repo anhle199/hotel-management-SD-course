@@ -1,13 +1,12 @@
 package shared.panels;
 
-import utils.Constants;
 import shared.TextFieldPlaceholder;
+import utils.Constants;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.RoundRectangle2D;
 
 public class PasswordFieldPanel extends JPanel {
 	// Constants
@@ -19,8 +18,8 @@ public class PasswordFieldPanel extends JPanel {
 	private static final int SPACING = 10;
 
 	private final Dimension size;
-	private final int cornerRadius;
-	private Shape shape;
+//	private final int cornerRadius;
+//	private Shape shape;
 
 	private JPasswordField passwordField;
 	private TextFieldPlaceholder placeholder;
@@ -28,20 +27,23 @@ public class PasswordFieldPanel extends JPanel {
 	private ImagePanel visibilityIcon;
 	private ImagePanel visibilityOffIcon;
 
-	public PasswordFieldPanel(String placeholderText, Dimension size, int cornerRadius) {
+	public PasswordFieldPanel(String placeholderText, Dimension size) {
 		super();
 		this.size = size;
-		this.cornerRadius = cornerRadius;
+//		this.cornerRadius = cornerRadius;
 
 		initSubviews(placeholderText);
 		setUpBoundsForSubviews();
 
 		setLayout(null);
-		setOpaque(false);
+		setPreferredSize(size);
+
+		setBackground(Constants.Colors.WHITE);
+		setBorder(BorderFactory.createLineBorder(Constants.Colors.DARK_GRAY, 1));
 	}
 
-	public PasswordFieldPanel(Dimension size, int cornerRadius) {
-		this("Password", size, cornerRadius);
+	public PasswordFieldPanel(Dimension size) {
+		this("Password", size);
 	}
 
 	private void initSubviews(String placeholderText) {
@@ -121,39 +123,39 @@ public class PasswordFieldPanel extends JPanel {
 		visibilityOffIcon.setVisible(!showingPassword);
 	}
 
-	protected void paintComponent(Graphics graphics) {
-		graphics.setColor(getBackground());
-		graphics.fillRoundRect(
-				0, 0,
-				getWidth() - 1, getHeight() - 1,
-				cornerRadius, cornerRadius
-		);
-
-		setUpBoundsForSubviews();
-
-		super.paintComponent(graphics);
-	}
-
-	protected void paintBorder(Graphics graphics) {
-		graphics.setColor(Constants.Colors.TRANSPARENT);
-		graphics.drawRoundRect(
-				0, 0,
-				getWidth() - 1, getHeight() - 1,
-				cornerRadius, cornerRadius
-		);
-
-		setUpBoundsForSubviews();
-	}
-
-	public boolean contains(int x, int y) {
-		if (shape == null || !shape.getBounds().equals(getBounds())) {
-			shape = new RoundRectangle2D.Float(
-					0, 0,
-					getWidth() - 1, getHeight() - 1,
-					cornerRadius, cornerRadius
-			);
-		}
-
-		return shape.contains(x, y);
-	}
+//	protected void paintComponent(Graphics graphics) {
+//		graphics.setColor(getBackground());
+//		graphics.fillRoundRect(
+//				0, 0,
+//				getWidth() - 1, getHeight() - 1,
+//				cornerRadius, cornerRadius
+//		);
+//
+//		setUpBoundsForSubviews();
+//
+//		super.paintComponent(graphics);
+//	}
+//
+//	protected void paintBorder(Graphics graphics) {
+//		graphics.setColor(Constants.Colors.TRANSPARENT);
+//		graphics.drawRoundRect(
+//				0, 0,
+//				getWidth() - 1, getHeight() - 1,
+//				cornerRadius, cornerRadius
+//		);
+//
+//		setUpBoundsForSubviews();
+//	}
+//
+//	public boolean contains(int x, int y) {
+//		if (shape == null || !shape.getBounds().equals(getBounds())) {
+//			shape = new RoundRectangle2D.Float(
+//					0, 0,
+//					getWidth() - 1, getHeight() - 1,
+//					cornerRadius, cornerRadius
+//			);
+//		}
+//
+//		return shape.contains(x, y);
+//	}
 }

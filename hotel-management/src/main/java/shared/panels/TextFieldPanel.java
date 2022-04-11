@@ -1,39 +1,70 @@
 package shared.panels;
 
-import utils.Constants;
 import shared.TextFieldPlaceholder;
+import utils.Constants;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 
 public class TextFieldPanel extends JPanel {
 
-	private static final int VERTICAL_PADDING = 10;
+	private final int verticalPadding;
 	private static final int HORIZONTAL_PADDING = 10;
 	private static final int SPACING = 10;
 
 	private final Dimension size;
-	private final int cornerRadius;
-	private Shape shape;
 
 	private JTextField textField;
 	private TextFieldPlaceholder placeholder;
-	private ImagePanel leadingIcon;
+	private ImagePanel icon;
+	private IconPosition position;
 
-	public TextFieldPanel(String placeholderText, ImagePanel leadingIcon, Dimension size, int cornerRadius) {
+	public enum IconPosition { NONE, LEADING, TRAILING };
+
+	public TextFieldPanel(String placeholderText, Dimension size) {
 		super();
 		this.size = size;
-		this.cornerRadius = cornerRadius;
 
-		initSubviews(placeholderText, leadingIcon);
-		setUpBoundsForSubviews();
+		verticalPadding = 10;
+
+		initSubviewsWithoutIcon(placeholderText);
+		setUpBoundsForSubviewsWithoutIcon();
 
 		setLayout(null);
-		setOpaque(false);
+		setPreferredSize(size);
+
+		this.textField.setBackground(Constants.Colors.WHITE);
+		this.placeholder.setBackground(Constants.Colors.WHITE);
+		setBackground(Constants.Colors.WHITE);
+		setBorder(BorderFactory.createLineBorder(Constants.Colors.DARK_GRAY, 1));
 	}
 
-	private void initSubviews(String placeholderText, ImagePanel leadingIcon) {
+	public TextFieldPanel(String placeholderText, ImagePanel icon, IconPosition position, Dimension size) {
+		super();
+		this.size = size;
+		this.position = position;
+
+		Dimension iconSize = icon.getImageSize();
+		if (iconSize.width != 0 && iconSize.height != 0) {
+			verticalPadding = (size.height - iconSize.height) / 2;
+		} else {
+			verticalPadding = 10;
+		}
+
+		initSubviewsWithIcon(placeholderText, icon);
+		setUpBoundsForSubviewsWithIcon();
+
+		setLayout(null);
+		setPreferredSize(size);
+
+		this.textField.setBackground(Constants.Colors.WHITE);
+		this.placeholder.setBackground(Constants.Colors.WHITE);
+		this.icon.setBackground(Constants.Colors.WHITE);
+		setBackground(Constants.Colors.WHITE);
+		setBorder(BorderFactory.createLineBorder(Constants.Colors.DARK_GRAY, 1));
+	}
+
+	private void initSubviewsWithoutIcon(String placeholderText) {
 		this.textField = new JTextField();
 		this.textField.setForeground(Constants.Colors.BLACK);
 		this.textField.setFont(Constants.Fonts.BODY);
@@ -42,60 +73,42 @@ public class TextFieldPanel extends JPanel {
 
 		this.placeholder = new TextFieldPlaceholder(placeholderText, textField);
 		this.textField.setLayout(null);
-
-		this.leadingIcon = leadingIcon;
-		this.leadingIcon.setForeground(Constants.Colors.DARK_GRAY);
-		this.leadingIcon.setBackground(Constants.Colors.TRANSPARENT);
-		add(this.leadingIcon);
 	}
 
-	private void setUpBoundsForSubviews() {
-		// Set location for leading icon.
-		Dimension iconSize = leadingIcon.getImageSize();
-		leadingIcon.setBounds(HORIZONTAL_PADDING, VERTICAL_PADDING, iconSize.width, iconSize.height);
+	private void initSubviewsWithIcon(String placeholderText, ImagePanel icon) {
+		initSubviewsWithoutIcon(placeholderText);
 
-		// Set location for text field.
-		int xTextField = leadingIcon.getX() + iconSize.width + SPACING;
-		int yTextField = leadingIcon.getY();
-		int textFieldWidth = size.width - xTextField - HORIZONTAL_PADDING;
-		textField.setBounds(xTextField, yTextField, textFieldWidth, iconSize.height);
-		placeholder.setBounds(0, 0, textFieldWidth, iconSize.height);
+		this.icon = icon;
+		this.icon.setForeground(Constants.Colors.DARK_GRAY);
+		add(this.icon);
 	}
 
-	protected void paintComponent(Graphics graphics) {
-		graphics.setColor(getBackground());
-		graphics.fillRoundRect(
-				0, 0,
-				getWidth() - 1, getHeight() - 1,
-				cornerRadius, cornerRadius
-		);
-
-		setUpBoundsForSubviews();
-
-		super.paintComponent(graphics);
+	private void setUpBoundsForSubviewsWithoutIcon() {
+		int textFieldWidth = size.width - (2 * HORIZONTAL_PADDING);
+		int textFieldHeight = size.height - (2 * verticalPadding);
+		textField.setBounds(verticalPadding, HORIZONTAL_PADDING, textFieldWidth, textFieldHeight);
+		placeholder.setBounds(0, 0, textFieldWidth, textFieldHeight);
 	}
 
-	protected void paintBorder(Graphics graphics) {
-		graphics.setColor(Constants.Colors.TRANSPARENT);
-		graphics.drawRoundRect(
-				0, 0,
-				getWidth() - 1, getHeight() - 1,
-				cornerRadius, cornerRadius
-		);
-
-		setUpBoundsForSubviews();
-	}
-
-	public boolean contains(int x, int y) {
-		if (shape == null || !shape.getBounds().equals(getBounds())) {
-			shape = new RoundRectangle2D.Float(
-					0, 0,
-					getWidth() - 1, getHeight() - 1,
-					cornerRadius, cornerRadius
-			);
+	private void setUpBoundsForSubviewsWithIcon() {
+		Dimension iconSize = icon.getImageSize();
+		int xIcon, xTextField;
+		if (position == IconPosition.LEADING) {
+			xIcon = HORIZONTAL_PADDING;
+			xTextField = xIcon + iconSize.width + SPACING;
+		} else {
+			xIcon = size.width - HORIZONTAL_PADDING - iconSize.width;
+			xTextField = HORIZONTAL_PADDING;
 		}
 
-		return shape.contains(x, y);
+		// Set location for icon.
+		icon.setBounds(xIcon, verticalPadding, iconSize.width, iconSize.height);
+
+		// Set location for text field.
+		int yTextField = icon.getY();
+		int textFieldWidth = size.width - iconSize.width - (HORIZONTAL_PADDING * 2) - SPACING;
+		textField.setBounds(xTextField, yTextField, textFieldWidth, iconSize.height);
+		placeholder.setBounds(0, 0, textFieldWidth, iconSize.height);
 	}
 
 	public JTextField getTextField() {

@@ -1,6 +1,5 @@
 package views;
 
-import shared.RoundedButton;
 import shared.panels.ImagePanel;
 import shared.panels.PasswordFieldPanel;
 import shared.panels.TextFieldPanel;
@@ -14,7 +13,7 @@ public class LoginView extends JPanel {
 	private JLabel loginTitleLabel;
 	private TextFieldPanel usernameField;
 	private PasswordFieldPanel passwordField;
-	private RoundedButton loginButton;
+	private JButton loginButton;
 
 	// Main frame
 	final private JFrame mainFrame;
@@ -40,19 +39,17 @@ public class LoginView extends JPanel {
 
 		// username text field
 		ImagePanel usernameIcon = new ImagePanel(Constants.IconNames.ACCOUNT_BOX, 24, 24);
-		usernameField = new TextFieldPanel("Username", usernameIcon, inputFieldSize, 12);
+		usernameField = new TextFieldPanel("Username", usernameIcon, TextFieldPanel.IconPosition.LEADING, inputFieldSize);
 		usernameField.setBounds(60, 152, inputFieldSize.width, inputFieldSize.height);
-		usernameField.setBackground(Constants.Colors.WHITE);
 		add(usernameField);
 
 		// password text field
-		passwordField = new PasswordFieldPanel(inputFieldSize, 12);
+		passwordField = new PasswordFieldPanel(inputFieldSize);
 		passwordField.setBounds(60, 216, inputFieldSize.width, inputFieldSize.height);
-		passwordField.setBackground(Constants.Colors.WHITE);
 		add(passwordField);
 
 		// login button
-		loginButton = new RoundedButton("LOGIN", 12);
+		loginButton = new JButton("LOGIN");
 		loginButton.setBounds(60, 320, 320, 46);
 		loginButton.setBackground(Constants.Colors.PRIMARY);
 		loginButton.setForeground(Constants.Colors.WHITE);
@@ -61,10 +58,6 @@ public class LoginView extends JPanel {
 	}
 
 	public void display() {
-		mainFrame.setVisible(false);
-		mainFrame.setResizable(true);
-
-		mainFrame.setTitle("Login");
 		mainFrame.setResizable(false);
 		mainFrame.setContentPane(this);
 		mainFrame.pack();

@@ -1,4 +1,5 @@
-import views.LoginView;
+import utils.Constants;
+import views.DashboardView;
 
 import javax.swing.*;
 
@@ -13,8 +14,12 @@ public class MainFrame {
 
 		SwingUtilities.invokeLater(() -> {
 			JFrame mainFrame = new JFrame();
-			LoginView loginView = new LoginView(mainFrame);
-			loginView.display();
+			mainFrame.setTitle("Hotel Management");
+			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			DashboardView dashboardView = new DashboardView(mainFrame, Constants.Role.EMPLOYEE);
+			dashboardView.display();
+//			LoginView loginView = new LoginView(mainFrame);
+//			loginView.display();
 		});
 	}
 
