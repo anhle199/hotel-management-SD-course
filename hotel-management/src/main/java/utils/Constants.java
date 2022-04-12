@@ -43,7 +43,8 @@ public class Constants {
 		public static final String ADD = "src/main/resources/icons/ic_round_add_white_24dp.png";
 		public static final String MORE_HORIZ = "src/main/resources/icons/ic_round_more_horiz_white_24dp.png";
 		public static final String CALENDAR_MONTH = "src/main/resources/icons/ic_round_calendar_month_black_24dp.png";
-		public static final String FILTER_ALT = "src/main/resources/icons/ic_round_filter_alt_black_24dp.png";
+		public static final String FILTER_ALT_BLACK = "src/main/resources/icons/ic_round_filter_alt_black_24dp.png";
+		public static final String FILTER_ALT_WHITE = "src/main/resources/icons/ic_round_filter_alt_white_24dp.png";
 	}
 
 	public static final String APP_ICON_ROUNDED_BORDER = "src/main/resources/icons/app_icon_rounded_border.png";

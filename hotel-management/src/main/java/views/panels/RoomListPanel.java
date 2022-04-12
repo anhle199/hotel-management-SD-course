@@ -16,6 +16,7 @@ public class RoomListPanel extends JPanel {
 	// Top Bar
 	private TextFieldPanel searchBar;
 	private ButtonWithResizableIcon addButton;
+	private ButtonWithResizableIcon filterButton;
 	private ButtonWithResizableIcon moreButton;
 
 	// Filter bar
@@ -53,12 +54,21 @@ public class RoomListPanel extends JPanel {
 
 		Icon addIcon = new ImageIcon(Constants.IconNames.ADD);
 		addButton = new ButtonWithResizableIcon("Add", addIcon, iconSize);
-		addButton.setBounds(922, 0, 80, 44);
+		addButton.setBounds(810, 0, 80, 44);
 		addButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		addButton.setIconTextGap(4);
 		addButton.setForeground(Constants.Colors.WHITE);
 		addButton.setBackground(Constants.Colors.SECONDARY);
 		topBarPanel.add(addButton);
+
+		Icon filterIcon = new ImageIcon(Constants.IconNames.FILTER_ALT_WHITE);
+		filterButton = new ButtonWithResizableIcon("Filter", filterIcon, iconSize);
+		filterButton.setBounds(902, 0, 100, 44);
+		filterButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		filterButton.setIconTextGap(4);
+		filterButton.setForeground(Constants.Colors.WHITE);
+		filterButton.setBackground(Constants.Colors.SECONDARY);
+		topBarPanel.add(filterButton);
 
 		Icon moreIcon = new ImageIcon(Constants.IconNames.MORE_HORIZ);
 		moreButton = new ButtonWithResizableIcon("", moreIcon, iconSize);
@@ -91,7 +101,7 @@ public class RoomListPanel extends JPanel {
 		rangeDatePicker.setBounds(250, 0, rangeDatePickerSize.width, rangeDatePickerSize.height);
 		filterBarPanel.add(rangeDatePicker);
 
-		ImagePanel filterIcon = new ImagePanel(Constants.IconNames.FILTER_ALT, 24, 24);
+		ImagePanel filterIcon = new ImagePanel(Constants.IconNames.FILTER_ALT_BLACK, 24, 24);
 		Dimension rangePricePickerSize = new Dimension(150, 40);
 		rangePricePicker = new TextFieldPanel("", filterIcon, IconPosition.TRAILING, rangePricePickerSize);
 		rangePricePicker.getTextField().setEditable(false);

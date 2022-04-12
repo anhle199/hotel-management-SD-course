@@ -8,14 +8,14 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-public class RentalInvoiceListPanel extends JPanel {
+public class RentalReceiptListPanel extends JPanel {
 	// Top Bar
 //	private TextFieldPanel searchBar;
 	private JButton removeButton;
 
 	private ScrollableTablePanel scrollableTable;
 
-	public RentalInvoiceListPanel() {
+	public RentalReceiptListPanel() {
 		super();
 		setLayout(null);
 
@@ -48,21 +48,17 @@ public class RentalInvoiceListPanel extends JPanel {
 		final String[] columnNames = {
 				"",  // no
 				"Room name",
-				"Renting start date",
-				"Customer name",
-				"Customer type",
-				"Identifier Number",
-				"Address"
+				"Rented days",
+				"Price",
+				"Total price",
 		};
-		final int [] columnWidths = {40, 300, 120, 250, 70, 90, 150};
+		final int [] columnWidths = {40, 630, 70, 150, 150};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT
 		};
 
 		scrollableTable = new ScrollableTablePanel(
@@ -88,10 +84,10 @@ public class RentalInvoiceListPanel extends JPanel {
 		scrollableTable.setBounds(20, 84, 1038, 680);
 
 		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
-		model.addRow(new Object[]{2, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
-		model.addRow(new Object[]{3, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
-		model.addRow(new Object[]{4, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
-		model.addRow(new Object[]{5, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
+		model.addRow(new Object[]{1, "Room name", "Rented days", "Price", "Total price"});
+		model.addRow(new Object[]{2, "Room name", "Rented days", "Price", "Total price"});
+		model.addRow(new Object[]{3, "Room name", "Rented days", "Price", "Total price"});
+		model.addRow(new Object[]{4, "Room name", "Rented days", "Price", "Total price"});
+		model.addRow(new Object[]{5, "Room name", "Rented days", "Price", "Total price"});
 	}
 }

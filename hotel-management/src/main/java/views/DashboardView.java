@@ -4,6 +4,7 @@ import shared.ButtonWithResizableIcon;
 import shared.panels.ImagePanel;
 import utils.Constants;
 import views.tabbed_panels.RoomManagementTabbed;
+import views.tabbed_panels.ServiceManagementTabbed;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -28,7 +29,7 @@ public class DashboardView extends JPanel {
 
 	// Components at the right panel.
 	private RoomManagementTabbed roomManagementTabbed;
-//	private ServiceManagementTabbed serviceManagementTabbed;
+	private ServiceManagementTabbed serviceManagementTabbed;
 //	private ProductManagementPanel productManagementPanel;
 //	private FacilitiesManagementPanel facilitiesManagementPanel;
 //	private EmployeeManagementPanel employeeManagementPanel;
@@ -177,24 +178,27 @@ public class DashboardView extends JPanel {
 		rightPanel.setBackground(Constants.Colors.TERTIARY_50);
 		add(rightPanel);
 
-		initRoomManagementTabbed(rightPanel);
-//		initServiceManagementTabbed();
+//		initRoomManagementTabbed(rightPanel);
+		initServiceManagementTabbed(rightPanel);
 //		initProductManagementPanel();
 //		initFacilitiesManagementPanel();
 //		initEmployeeManagementPanel();
 //		initStatisticsPanel();
 	}
 
-	private void initRoomManagementTabbed(JPanel panel) {
-		// tabbed pane: top (23), left (2), bottom (2), right(2)
-		roomManagementTabbed = new RoomManagementTabbed();
-		roomManagementTabbed.setBounds(20, 20, 1078, 807);
-		panel.add(roomManagementTabbed);
-	}
-
-//	private void initServiceManagementTabbed() {
-//
+//	private void initRoomManagementTabbed(JPanel panel) {
+//		// tabbed pane: top (23), left (2), bottom (2), right(2)
+//		roomManagementTabbed = new RoomManagementTabbed();
+//		roomManagementTabbed.setBounds(20, 20, 1078, 807);
+//		panel.add(roomManagementTabbed);
 //	}
+
+	private void initServiceManagementTabbed(JPanel panel) {
+		// tabbed pane: top (23), left (2), bottom (2), right(2)
+		serviceManagementTabbed = new ServiceManagementTabbed();
+		serviceManagementTabbed.setBounds(20, 20, 1078, 807);
+		panel.add(serviceManagementTabbed);
+	}
 //
 //	private void initProductManagementPanel() {
 //
