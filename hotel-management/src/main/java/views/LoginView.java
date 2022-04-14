@@ -6,6 +6,7 @@ import shared.panels.TextFieldPanel;
 import utils.Constants;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 public class LoginView extends JPanel {
@@ -37,23 +38,30 @@ public class LoginView extends JPanel {
 		loginTitleLabel.setForeground(Constants.Colors.PRIMARY);
 		add(loginTitleLabel);
 
+		Border lineBorder = BorderFactory.createLineBorder(Constants.Colors.TABLE_BORDER_COLOR, 1);
+
 		// username text field
-		ImagePanel usernameIcon = new ImagePanel(Constants.IconNames.ACCOUNT_BOX, 24, 24);
+		ImagePanel usernameIcon = new ImagePanel(Constants.IconNames.ACCOUNT_BOX_BLACK, 24, 24);
 		usernameField = new TextFieldPanel("Username", usernameIcon, TextFieldPanel.IconPosition.LEADING, inputFieldSize);
 		usernameField.setBounds(60, 152, inputFieldSize.width, inputFieldSize.height);
+		usernameField.setBorder(lineBorder);
 		add(usernameField);
 
 		// password text field
 		passwordField = new PasswordFieldPanel(inputFieldSize);
 		passwordField.setBounds(60, 216, inputFieldSize.width, inputFieldSize.height);
+		passwordField.setBorder(lineBorder);
 		add(passwordField);
 
 		// login button
 		loginButton = new JButton("LOGIN");
 		loginButton.setBounds(60, 320, 320, 46);
-		loginButton.setBackground(Constants.Colors.PRIMARY);
-		loginButton.setForeground(Constants.Colors.WHITE);
+		loginButton.setBorder(lineBorder);
+		loginButton.setFocusPainted(false);
+		loginButton.setRolloverEnabled(false);
 		loginButton.setFont(Constants.Fonts.EMPHASIZED_TITLE_2);
+		loginButton.setForeground(Constants.Colors.WHITE);
+		loginButton.setBackground(Constants.Colors.PRIMARY);
 		add(loginButton);
 	}
 

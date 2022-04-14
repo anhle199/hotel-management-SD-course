@@ -12,6 +12,7 @@ public class TextFieldPanel extends JPanel {
 	private static final int HORIZONTAL_PADDING = 10;
 	private static final int SPACING = 10;
 
+	private boolean isInitSubviews = false;
 	private final Dimension size;
 
 	private JTextField textField;
@@ -36,7 +37,7 @@ public class TextFieldPanel extends JPanel {
 		this.textField.setBackground(Constants.Colors.WHITE);
 		this.placeholder.setBackground(Constants.Colors.WHITE);
 		setBackground(Constants.Colors.WHITE);
-		setBorder(BorderFactory.createLineBorder(Constants.Colors.DARK_GRAY, 1));
+		setBorder(BorderFactory.createLineBorder(Constants.Colors.LIGHT_GRAY, 1));
 	}
 
 	public TextFieldPanel(String placeholderText, ImagePanel icon, IconPosition position, Dimension size) {
@@ -57,11 +58,8 @@ public class TextFieldPanel extends JPanel {
 		setLayout(null);
 		setPreferredSize(size);
 
-		this.textField.setBackground(Constants.Colors.WHITE);
-		this.placeholder.setBackground(Constants.Colors.WHITE);
-		this.icon.setBackground(Constants.Colors.WHITE);
 		setBackground(Constants.Colors.WHITE);
-		setBorder(BorderFactory.createLineBorder(Constants.Colors.DARK_GRAY, 1));
+		setBorder(BorderFactory.createLineBorder(Constants.Colors.LIGHT_GRAY, 1));
 	}
 
 	private void initSubviewsWithoutIcon(String placeholderText) {
@@ -73,14 +71,17 @@ public class TextFieldPanel extends JPanel {
 
 		this.placeholder = new TextFieldPlaceholder(placeholderText, textField);
 		this.textField.setLayout(null);
+
+		this.isInitSubviews = true;
 	}
 
 	private void initSubviewsWithIcon(String placeholderText, ImagePanel icon) {
 		initSubviewsWithoutIcon(placeholderText);
 
 		this.icon = icon;
-		this.icon.setForeground(Constants.Colors.DARK_GRAY);
 		add(this.icon);
+
+//		this.isInitSubviews = true;
 	}
 
 	private void setUpBoundsForSubviewsWithoutIcon() {
@@ -106,9 +107,20 @@ public class TextFieldPanel extends JPanel {
 
 		// Set location for text field.
 		int yTextField = icon.getY();
-		int textFieldWidth = size.width - iconSize.width - (HORIZONTAL_PADDING * 2) - SPACING;
+		int textFieldWidth = size.width - iconSize.width - (2 * HORIZONTAL_PADDING) - SPACING;
 		textField.setBounds(xTextField, yTextField, textFieldWidth, iconSize.height);
 		placeholder.setBounds(0, 0, textFieldWidth, iconSize.height);
+	}
+
+	@Override
+	public void setBackground(Color backgroundColor) {
+		if (isInitSubviews) {
+			textField.setBackground(backgroundColor);
+			placeholder.setBackground(backgroundColor);
+			icon.setBackground(backgroundColor);
+		}
+
+		super.setBackground(backgroundColor);
 	}
 
 	public JTextField getTextField() {
