@@ -1,21 +1,24 @@
-package views.panels;
+package views.panels.employees;
 
 import shared.NonEditableTableModel;
+import shared.panels.ImagePanel;
 import shared.panels.ScrollableTablePanel;
+import shared.panels.TextFieldPanel;
 import utils.Constants;
+import utils.UtilFunctions;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-public class RentalReceiptListPanel extends JPanel {
-	// Top Bar
-//	private TextFieldPanel searchBar;
+public class EmployeeManagementPanel extends JPanel {
+	// Top Bar.
+	private JButton addButton;
 	private JButton removeButton;
 
 	private ScrollableTablePanel scrollableTable;
 
-	public RentalReceiptListPanel() {
+	public EmployeeManagementPanel() {
 		super();
 		setLayout(null);
 
@@ -25,34 +28,30 @@ public class RentalReceiptListPanel extends JPanel {
 
 	private void initTopBarPanel() {
 		JPanel topBarPanel = new JPanel();
-		topBarPanel.setBounds(0, 20, 1078, 44);
+		topBarPanel.setBounds(20, 20, 1040, 40);
 		topBarPanel.setLayout(null);
 		add(topBarPanel);
 
-//		ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH, 24, 24);
-//		Dimension searchBarSize = new Dimension(600, 44);
-//		searchBar = new TextFieldPanel("Search", searchIcon, TextFieldPanel.IconPosition.LEADING, searchBarSize);
-//		searchBar.setBounds(20, 0, searchBarSize.width, searchBarSize.height);
-//		topBarPanel.add(searchBar);
+		addButton = new JButton("Add");
+		addButton.setBounds(828, 0, 85, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(addButton);
+		topBarPanel.add(addButton);
 
 		removeButton = new JButton("Remove");
-		removeButton.setBounds(958, 0, 100, 44);
-		removeButton.setFocusPainted(false);
-		removeButton.setRolloverEnabled(false);
-		removeButton.setForeground(Constants.Colors.WHITE);
-		removeButton.setBackground(Constants.Colors.RED);
+		removeButton.setBounds(925, 0, 115, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(removeButton);
 		topBarPanel.add(removeButton);
 	}
 
 	private void initTable() {
 		final String[] columnNames = {
 				"",  // no
-				"Room name",
-				"Rented days",
-				"Price",
-				"Total price",
+				"Employee name",
+				"Username",
+				"Gender",
+				"Birthday (year)",
 		};
-		final int [] columnWidths = {40, 630, 70, 150, 150};
+		final int [] columnWidths = {50, 243, 243, 242, 242};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
@@ -77,17 +76,15 @@ public class RentalReceiptListPanel extends JPanel {
 
 		final int tableWidth = scrollableTable.getTableWidth();
 
-		scrollableTable.setRowHeight(40);
-		scrollableTable.setIntercellSpacing(new Dimension(4, 4));
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		scrollableTable.setBounds(20, 84, 1038, 680);
+		scrollableTable.setBounds(20, 80, 1040, 707);
 
 		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Room name", "Rented days", "Price", "Total price"});
-		model.addRow(new Object[]{2, "Room name", "Rented days", "Price", "Total price"});
-		model.addRow(new Object[]{3, "Room name", "Rented days", "Price", "Total price"});
-		model.addRow(new Object[]{4, "Room name", "Rented days", "Price", "Total price"});
-		model.addRow(new Object[]{5, "Room name", "Rented days", "Price", "Total price"});
+		model.addRow(new Object[]{1, "Employee name", "Username", "Gender", "Birthday (year)"});
+		model.addRow(new Object[]{2, "Employee name", "Username", "Gender", "Birthday (year)"});
+		model.addRow(new Object[]{3, "Employee name", "Username", "Gender", "Birthday (year)"});
+		model.addRow(new Object[]{4, "Employee name", "Username", "Gender", "Birthday (year)"});
+		model.addRow(new Object[]{5, "Employee name", "Username", "Gender", "Birthday (year)"});
 	}
 }

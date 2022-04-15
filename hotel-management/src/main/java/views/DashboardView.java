@@ -3,28 +3,28 @@ package views;
 import shared.ButtonWithResizableIcon;
 import shared.panels.ImagePanel;
 import utils.Constants;
-import views.panels.EmployeeManagementPanel;
-import views.tabbed_panels.ProductManagementTabbed;
+import utils.RoleManager;
+import utils.UtilFunctions;
+import views.panels.employees.EmployeeManagementPanel;
+import views.panels.statistics.StatisticsPanel;
 import views.tabbed_panels.RoomManagementTabbed;
 import views.tabbed_panels.ServiceManagementTabbed;
+import views.tabbed_panels.ProductManagementTabbed;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
 public class DashboardView extends JPanel {
-	private final Constants.Role role;
 
 	// Main frame.
 	final private JFrame mainFrame;
 
 	// Components at the left panel.
 	private JLabel usernameLabel;
-	private JLabel roleLabel;
 	private ButtonWithResizableIcon roomManagementButton;
 	private ButtonWithResizableIcon serviceManagementButton;
 	private ButtonWithResizableIcon productManagementButton;
-	private ButtonWithResizableIcon facilitiesManagementButton;
 	private ButtonWithResizableIcon employeeManagementButton;
 	private ButtonWithResizableIcon statisticsButton;
 	private ButtonWithResizableIcon logoutButton;
@@ -33,13 +33,11 @@ public class DashboardView extends JPanel {
 	private RoomManagementTabbed roomManagementTabbed;
 	private ServiceManagementTabbed serviceManagementTabbed;
 	private ProductManagementTabbed productManagementTabbed;
-//	private FacilitiesManagementPanel facilitiesManagementPanel;
 	private EmployeeManagementPanel employeeManagementPanel;
-//	private StatisticsPanel statisticsPanel;
+	private StatisticsPanel statisticsPanel;
 
-	public DashboardView(JFrame mainFrame, Constants.Role role) {
+	public DashboardView(JFrame mainFrame) {
 		super();
-		this.role = role;
 		this.mainFrame = mainFrame;
 
 		setLayout(null);
@@ -49,7 +47,7 @@ public class DashboardView extends JPanel {
 	}
 
 	private void initLeftPanelComponents() {
-		// Left panel
+		// Left Panel.
 		JPanel leftPanel = new JPanel();
 		leftPanel.setBounds(0, 0, 320, 847);
 		leftPanel.setLayout(null);
@@ -59,35 +57,39 @@ public class DashboardView extends JPanel {
 		Border lineBorderRightEdge = BorderFactory.createMatteBorder(0, 0, 0, 1, Color.BLACK);
 		leftPanel.setBorder(lineBorderRightEdge);
 
+		// Account Info Panel.
 		JPanel accountInfoPanel = new JPanel();
 		accountInfoPanel.setBounds(20, 40, 280, 70);
 		accountInfoPanel.setLayout(null);
 		accountInfoPanel.setBackground(Constants.Colors.TRANSPARENT);
 		leftPanel.add(accountInfoPanel);
 
-		// Profile image
-		ImagePanel profileImage = new ImagePanel(Constants.APP_ICON_ROUNDED_BORDER, 70, 70);
+		// Profile Image.
+		ImagePanel profileImage = new ImagePanel(Constants.IconNames.ACCOUNT_CIRCLE_WHITE, 70, 70);
 		profileImage.setBounds(0, 0, 70, 70);
 		profileImage.setBackground(Constants.Colors.TRANSPARENT);
 		accountInfoPanel.add(profileImage);
 
-		// User name label
+		// User's Name Label.
 		usernameLabel = new JLabel("Username", SwingConstants.LEFT);
 		usernameLabel.setBounds(78, 18, 194, 16);
 		usernameLabel.setFont(Constants.Fonts.HEADLINE);
 		usernameLabel.setForeground(Constants.Colors.WHITE);
 		accountInfoPanel.add(usernameLabel);
 
-		// Role label
-		roleLabel = new JLabel("Role", SwingConstants.LEFT);
+		// Role Label.
+		String roleAsString = RoleManager.getInstance().isEmployee() ? "Employee" : "Manager";
+		JLabel roleLabel = new JLabel(roleAsString, SwingConstants.LEFT);
 		roleLabel.setBounds(78, 38, 194, 16);
 		roleLabel.setFont(new Font(Constants.Fonts.FONT_NAME, Font.PLAIN, 11));
 		roleLabel.setForeground(Constants.Colors.WHITE);
 		accountInfoPanel.add(roleLabel);
 
+		// Sidebar Items.
 		initSidebarItems(leftPanel);
 
-		Icon logoutIcon = new ImageIcon(Constants.IconNames.LOGOUT);
+		// Logout Button.
+		Icon logoutIcon = new ImageIcon(Constants.IconNames.LOGOUT_WHITE);
 		Dimension iconSize = new Dimension(28, 28);
 		logoutButton = new ButtonWithResizableIcon("Logout", logoutIcon, iconSize);
 		logoutButton.setBounds(20, 775, 280, 52);
@@ -99,7 +101,8 @@ public class DashboardView extends JPanel {
 	}
 
 	private void initSidebarItems(JPanel leftPanel) {
-		int sidebarHeight = role == Constants.Role.MANAGER ? 392 : 256;
+		int sidebarHeight = RoleManager.getInstance().isEmployee() ? 188 : 324;
+
 		JPanel sidebarItemsPanel = new JPanel();
 		sidebarItemsPanel.setBounds(20, 150, 280, sidebarHeight);
 		sidebarItemsPanel.setLayout(null);
@@ -108,66 +111,35 @@ public class DashboardView extends JPanel {
 
 		Dimension iconSize = new Dimension(28, 28);
 
-		Icon roomIcon = new ImageIcon(Constants.IconNames.HOTEL);
+		Icon roomIcon = new ImageIcon(Constants.IconNames.HOTEL_WHITE);
 		roomManagementButton = new ButtonWithResizableIcon("Room Management", roomIcon, iconSize);
 		roomManagementButton.setBounds(0, 0, 280, 52);
-		roomManagementButton.setFont(Constants.Fonts.HEADLINE);
-		roomManagementButton.setBackground(Constants.Colors.SECONDARY);
-		roomManagementButton.setHorizontalAlignment(SwingConstants.LEFT);
-		roomManagementButton.setForeground(Color.WHITE);
+		UtilFunctions.configureSidebarButtonOnMainThread(roomManagementButton, true);
 		sidebarItemsPanel.add(roomManagementButton);
 
-		Icon serviceIcon = new ImageIcon(Constants.IconNames.ROOM_SERVICE);
+		Icon serviceIcon = new ImageIcon(Constants.IconNames.ROOM_SERVICE_WHITE);
 		serviceManagementButton = new ButtonWithResizableIcon("Service Management", serviceIcon, iconSize);
 		serviceManagementButton.setBounds(0, 68, 280, 52);
-		serviceManagementButton.setFont(Constants.Fonts.HEADLINE);
-		serviceManagementButton.setBackground(Constants.Colors.SECONDARY);
-		serviceManagementButton.setContentAreaFilled(false);
-		serviceManagementButton.setHorizontalAlignment(SwingConstants.LEFT);
-		serviceManagementButton.setForeground(Constants.Colors.LIGHT_GRAY);
+		UtilFunctions.configureSidebarButtonOnMainThread(serviceManagementButton, false);
 		sidebarItemsPanel.add(serviceManagementButton);
 
-		Icon productIcon = new ImageIcon(Constants.IconNames.SHOPPING_CART);
+		Icon productIcon = new ImageIcon(Constants.IconNames.SHOPPING_CART_WHITE);
 		productManagementButton = new ButtonWithResizableIcon("Product Management", productIcon, iconSize);
 		productManagementButton.setBounds(0, 136, 280, 52);
-		productManagementButton.setFont(Constants.Fonts.HEADLINE);
-		productManagementButton.setBackground(Constants.Colors.SECONDARY);
-		productManagementButton.setContentAreaFilled(false);
-		productManagementButton.setHorizontalAlignment(SwingConstants.LEFT);
-		productManagementButton.setForeground(Constants.Colors.LIGHT_GRAY);
+		UtilFunctions.configureSidebarButtonOnMainThread(productManagementButton, false);
 		sidebarItemsPanel.add(productManagementButton);
 
-		Color t = Constants.Colors.SECONDARY;
-
-		Icon facilityIcon = new ImageIcon(Constants.IconNames.HOME_REPAIR_SERVICE);
-		facilitiesManagementButton = new ButtonWithResizableIcon("Facilities Management", facilityIcon, iconSize);
-		facilitiesManagementButton.setBounds(0, 204, 280, 52);
-		facilitiesManagementButton.setFont(Constants.Fonts.HEADLINE);
-		facilitiesManagementButton.setBackground(Constants.Colors.SECONDARY);
-		facilitiesManagementButton.setContentAreaFilled(false);
-		facilitiesManagementButton.setHorizontalAlignment(SwingConstants.LEFT);
-		facilitiesManagementButton.setForeground(Constants.Colors.LIGHT_GRAY);
-		sidebarItemsPanel.add(facilitiesManagementButton);
-
-		if (role == Constants.Role.MANAGER) {
-			Icon employeeIcon = new ImageIcon(Constants.IconNames.BADGE);
+		if (RoleManager.getInstance().isManager()) {
+			Icon employeeIcon = new ImageIcon(Constants.IconNames.BADGE_WHITE);
 			employeeManagementButton = new ButtonWithResizableIcon("Employee Management", employeeIcon, iconSize);
-			employeeManagementButton.setBounds(0, 276, 280, 52);
-			employeeManagementButton.setFont(Constants.Fonts.HEADLINE);
-			employeeManagementButton.setBackground(Constants.Colors.SECONDARY);
-			employeeManagementButton.setContentAreaFilled(false);
-			employeeManagementButton.setHorizontalAlignment(SwingConstants.LEFT);
-			employeeManagementButton.setForeground(Constants.Colors.LIGHT_GRAY);
+			employeeManagementButton.setBounds(0, 204, 280, 52);
+			UtilFunctions.configureSidebarButtonOnMainThread(employeeManagementButton, false);
 			sidebarItemsPanel.add(employeeManagementButton);
 
-			Icon statisticIcon = new ImageIcon(Constants.IconNames.INSERT_CHART);
+			Icon statisticIcon = new ImageIcon(Constants.IconNames.INSERT_CHART_WHITE);
 			statisticsButton = new ButtonWithResizableIcon("Statistics", statisticIcon, iconSize);
-			statisticsButton.setBounds(0, 348, 280, 52);
-			statisticsButton.setFont(Constants.Fonts.HEADLINE);
-			statisticsButton.setBackground(Constants.Colors.SECONDARY);
-			statisticsButton.setContentAreaFilled(false);
-			statisticsButton.setHorizontalAlignment(SwingConstants.LEFT);
-			statisticsButton.setForeground(Constants.Colors.LIGHT_GRAY);
+			statisticsButton.setBounds(0, 272, 280, 52);
+			UtilFunctions.configureSidebarButtonOnMainThread(statisticsButton, false);
 			sidebarItemsPanel.add(statisticsButton);
 		}
 	}
@@ -180,49 +152,137 @@ public class DashboardView extends JPanel {
 		rightPanel.setBackground(Constants.Colors.TERTIARY_50);
 		add(rightPanel);
 
-//		initRoomManagementTabbed(rightPanel);
-//		initServiceManagementTabbed(rightPanel);
-//		initProductManagementPanel(rightPanel);
-//		initFacilitiesManagementPanel();
-		initEmployeeManagementPanel(rightPanel);
-//		initStatisticsPanel();
+		initRoomManagementTabbed(rightPanel);
+		initServiceManagementTabbed(rightPanel);
+		initProductManagementPanel(rightPanel);
+
+		if (RoleManager.getInstance().isManager()) {
+			initEmployeeManagementPanel(rightPanel);
+			initStatisticsPanel(rightPanel);
+		}
 	}
 
-//	private void initRoomManagementTabbed(JPanel panel) {
-//		// tabbed pane: top (23), left (2), bottom (2), right(2)
-//		roomManagementTabbed = new RoomManagementTabbed();
-//		roomManagementTabbed.setBounds(20, 20, 1078, 807);
-//		panel.add(roomManagementTabbed);
-//	}
+	private void initRoomManagementTabbed(JPanel panel) {
+		// tabbed pane: top (23), left (2), bottom (2), right(2)
+		roomManagementTabbed = new RoomManagementTabbed();
+		roomManagementTabbed.setBounds(20, 20, 1078, 807);
+		panel.add(roomManagementTabbed);
+
+		roomManagementButton.addActionListener(event -> {
+			roomManagementTabbed.setVisible(true);
+			serviceManagementTabbed.setVisible(false);
+			productManagementTabbed.setVisible(false);
+
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, true);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, false);
+
+			if (RoleManager.getInstance().isManager()) {
+				employeeManagementPanel.setVisible(false);
+				statisticsPanel.setVisible(false);
+
+				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, false);
+				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, false);
+			}
+		});
+	}
 
 	private void initServiceManagementTabbed(JPanel panel) {
 		// tabbed pane: top (23), left (2), bottom (2), right(2)
 		serviceManagementTabbed = new ServiceManagementTabbed();
 		serviceManagementTabbed.setBounds(20, 20, 1078, 807);
+		serviceManagementTabbed.setVisible(false);
 		panel.add(serviceManagementTabbed);
+
+		serviceManagementButton.addActionListener(event -> {
+			roomManagementTabbed.setVisible(false);
+			serviceManagementTabbed.setVisible(true);
+			productManagementTabbed.setVisible(false);
+
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, true);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, false);
+
+			if (RoleManager.getInstance().isManager()) {
+				employeeManagementPanel.setVisible(false);
+				statisticsPanel.setVisible(false);
+
+				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, false);
+				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, false);
+			}
+		});
 	}
 
 	private void initProductManagementPanel(JPanel panel) {
 		// tabbed pane: top (23), left (2), bottom (2), right(2)
 		productManagementTabbed = new ProductManagementTabbed();
 		productManagementTabbed.setBounds(20, 20, 1078, 807);
+		productManagementTabbed.setVisible(false);
 		panel.add(productManagementTabbed);
+
+		productManagementButton.addActionListener(event -> {
+			roomManagementTabbed.setVisible(false);
+			serviceManagementTabbed.setVisible(false);
+			productManagementTabbed.setVisible(true);
+
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, true);
+
+			if (RoleManager.getInstance().isManager()) {
+				employeeManagementPanel.setVisible(false);
+				statisticsPanel.setVisible(false);
+
+				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, false);
+				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, false);
+			}
+		});
 	}
-//
-//	private void initFacilitiesManagementPanel() {
-//
-//	}
-//
+
 	private void initEmployeeManagementPanel(JPanel panel) {
 		// tabbed pane: top (23), left (2), bottom (2), right(2)
 		employeeManagementPanel = new EmployeeManagementPanel();
-		employeeManagementPanel.setBounds(20, 20, 1078, 807);
+		employeeManagementPanel.setBounds(20, 20, 1080, 807);
+		employeeManagementPanel.setBorder(BorderFactory.createLineBorder(Constants.Colors.TABLE_BORDER_COLOR, 1));
+		employeeManagementPanel.setVisible(false);
 		panel.add(employeeManagementPanel);
+
+		employeeManagementButton.addActionListener(event -> {
+			roomManagementTabbed.setVisible(false);
+			serviceManagementTabbed.setVisible(false);
+			productManagementTabbed.setVisible(false);
+			employeeManagementPanel.setVisible(true);
+			statisticsPanel.setVisible(false);
+
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, true);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, false);
+		});
 	}
-//
-//	private void initStatisticsPanel() {
-//
-//	}
+
+	private void initStatisticsPanel(JPanel panel) {
+		statisticsPanel = new StatisticsPanel();
+		statisticsPanel.setBounds(20, 20, 1080, 807);
+		statisticsPanel.setBorder(BorderFactory.createLineBorder(Constants.Colors.GRAY, 1));
+		statisticsPanel.setVisible(false);
+		panel.add(statisticsPanel);
+
+		statisticsButton.addActionListener(event -> {
+			roomManagementTabbed.setVisible(false);
+			serviceManagementTabbed.setVisible(false);
+			productManagementTabbed.setVisible(false);
+			employeeManagementPanel.setVisible(false);
+			statisticsPanel.setVisible(true);
+
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, false);
+			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, true);
+		});
+	}
 
 	public void display() {
 		mainFrame.setResizable(false);

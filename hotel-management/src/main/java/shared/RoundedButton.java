@@ -14,7 +14,7 @@ public class RoundedButton extends JButton {
 	private Shape shape;
 
 	public RoundedButton(String label, int cornerRadius) {
-		this(label, cornerRadius, 0, Constants.Colors.TRANSPARENT);
+		this(label, cornerRadius, 0, Constants.Colors.SECONDARY);
 	}
 
 	public RoundedButton(String label, int cornerRadius, int borderWidth, Color borderColor) {
@@ -30,7 +30,7 @@ public class RoundedButton extends JButton {
 
 	public void setIcon(Icon icon, Dimension size) {
 		Image originalImage = ((ImageIcon) icon).getImage();
-		Image scaledImage = originalImage.getScaledInstance(size.width, size.height, java.awt.Image.SCALE_SMOOTH);
+		Image scaledImage = originalImage.getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
 
 		setIconTextGap(12);
 		setIcon(new ImageIcon(scaledImage));

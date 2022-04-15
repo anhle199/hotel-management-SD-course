@@ -16,6 +16,10 @@ public class ButtonWithResizableIcon extends JButton {
 		setRolloverEnabled(false);
 	}
 
+	public ButtonWithResizableIcon(Icon icon, Dimension iconSize) {
+		this("", icon, iconSize);
+	}
+
 	public void setIconSize(Dimension size) {
 		setIcon(getIcon(), size);
 	}
@@ -25,7 +29,7 @@ public class ButtonWithResizableIcon extends JButton {
 		Image scaledImage = originalImage.getScaledInstance(
 				size.width,
 				size.height,
-				java.awt.Image.SCALE_SMOOTH
+				Image.SCALE_SMOOTH
 		);
 
 		setIcon(new ImageIcon(scaledImage));
