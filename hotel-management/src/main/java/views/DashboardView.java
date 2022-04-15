@@ -5,9 +5,11 @@ import shared.panels.ImagePanel;
 import utils.Constants;
 import utils.RoleManager;
 import utils.UtilFunctions;
+import views.panels.EmployeeManagementPanel;
 import views.panels.statistics.StatisticsPanel;
 import views.tabbed_panels.RoomManagementTabbed;
 import views.tabbed_panels.ServiceManagementTabbed;
+import views.tabbed_panels.ProductManagementTabbed;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -30,8 +32,8 @@ public class DashboardView extends JPanel {
 	// Components at the right panel.
 	private RoomManagementTabbed roomManagementTabbed;
 	private ServiceManagementTabbed serviceManagementTabbed;
-//	private ProductManagementTabbed productManagementTabbed;
-//	private EmployeeManagementPanel employeeManagementPanel;
+	private ProductManagementTabbed productManagementTabbed;
+	private EmployeeManagementPanel employeeManagementPanel;
 	private StatisticsPanel statisticsPanel;
 
 	public DashboardView(JFrame mainFrame) {
@@ -152,10 +154,10 @@ public class DashboardView extends JPanel {
 
 		initRoomManagementTabbed(rightPanel);
 		initServiceManagementTabbed(rightPanel);
-//		initProductManagementPanel();
+    initProductManagementPanel(rightPanel);
 
 		if (RoleManager.getInstance().isManager()) {
-//			initEmployeeManagementPanel();
+      initEmployeeManagementPanel(rightPanel);
 			initStatisticsPanel(rightPanel);
 		}
 	}
@@ -201,17 +203,21 @@ public class DashboardView extends JPanel {
 		});
 	}
 
-//	private void initProductManagementPanel() {
-//
-//	}
-//
-//	private void initFacilitiesManagementPanel() {
-//
-//	}
-//
-//	private void initEmployeeManagementPanel() {
-//
-//	}
+	private void initProductManagementPanel(JPanel panel) {
+		// tabbed pane: top (23), left (2), bottom (2), right(2)
+		productManagementTabbed = new ProductManagementTabbed();
+		productManagementTabbed.setBounds(20, 20, 1078, 807);
+    productManagementTabbed.setVisible(false);
+		panel.add(productManagementTabbed);
+	}
+
+	private void initEmployeeManagementPanel(JPanel panel) {
+		// tabbed pane: top (23), left (2), bottom (2), right(2)
+		employeeManagementPanel = new EmployeeManagementPanel();
+		employeeManagementPanel.setBounds(20, 20, 1078, 807);
+    employeeManagementPanel.setVisible(false);
+		panel.add(employeeManagementPanel);
+	}
 
 	private void initStatisticsPanel(JPanel panel) {
 		statisticsPanel = new StatisticsPanel();
