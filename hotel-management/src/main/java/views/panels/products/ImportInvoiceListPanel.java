@@ -1,22 +1,20 @@
-package views.panels;
+package views.panels.products;
 
 import shared.NonEditableTableModel;
 import shared.panels.ScrollableTablePanel;
-import utils.Constants;
+import utils.UtilFunctions;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-public class ReceiptsListPanel extends JPanel {
-	// Top Bar
-	// private TextFieldPanel searchBar;
+public class ImportInvoiceListPanel extends JPanel {
+	// Top Bar.
 	private JButton addButton;
-	private JButton removeButton;
 
 	private ScrollableTablePanel scrollableTable;
 
-	public ReceiptsListPanel() {
+	public ImportInvoiceListPanel() {
 		super();
 		setLayout(null);
 
@@ -25,23 +23,16 @@ public class ReceiptsListPanel extends JPanel {
 	}
 
 	private void initTopBarPanel() {
+		// Top Bar Panel.
 		JPanel topBarPanel = new JPanel();
-		topBarPanel.setBounds(0, 20, 1078, 44);
+		topBarPanel.setBounds(20, 20, 1038, 40);
 		topBarPanel.setLayout(null);
 		add(topBarPanel);
 
-		// ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH, 24, 24);
-		// Dimension searchBarSize = new Dimension(600, 44);
-		// searchBar = new TextFieldPanel("Search", searchIcon, TextFieldPanel.IconPosition.LEADING, searchBarSize);
-		// searchBar.setBounds(20, 0, searchBarSize.width, searchBarSize.height);
-		// topBarPanel.add(searchBar);
-
+		// Add Button.
 		addButton = new JButton("Add");
-		addButton.setBounds(998, 0, 60, 44);
-		addButton.setFocusPainted(false);
-		addButton.setRolloverEnabled(false);
-		addButton.setForeground(Constants.Colors.WHITE);
-		addButton.setBackground(Constants.Colors.TERTIARY);
+		addButton.setBounds(953, 0, 85, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(addButton);
 		topBarPanel.add(addButton);
 	}
 
@@ -50,11 +41,11 @@ public class ReceiptsListPanel extends JPanel {
 				"",  // no
 				"Product name",
 				"Product type",
-				"Purchased date",
+				"Imported date",
 				"Price",
 				"Quantity",
 				"Total price",
-				"Notes"
+				"Notes",
 		};
 		final int [] columnWidths = {50, 140, 140, 140, 140, 140, 140, 130};
 		final int[] columnHorizontalAlignments = {
@@ -84,17 +75,15 @@ public class ReceiptsListPanel extends JPanel {
 
 		final int tableWidth = scrollableTable.getTableWidth();
 
-		scrollableTable.setRowHeight(40);
-		scrollableTable.setIntercellSpacing(new Dimension(4, 4));
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		scrollableTable.setBounds(20, 84, 1038, 680);
+		scrollableTable.setBounds(20, 80, 1038, 682);
 
 		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
-		model.addRow(new Object[]{2, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
-		model.addRow(new Object[]{3, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
-		model.addRow(new Object[]{4, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
-		model.addRow(new Object[]{5, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
+		model.addRow(new Object[]{1, "Product name", "Product type", "Imported date", "Price", "Quantity", "Total price", "Notes"});
+		model.addRow(new Object[]{2, "Product name", "Product type", "Imported date", "Price", "Quantity", "Total price", "Notes"});
+		model.addRow(new Object[]{3, "Product name", "Product type", "Imported date", "Price", "Quantity", "Total price", "Notes"});
+		model.addRow(new Object[]{4, "Product name", "Product type", "Imported date", "Price", "Quantity", "Total price", "Notes"});
+		model.addRow(new Object[]{5, "Product name", "Product type", "Imported date", "Price", "Quantity", "Total price", "Notes"});
 	}
 }

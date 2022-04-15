@@ -1,10 +1,13 @@
-package views.panels;
+package views.panels.products;
 
+import shared.ButtonWithResizableIcon;
 import shared.NonEditableTableModel;
 import shared.panels.ImagePanel;
 import shared.panels.ScrollableTablePanel;
 import shared.panels.TextFieldPanel;
 import utils.Constants;
+import utils.RoleManager;
+import utils.UtilFunctions;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -27,32 +30,37 @@ public class ProductListPanel extends JPanel {
 	}
 
 	private void initTopBarPanel() {
+		// Top Bar Panel.
 		JPanel topBarPanel = new JPanel();
-		topBarPanel.setBounds(0, 20, 1078, 44);
+		topBarPanel.setBounds(20, 20, 1038, 40);
 		topBarPanel.setLayout(null);
 		add(topBarPanel);
 
-		ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH, 24, 24);
-		Dimension searchBarSize = new Dimension(600, 44);
+		// Search Bar.
+		ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH_BLACK, 24, 24);
+		Dimension searchBarSize = new Dimension(500, 40);
 		searchBar = new TextFieldPanel("Search", searchIcon, TextFieldPanel.IconPosition.LEADING, searchBarSize);
-		searchBar.setBounds(20, 0, searchBarSize.width, searchBarSize.height);
+		searchBar.setBounds(0, 0, searchBarSize.width, searchBarSize.height);
 		topBarPanel.add(searchBar);
 
-		addButton = new JButton("Add");
-		addButton.setBounds(886, 0, 60, 44);
-		addButton.setFocusPainted(false);
-		addButton.setRolloverEnabled(false);
-		addButton.setForeground(Constants.Colors.WHITE);
-		addButton.setBackground(Constants.Colors.TERTIARY);
-		topBarPanel.add(addButton);
+		// Top Bar Buttons Panel.
+		JPanel topBarButtonsPanel = new JPanel();
+		topBarButtonsPanel.setBounds(826, 0, 212, 40);
+		topBarButtonsPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
+		topBarPanel.add(topBarButtonsPanel);
 
+		// Add Button.
+		addButton = new JButton("Add");
+		addButton.setPreferredSize(new Dimension(85, 40));
+		UtilFunctions.configureTopBarButtonOnMainThread(addButton);
+		topBarButtonsPanel.add(addButton);
+
+		// Remove Button.
 		removeButton = new JButton("Remove");
-		removeButton.setBounds(958, 0, 100, 44);
-		removeButton.setFocusPainted(false);
-		removeButton.setRolloverEnabled(false);
-		removeButton.setForeground(Constants.Colors.WHITE);
-		removeButton.setBackground(Constants.Colors.RED);
-		topBarPanel.add(removeButton);
+		removeButton.setPreferredSize(new Dimension(115, 40));
+		UtilFunctions.configureTopBarButtonOnMainThread(removeButton);
+		topBarButtonsPanel.add(Box.createHorizontalStrut(12));
+		topBarButtonsPanel.add(removeButton);
 	}
 
 	private void initTable() {
@@ -90,8 +98,6 @@ public class ProductListPanel extends JPanel {
 
 		final int tableWidth = scrollableTable.getTableWidth();
 
-		scrollableTable.setRowHeight(40);
-		scrollableTable.setIntercellSpacing(new Dimension(4, 4));
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 84, 1038, 680);
