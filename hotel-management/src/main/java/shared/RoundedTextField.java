@@ -30,7 +30,7 @@ public class RoundedTextField extends JTextField {
 	}
 
 	protected void paintBorder(Graphics graphics) {
-		graphics.setColor(Constants.Colors.TRANSPARENT);
+		graphics.setColor(getBackground());
 		graphics.drawRoundRect(
 				0, 0,
 				getWidth() - 1, getHeight() - 1,

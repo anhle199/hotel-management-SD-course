@@ -14,7 +14,7 @@ public class RoundedButton extends JButton {
 	private Shape shape;
 
 	public RoundedButton(String label, int cornerRadius) {
-		this(label, cornerRadius, 0, Constants.Colors.TRANSPARENT);
+		this(label, cornerRadius, 0, Constants.Colors.SECONDARY);
 	}
 
 	public RoundedButton(String label, int cornerRadius, int borderWidth, Color borderColor) {

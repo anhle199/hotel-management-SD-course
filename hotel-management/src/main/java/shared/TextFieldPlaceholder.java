@@ -18,8 +18,8 @@ public class TextFieldPlaceholder extends JLabel implements DocumentListener, Fo
 		super(placeholder);
 		this.textField = textField;
 
-		setForeground(Constants.Colors.DARK_GRAY);
-		setFont(Constants.Fonts.BODY);
+		setForeground(Constants.Colors.LIGHT_GRAY);
+		setFont(Constants.Fonts.BODY_ITALIC);
 		textField.setLayout(new BorderLayout());
 		textField.add(this);
 
