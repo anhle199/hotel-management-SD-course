@@ -3,6 +3,8 @@ package views;
 import shared.ButtonWithResizableIcon;
 import shared.panels.ImagePanel;
 import utils.Constants;
+import views.panels.EmployeeManagementPanel;
+import views.tabbed_panels.ProductManagementTabbed;
 import views.tabbed_panels.RoomManagementTabbed;
 import views.tabbed_panels.ServiceManagementTabbed;
 
@@ -30,9 +32,9 @@ public class DashboardView extends JPanel {
 	// Components at the right panel.
 	private RoomManagementTabbed roomManagementTabbed;
 	private ServiceManagementTabbed serviceManagementTabbed;
-//	private ProductManagementPanel productManagementPanel;
+	private ProductManagementTabbed productManagementTabbed;
 //	private FacilitiesManagementPanel facilitiesManagementPanel;
-//	private EmployeeManagementPanel employeeManagementPanel;
+	private EmployeeManagementPanel employeeManagementPanel;
 //	private StatisticsPanel statisticsPanel;
 
 	public DashboardView(JFrame mainFrame, Constants.Role role) {
@@ -179,10 +181,10 @@ public class DashboardView extends JPanel {
 		add(rightPanel);
 
 //		initRoomManagementTabbed(rightPanel);
-		initServiceManagementTabbed(rightPanel);
-//		initProductManagementPanel();
+//		initServiceManagementTabbed(rightPanel);
+//		initProductManagementPanel(rightPanel);
 //		initFacilitiesManagementPanel();
-//		initEmployeeManagementPanel();
+		initEmployeeManagementPanel(rightPanel);
 //		initStatisticsPanel();
 	}
 
@@ -199,18 +201,24 @@ public class DashboardView extends JPanel {
 		serviceManagementTabbed.setBounds(20, 20, 1078, 807);
 		panel.add(serviceManagementTabbed);
 	}
-//
-//	private void initProductManagementPanel() {
-//
-//	}
+
+	private void initProductManagementPanel(JPanel panel) {
+		// tabbed pane: top (23), left (2), bottom (2), right(2)
+		productManagementTabbed = new ProductManagementTabbed();
+		productManagementTabbed.setBounds(20, 20, 1078, 807);
+		panel.add(productManagementTabbed);
+	}
 //
 //	private void initFacilitiesManagementPanel() {
 //
 //	}
 //
-//	private void initEmployeeManagementPanel() {
-//
-//	}
+	private void initEmployeeManagementPanel(JPanel panel) {
+		// tabbed pane: top (23), left (2), bottom (2), right(2)
+		employeeManagementPanel = new EmployeeManagementPanel();
+		employeeManagementPanel.setBounds(20, 20, 1078, 807);
+		panel.add(employeeManagementPanel);
+	}
 //
 //	private void initStatisticsPanel() {
 //
