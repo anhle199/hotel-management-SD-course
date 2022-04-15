@@ -1,5 +1,6 @@
 package shared.panels;
 
+import utils.Constants;
 import utils.UtilFunctions;
 
 import javax.swing.*;
@@ -13,10 +14,7 @@ public class ScrollableTablePanel extends JScrollPane {
 	private int tableWidth = -1;
 
 	public ScrollableTablePanel(JTable table) {
-		super(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		this.table = table;
-
-		this.table.setFillsViewportHeight(true);
+		this(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 
 	public ScrollableTablePanel(JTable table, int vsbPolicy, int hsbPolicy) {
@@ -24,6 +22,13 @@ public class ScrollableTablePanel extends JScrollPane {
 		this.table = table;
 
 		this.table.setFillsViewportHeight(true);
+
+		// Default configuration for this project
+		this.table.getTableHeader().setFont(Constants.Fonts.HEADLINE);
+		this.table.setFont(Constants.Fonts.BODY);
+		this.table.setRowHeight(40);
+		this.table.setIntercellSpacing(new Dimension(8, 4));
+		setBorder(BorderFactory.createLineBorder(Constants.Colors.TABLE_BORDER_COLOR, 1));
 	}
 
 	public void setFillsViewportHeight(boolean fillsViewportHeight) {

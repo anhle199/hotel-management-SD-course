@@ -1,10 +1,11 @@
-package views.panels;
+package views.panels.services;
 
 import shared.NonEditableTableModel;
 import shared.panels.ImagePanel;
 import shared.panels.ScrollableTablePanel;
 import shared.panels.TextFieldPanel;
 import utils.Constants;
+import utils.UtilFunctions;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -26,23 +27,23 @@ public class ServiceListPanel extends JPanel {
 	}
 
 	private void initTopBarPanel() {
+		// Top Bar Panel.
 		JPanel topBarPanel = new JPanel();
-		topBarPanel.setBounds(0, 20, 1078, 44);
+		topBarPanel.setBounds(20, 20, 1038, 40);
 		topBarPanel.setLayout(null);
 		add(topBarPanel);
 
-		ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH, 24, 24);
-		Dimension searchBarSize = new Dimension(600, 44);
+		// Search Bar.
+		ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH_BLACK, 24, 24);
+		Dimension searchBarSize = new Dimension(500, 40);
 		searchBar = new TextFieldPanel("Search", searchIcon, TextFieldPanel.IconPosition.LEADING, searchBarSize);
-		searchBar.setBounds(20, 0, searchBarSize.width, searchBarSize.height);
+		searchBar.setBounds(0, 0, searchBarSize.width, searchBarSize.height);
 		topBarPanel.add(searchBar);
 
+		// Remove Button.
 		removeButton = new JButton("Remove");
-		removeButton.setBounds(958, 0, 100, 44);
-		removeButton.setFocusPainted(false);
-		removeButton.setRolloverEnabled(false);
-		removeButton.setForeground(Constants.Colors.WHITE);
-		removeButton.setBackground(Constants.Colors.RED);
+		removeButton.setBounds(923, 0, 115, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(removeButton);
 		topBarPanel.add(removeButton);
 	}
 
@@ -54,7 +55,7 @@ public class ServiceListPanel extends JPanel {
 				"Price",
 				"Notes"
 		};
-		final int [] columnWidths = {50, 242, 242, 242, 244};
+		final int [] columnWidths = {50, 241, 242, 242, 244};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
@@ -79,11 +80,9 @@ public class ServiceListPanel extends JPanel {
 
 		final int tableWidth = scrollableTable.getTableWidth();
 
-		scrollableTable.setRowHeight(40);
-		scrollableTable.setIntercellSpacing(new Dimension(4, 4));
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		scrollableTable.setBounds(20, 84, 1038, 680);
+		scrollableTable.setBounds(20, 80, 1038, 682);
 
 		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
 		model.addRow(new Object[]{1, "Service type", "Description", "Price", "Notes"});

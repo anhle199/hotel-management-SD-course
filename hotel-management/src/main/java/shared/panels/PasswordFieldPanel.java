@@ -39,7 +39,7 @@ public class PasswordFieldPanel extends JPanel {
 		setPreferredSize(size);
 
 		setBackground(Constants.Colors.WHITE);
-		setBorder(BorderFactory.createLineBorder(Constants.Colors.DARK_GRAY, 1));
+		setBorder(BorderFactory.createLineBorder(Constants.Colors.LIGHT_GRAY, 1));
 	}
 
 	public PasswordFieldPanel(Dimension size) {
@@ -56,18 +56,18 @@ public class PasswordFieldPanel extends JPanel {
 		this.placeholder = new TextFieldPlaceholder(placeholderText, passwordField);
 		this.passwordField.setLayout(null);
 
-		this.leadingIcon = new ImagePanel(Constants.IconNames.LOCK, 24, 24);
-		this.leadingIcon.setForeground(Constants.Colors.DARK_GRAY);
+		this.leadingIcon = new ImagePanel(Constants.IconNames.LOCK_BLACK, 24, 24);
+		this.leadingIcon.setForeground(Constants.Colors.GRAY);
 		this.leadingIcon.setBackground(Constants.Colors.TRANSPARENT);
 		add(this.leadingIcon);
 
-		this.visibilityIcon = new ImagePanel(Constants.IconNames.VISIBILITY, 24, 24);
-		this.visibilityIcon.setForeground(Constants.Colors.DARK_GRAY);
+		this.visibilityIcon = new ImagePanel(Constants.IconNames.VISIBILITY_BLACK, 24, 24);
+		this.visibilityIcon.setForeground(Constants.Colors.GRAY);
 		this.visibilityIcon.setBackground(Constants.Colors.TRANSPARENT);
 		add(visibilityIcon);
 
-		this.visibilityOffIcon = new ImagePanel(Constants.IconNames.VISIBILITY_OFF, 24, 24);
-		this.visibilityOffIcon.setForeground(Constants.Colors.DARK_GRAY);
+		this.visibilityOffIcon = new ImagePanel(Constants.IconNames.VISIBILITY_OFF_BLACK, 24, 24);
+		this.visibilityOffIcon.setForeground(Constants.Colors.GRAY);
 		this.visibilityOffIcon.setBackground(Constants.Colors.TRANSPARENT);
 		this.visibilityOffIcon.setVisible(false);
 		add(visibilityOffIcon);
