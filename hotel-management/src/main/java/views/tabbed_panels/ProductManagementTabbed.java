@@ -1,32 +1,40 @@
 package views.tabbed_panels;
 
-import views.panels.ReceiptsListPanel;
-import views.panels.ProductListPanel;
+import utils.RoleManager;
+import views.panels.products.ImportInvoiceListPanel;
+import views.panels.products.ReceiptListPanel;
+import views.panels.products.ProductListPanel;
 
 import javax.swing.*;
 
 public class ProductManagementTabbed extends JTabbedPane {
 
-   // Constants
-   public static final String PRODUCT_LIST_PANEL = "Product";
-   public static final String PRODUCT_INVOICE_LIST_PANEL = "Receipts";
-   public static final int PRODUCT_LIST_INDEX = 0;
-   public static final int PRODUCT_INVOICE_LIST_INDEX = 1;
+	// Constants
+	public static final String PRODUCT_LIST_PANEL = "Product";
+	public static final String RECEIPT_LIST_PANEL = "Receipts";
+	public static final String IMPORT_INVOICE_LIST_PANEL = "Import Invoices";
 
-   // Components
-   final private ProductListPanel productListPanel;
-   final private ReceiptsListPanel receiptListPanel;
+	// Components
+	private ProductListPanel productListPanel;
+	private ReceiptListPanel receiptListPanel;
+	private ImportInvoiceListPanel importInvoiceListPanel;
 
-   public ProductManagementTabbed() {
-       super();
+	public ProductManagementTabbed() {
+		super();
 
-       // Necessaries list panel
-       productListPanel = new ProductListPanel();
-       addTab(PRODUCT_LIST_PANEL, productListPanel);
+		// Product List Panel.
+		productListPanel = new ProductListPanel();
+		addTab(PRODUCT_LIST_PANEL, productListPanel);
 
-       // Cart panel
-        receiptListPanel = new ReceiptsListPanel();
-        addTab(PRODUCT_INVOICE_LIST_PANEL, receiptListPanel);
-   }
+		// Receipt List Panel.
+		receiptListPanel = new ReceiptListPanel();
+		addTab(RECEIPT_LIST_PANEL, receiptListPanel);
+
+		if (RoleManager.getInstance().isManager()) {
+			// Import Invoice List Panel.
+			importInvoiceListPanel = new ImportInvoiceListPanel();
+			addTab(IMPORT_INVOICE_LIST_PANEL, importInvoiceListPanel);
+		}
+	}
 
 }

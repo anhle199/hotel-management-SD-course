@@ -29,7 +29,7 @@ public class ButtonWithResizableIcon extends JButton {
 		Image scaledImage = originalImage.getScaledInstance(
 				size.width,
 				size.height,
-				java.awt.Image.SCALE_SMOOTH
+				Image.SCALE_SMOOTH
 		);
 
 		setIcon(new ImageIcon(scaledImage));

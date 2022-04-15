@@ -13,7 +13,7 @@ public class RoleManager {
 	}
 
 	public static RoleManager getInstance() {
-		return RoleManager.BillPughSingleton.INSTANCE;
+		return BillPughSingleton.INSTANCE;
 	}
 
 	public boolean isManager() {
