@@ -1,11 +1,8 @@
 package views.panels.employees;
 
-import shared.NonEditableTableModel;
-import shared.panels.ImagePanel;
-import shared.panels.ScrollableTablePanel;
-import shared.panels.TextFieldPanel;
-import utils.Constants;
 import utils.UtilFunctions;
+import views.components.table_model.NonEditableTableModel;
+import views.components.panels.ScrollableTablePanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

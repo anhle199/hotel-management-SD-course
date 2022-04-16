@@ -29,6 +29,8 @@ public class Constants {
 		public static final Color DARK_GRAY = Color.DARK_GRAY;
 		public static final Color LIGHT_GRAY = Color.LIGHT_GRAY;
 		public static final Color RED = Color.RED;
+
+		public static final Color SYSTEM_PANEL_BACKGROUND = new Color(238, 238, 238);
 	}
 
 	public static class IconNames {
@@ -51,10 +53,9 @@ public class Constants {
 		public static final String CALENDAR_MONTH_BLACK = "src/main/resources/icons/ic_round_calendar_month_black_24dp.png";
 		public static final String FILTER_ALT_BLACK = "src/main/resources/icons/ic_round_filter_alt_black_24dp.png";
 		public static final String FILTER_ALT_WHITE = "src/main/resources/icons/ic_round_filter_alt_white_24dp.png";
-	}
 
-	// NONE means that user not logged into the application.
-	public enum Role { NONE, MANAGER, EMPLOYEE }
+		public static final String ERROR_MESSAGE = "src/main/resources/icons/ic_error_message_64dp.png";
+	}
 
 	public static final String[] MONTHS_IN_ENGLISH = {
 			"January", "February", "March", "April",

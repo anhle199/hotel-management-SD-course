@@ -14,9 +14,9 @@ public class RoomManagementTabbed extends JTabbedPane {
 	public static final String RENTAL_RECEIPT_LIST_PANEL = "Rental Receipts";
 
 	// Components
-	final private RoomListPanel roomListPanel;
-	final private RentalInvoiceListPanel rentalInvoiceListPanel;
-	final private RentalReceiptListPanel rentalReceiptListPanel;
+	private final RoomListPanel roomListPanel;
+	private final RentalInvoiceListPanel rentalInvoiceListPanel;
+	private final RentalReceiptListPanel rentalReceiptListPanel;
 
 	public RoomManagementTabbed() {
 		super();

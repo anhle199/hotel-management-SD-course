@@ -181,7 +181,7 @@ public class StatisticsPanel extends JPanel {
 		ArrayList<Number> values = new ArrayList<>();
 
 		switch (statisticOption) {
-			case "Statistics of revenue by room type in month" -> {
+			case "Statistics of revenue by room type in month": {
 				ArrayList<String> rowKeys = new ArrayList<>(
 						List.of("Affordable", "Normal", "Luxury")
 				);
@@ -193,7 +193,7 @@ public class StatisticsPanel extends JPanel {
 
 				setValues(values, rowKeys, columnKeys);
 			}
-			case "Statistics of room occupancy rate (top 5 rooms) in month" -> {
+			case "Statistics of room occupancy rate (top 5 rooms) in month": {
 				ArrayList<String> rowKeys = new ArrayList<>(
 						List.of("Room 101", "Room 103", "Room 201", "Room 303", "Room 405")
 				);
@@ -205,8 +205,8 @@ public class StatisticsPanel extends JPanel {
 
 				setValues(values, rowKeys, columnKeys);
 			}
-			case "Statistics of revenue of purchased products (top 5 products) in month",
-					"Statistics of costs of imported products (top 5 products) in month" -> {
+			case "Statistics of revenue of purchased products (top 5 products) in month":
+			case "Statistics of costs of imported products (top 5 products) in month": {
 
 				ArrayList<String> rowKeys = new ArrayList<>(
 						List.of("Product 1", "Product 2", "Product 3", "Product 4", "Product 5")

@@ -12,8 +12,8 @@ public class ServiceManagementTabbed extends JTabbedPane {
     public static final String SERVICE_INVOICE_LIST_PANEL = "Service Invoices";
 
     // Components
-    final private ServiceListPanel serviceListPanel;
-    final private ServiceInvoiceListPanel serviceInvoiceListPanel;
+    private final ServiceListPanel serviceListPanel;
+    private final ServiceInvoiceListPanel serviceInvoiceListPanel;
 
     public ServiceManagementTabbed() {
         super();

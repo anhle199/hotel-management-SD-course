@@ -1,7 +1,7 @@
-package shared.panels;
+package views.components.panels;
 
-import shared.TextFieldPlaceholder;
 import utils.Constants;
+import views.components.TextFieldPlaceholder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +18,6 @@ public class PasswordFieldPanel extends JPanel {
 	private static final int SPACING = 10;
 
 	private final Dimension size;
-//	private final int cornerRadius;
-//	private Shape shape;
 
 	private JPasswordField passwordField;
 	private TextFieldPlaceholder placeholder;
@@ -30,7 +28,6 @@ public class PasswordFieldPanel extends JPanel {
 	public PasswordFieldPanel(String placeholderText, Dimension size) {
 		super();
 		this.size = size;
-//		this.cornerRadius = cornerRadius;
 
 		initSubviews(placeholderText);
 		setUpBoundsForSubviews();
@@ -106,12 +103,16 @@ public class PasswordFieldPanel extends JPanel {
 		placeholder.setBounds(0, 0, passwordFieldWidth, leadingIconSize.height);
 	}
 
-	public JPasswordField getPasswordField() {
-		return passwordField;
+//	public JPasswordField getPasswordField() {
+//		return passwordField;
+//	}
+
+	public String getPassword() {
+		return String.valueOf(passwordField.getPassword());
 	}
 
-	public String getPasswordValue() {
-		return String.valueOf(passwordField.getPassword());
+	public void setPassword(String value) {
+		passwordField.setText(value);
 	}
 
 	public void toggleVisibilityPasswordAction() {
@@ -123,39 +124,4 @@ public class PasswordFieldPanel extends JPanel {
 		visibilityOffIcon.setVisible(!showingPassword);
 	}
 
-//	protected void paintComponent(Graphics graphics) {
-//		graphics.setColor(getBackground());
-//		graphics.fillRoundRect(
-//				0, 0,
-//				getWidth() - 1, getHeight() - 1,
-//				cornerRadius, cornerRadius
-//		);
-//
-//		setUpBoundsForSubviews();
-//
-//		super.paintComponent(graphics);
-//	}
-//
-//	protected void paintBorder(Graphics graphics) {
-//		graphics.setColor(Constants.Colors.TRANSPARENT);
-//		graphics.drawRoundRect(
-//				0, 0,
-//				getWidth() - 1, getHeight() - 1,
-//				cornerRadius, cornerRadius
-//		);
-//
-//		setUpBoundsForSubviews();
-//	}
-//
-//	public boolean contains(int x, int y) {
-//		if (shape == null || !shape.getBounds().equals(getBounds())) {
-//			shape = new RoundRectangle2D.Float(
-//					0, 0,
-//					getWidth() - 1, getHeight() - 1,
-//					cornerRadius, cornerRadius
-//			);
-//		}
-//
-//		return shape.contains(x, y);
-//	}
 }

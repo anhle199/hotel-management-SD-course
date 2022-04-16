@@ -1,4 +1,4 @@
-package shared;
+package views.components;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,9 +20,9 @@ public class ButtonWithResizableIcon extends JButton {
 		this("", icon, iconSize);
 	}
 
-	public void setIconSize(Dimension size) {
-		setIcon(getIcon(), size);
-	}
+//	public void setIconSize(Dimension size) {
+//		setIcon(getIcon(), size);
+//	}
 
 	public void setIcon(Icon icon, Dimension size) {
 		Image originalImage = ((ImageIcon) icon).getImage();

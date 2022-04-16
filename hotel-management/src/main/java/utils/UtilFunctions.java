@@ -1,8 +1,11 @@
 package utils;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowEvent;
 
 public class UtilFunctions {
+
 	private UtilFunctions() {}
 
 	public static int sum(int[] a) {
@@ -49,6 +52,14 @@ public class UtilFunctions {
 				button.setForeground(Constants.Colors.LIGHT_GRAY);
 			}
 		});
+	}
+
+	public static void quitApp(JFrame mainFrame) {
+		mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+	}
+
+	public static void showErrorMessage(Component component, String title, String message) {
+		JOptionPane.showMessageDialog(component, message, title, JOptionPane.ERROR_MESSAGE);
 	}
 
 }

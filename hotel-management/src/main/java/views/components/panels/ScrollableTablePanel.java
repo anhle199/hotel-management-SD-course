@@ -1,4 +1,4 @@
-package shared.panels;
+package views.components.panels;
 
 import utils.Constants;
 import utils.UtilFunctions;
@@ -31,9 +31,9 @@ public class ScrollableTablePanel extends JScrollPane {
 		setBorder(BorderFactory.createLineBorder(Constants.Colors.TABLE_BORDER_COLOR, 1));
 	}
 
-	public void setFillsViewportHeight(boolean fillsViewportHeight) {
-		table.setFillsViewportHeight(fillsViewportHeight);
-	}
+//	public void setFillsViewportHeight(boolean fillsViewportHeight) {
+//		table.setFillsViewportHeight(fillsViewportHeight);
+//	}
 
 	public void setRowSelectionAllowed(boolean rowSelectionAllowed) {
 		table.setRowSelectionAllowed(rowSelectionAllowed);
@@ -43,21 +43,21 @@ public class ScrollableTablePanel extends JScrollPane {
 		table.setSelectionMode(mode);
 	}
 
-	public void setHeaderResizingAllowed(boolean resizingAllowed) {
-		table.getTableHeader().setResizingAllowed(resizingAllowed);
-	}
+//	public void setHeaderResizingAllowed(boolean resizingAllowed) {
+//		table.getTableHeader().setResizingAllowed(resizingAllowed);
+//	}
 
 	public void setAutoResizeMode(int mode) {
 		table.setAutoResizeMode(mode);
 	}
 
-	public void setRowHeight(int rowHeight) {
-		table.setRowHeight(rowHeight);
-	}
+//	public void setRowHeight(int rowHeight) {
+//		table.setRowHeight(rowHeight);
+//	}
 
-	public void setIntercellSpacing(Dimension intercellSpacing) {
-		table.setIntercellSpacing(intercellSpacing);
-	}
+//	public void setIntercellSpacing(Dimension intercellSpacing) {
+//		table.setIntercellSpacing(intercellSpacing);
+//	}
 
 	public void setHeaderSize(Dimension headerSize) {
 		table.getTableHeader().setPreferredSize(headerSize);

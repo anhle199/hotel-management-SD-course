@@ -1,17 +1,17 @@
 package views;
 
-import shared.panels.ImagePanel;
-import shared.panels.PasswordFieldPanel;
-import shared.panels.TextFieldPanel;
 import utils.Constants;
+import views.components.panels.ImagePanel;
+import views.components.panels.PasswordFieldPanel;
+import views.components.panels.TextFieldPanel;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
 public class LoginView extends JPanel {
+
 	// Components
-	private JLabel loginTitleLabel;
 	private TextFieldPanel usernameField;
 	private PasswordFieldPanel passwordField;
 	private JButton loginButton;
@@ -32,7 +32,7 @@ public class LoginView extends JPanel {
 	private void initComponents() {
 		Dimension inputFieldSize = new Dimension(320, 44);
 
-		loginTitleLabel = new JLabel("LOGIN");
+		JLabel loginTitleLabel = new JLabel("LOGIN");
 		loginTitleLabel.setBounds(149, 60, 160, 40);
 		loginTitleLabel.setFont(new Font("SF Pro Display", Font.BOLD, 48));
 		loginTitleLabel.setForeground(Constants.Colors.PRIMARY);
@@ -76,5 +76,18 @@ public class LoginView extends JPanel {
 	public JFrame getMainFrame() {
 		return mainFrame;
 	}
+
+	public TextFieldPanel getUsernameField() {
+		return usernameField;
+	}
+
+	public PasswordFieldPanel getPasswordField() {
+		return passwordField;
+	}
+
+	public JButton getLoginButton() {
+		return loginButton;
+	}
+
 }
 
