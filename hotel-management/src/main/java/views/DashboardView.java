@@ -1,15 +1,15 @@
 package views;
 
-import shared.ButtonWithResizableIcon;
-import shared.panels.ImagePanel;
 import utils.Constants;
 import utils.RoleManager;
 import utils.UtilFunctions;
+import views.components.ButtonWithResizableIcon;
+import views.components.panels.ImagePanel;
 import views.panels.employees.EmployeeManagementPanel;
 import views.panels.statistics.StatisticsPanel;
+import views.tabbed_panels.ProductManagementTabbed;
 import views.tabbed_panels.RoomManagementTabbed;
 import views.tabbed_panels.ServiceManagementTabbed;
-import views.tabbed_panels.ProductManagementTabbed;
 
 import javax.swing.*;
 import javax.swing.border.Border;

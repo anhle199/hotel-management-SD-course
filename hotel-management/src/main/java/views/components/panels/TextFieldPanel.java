@@ -1,7 +1,7 @@
-package shared.panels;
+package views.components.panels;
 
-import shared.TextFieldPlaceholder;
 import utils.Constants;
+import views.components.TextFieldPlaceholder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,7 @@ public class TextFieldPanel extends JPanel {
 	private ImagePanel icon;
 	private IconPosition position;
 
-	public enum IconPosition { NONE, LEADING, TRAILING };
+	public enum IconPosition { NONE, LEADING, TRAILING }
 
 	public TextFieldPanel(String placeholderText, Dimension size) {
 		super();
@@ -125,6 +125,14 @@ public class TextFieldPanel extends JPanel {
 
 	public JTextField getTextField() {
 		return textField;
+	}
+
+	public String getText() {
+		return textField.getText();
+	}
+
+	public void setText(String text) {
+		textField.setText(text);
 	}
 
 }

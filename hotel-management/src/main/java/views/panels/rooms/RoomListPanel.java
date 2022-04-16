@@ -1,14 +1,14 @@
 package views.panels.rooms;
 
-import shared.ButtonWithResizableIcon;
-import shared.NonEditableTableModel;
-import shared.panels.ImagePanel;
-import shared.panels.ScrollableTablePanel;
-import shared.panels.TextFieldPanel;
-import shared.panels.TextFieldPanel.IconPosition;
 import utils.Constants;
 import utils.RoleManager;
 import utils.UtilFunctions;
+import views.components.ButtonWithResizableIcon;
+import views.components.table_model.NonEditableTableModel;
+import views.components.panels.ImagePanel;
+import views.components.panels.ScrollableTablePanel;
+import views.components.panels.TextFieldPanel;
+import views.components.panels.TextFieldPanel.IconPosition;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

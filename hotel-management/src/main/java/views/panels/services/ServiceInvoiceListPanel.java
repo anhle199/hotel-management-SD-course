@@ -1,8 +1,8 @@
 package views.panels.services;
 
-import shared.NonEditableTableModel;
-import shared.panels.ScrollableTablePanel;
 import utils.UtilFunctions;
+import views.components.table_model.NonEditableTableModel;
+import views.components.panels.ScrollableTablePanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

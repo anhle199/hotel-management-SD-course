@@ -58,4 +58,5 @@ public class SingletonDBConnection {
 			System.out.println("Database connection is closed");
 		}
 	}
+
 }

@@ -2,8 +2,8 @@ package views.tabbed_panels;
 
 import utils.RoleManager;
 import views.panels.products.ImportInvoiceListPanel;
-import views.panels.products.ReceiptListPanel;
 import views.panels.products.ProductListPanel;
+import views.panels.products.ReceiptListPanel;
 
 import javax.swing.*;
 
@@ -15,8 +15,8 @@ public class ProductManagementTabbed extends JTabbedPane {
 	public static final String IMPORT_INVOICE_LIST_PANEL = "Import Invoices";
 
 	// Components
-	private ProductListPanel productListPanel;
-	private ReceiptListPanel receiptListPanel;
+	private final ProductListPanel productListPanel;
+	private final ReceiptListPanel receiptListPanel;
 	private ImportInvoiceListPanel importInvoiceListPanel;
 
 	public ProductManagementTabbed() {

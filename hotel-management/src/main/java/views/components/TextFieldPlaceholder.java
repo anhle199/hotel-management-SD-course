@@ -1,4 +1,4 @@
-package shared;
+package views.components;
 
 import utils.Constants;
 

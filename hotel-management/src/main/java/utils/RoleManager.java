@@ -2,10 +2,10 @@ package utils;
 
 public class RoleManager {
 
-	private Constants.Role role;
+	private RoleEnum role;
 
 	private RoleManager() {
-		this.role = Constants.Role.NONE;
+		this.role = RoleEnum.NONE;
 	}
 
 	private static class BillPughSingleton {
@@ -17,15 +17,34 @@ public class RoleManager {
 	}
 
 	public boolean isManager() {
-		return role == Constants.Role.MANAGER;
+		return role == RoleEnum.MANAGER;
 	}
 
 	public boolean isEmployee() {
-		return role == Constants.Role.EMPLOYEE;
+		return role == RoleEnum.EMPLOYEE;
 	}
 
-	public void setRole(Constants.Role role) {
+	public void setRole(RoleEnum role) {
 		this.role = role;
+	}
+
+	public void setRoleInByteType(byte value) {
+		setRole(RoleEnum.valueOf(value));
+	}
+
+	// NONE means that user not logged into the application.
+	public enum RoleEnum {
+		NONE, MANAGER, EMPLOYEE;
+
+		public static RoleEnum valueOf(byte value) {
+			if (MANAGER.ordinal() == value) {
+				return MANAGER;
+			} else if (EMPLOYEE.ordinal() == value) {
+				return EMPLOYEE;
+			}
+
+			return NONE;
+		}
 	}
 
 }
