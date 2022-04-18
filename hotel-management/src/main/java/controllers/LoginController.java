@@ -1,6 +1,5 @@
-package controllers.login;
+package controllers;
 
-import controllers.ValidationHandler;
 import dao.UserDAO;
 import db.DBConnectionException;
 import db.SingletonDBConnection;
@@ -41,15 +40,16 @@ public class LoginController implements ActionListener {
 	}
 
 	private void loginButtonAction() {
-		final String username = loginView.getUsernameField().getText();
-		final String password = loginView.getPasswordField().getPassword();
+		String username = loginView.getUsernameField().getText();
+		String password = loginView.getPasswordField().getPassword();
 
 		if (!ValidationHandler.validateUsername(username) || !ValidationHandler.validatePassword(password)) {
 			UtilFunctions.showErrorMessage(loginView, "Login", "Invalid username or password");
 		} else {
 			try {
 				// Loads user data from the database.
-				Optional<User> optionalUser = daoModel.getByUsername(username);
+				String encodedPassword = UtilFunctions.hashPassword(password);
+				Optional<User> optionalUser = daoModel.getByUsernameAndEncodedPassword(username, encodedPassword);
 
 				if (optionalUser.isEmpty()) {
 					UtilFunctions.showErrorMessage(loginView, "Login", "This account is not exists.");
@@ -62,7 +62,7 @@ public class LoginController implements ActionListener {
 
 					// Switch to dashboard view for this user.
 					DashboardView dashboardView = new DashboardView(loginView.getMainFrame());
-//					DashboardController dashboardController = new DashboardController(dashboardView, user);
+					DashboardController dashboardController = new DashboardController(dashboardView, loginView, user);
 					dashboardView.display();
 				}
 			} catch (DBConnectionException e) {

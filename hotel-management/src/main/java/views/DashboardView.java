@@ -167,24 +167,6 @@ public class DashboardView extends JPanel {
 		roomManagementTabbed = new RoomManagementTabbed();
 		roomManagementTabbed.setBounds(20, 20, 1078, 807);
 		panel.add(roomManagementTabbed);
-
-		roomManagementButton.addActionListener(event -> {
-			roomManagementTabbed.setVisible(true);
-			serviceManagementTabbed.setVisible(false);
-			productManagementTabbed.setVisible(false);
-
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, true);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, false);
-
-			if (RoleManager.getInstance().isManager()) {
-				employeeManagementPanel.setVisible(false);
-				statisticsPanel.setVisible(false);
-
-				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, false);
-				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, false);
-			}
-		});
 	}
 
 	private void initServiceManagementTabbed(JPanel panel) {
@@ -193,24 +175,6 @@ public class DashboardView extends JPanel {
 		serviceManagementTabbed.setBounds(20, 20, 1078, 807);
 		serviceManagementTabbed.setVisible(false);
 		panel.add(serviceManagementTabbed);
-
-		serviceManagementButton.addActionListener(event -> {
-			roomManagementTabbed.setVisible(false);
-			serviceManagementTabbed.setVisible(true);
-			productManagementTabbed.setVisible(false);
-
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, true);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, false);
-
-			if (RoleManager.getInstance().isManager()) {
-				employeeManagementPanel.setVisible(false);
-				statisticsPanel.setVisible(false);
-
-				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, false);
-				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, false);
-			}
-		});
 	}
 
 	private void initProductManagementPanel(JPanel panel) {
@@ -219,24 +183,6 @@ public class DashboardView extends JPanel {
 		productManagementTabbed.setBounds(20, 20, 1078, 807);
 		productManagementTabbed.setVisible(false);
 		panel.add(productManagementTabbed);
-
-		productManagementButton.addActionListener(event -> {
-			roomManagementTabbed.setVisible(false);
-			serviceManagementTabbed.setVisible(false);
-			productManagementTabbed.setVisible(true);
-
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, true);
-
-			if (RoleManager.getInstance().isManager()) {
-				employeeManagementPanel.setVisible(false);
-				statisticsPanel.setVisible(false);
-
-				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, false);
-				UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, false);
-			}
-		});
 	}
 
 	private void initEmployeeManagementPanel(JPanel panel) {
@@ -246,20 +192,6 @@ public class DashboardView extends JPanel {
 		employeeManagementPanel.setBorder(BorderFactory.createLineBorder(Constants.Colors.TABLE_BORDER_COLOR, 1));
 		employeeManagementPanel.setVisible(false);
 		panel.add(employeeManagementPanel);
-
-		employeeManagementButton.addActionListener(event -> {
-			roomManagementTabbed.setVisible(false);
-			serviceManagementTabbed.setVisible(false);
-			productManagementTabbed.setVisible(false);
-			employeeManagementPanel.setVisible(true);
-			statisticsPanel.setVisible(false);
-
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, true);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, false);
-		});
 	}
 
 	private void initStatisticsPanel(JPanel panel) {
@@ -268,20 +200,6 @@ public class DashboardView extends JPanel {
 		statisticsPanel.setBorder(BorderFactory.createLineBorder(Constants.Colors.GRAY, 1));
 		statisticsPanel.setVisible(false);
 		panel.add(statisticsPanel);
-
-		statisticsButton.addActionListener(event -> {
-			roomManagementTabbed.setVisible(false);
-			serviceManagementTabbed.setVisible(false);
-			productManagementTabbed.setVisible(false);
-			employeeManagementPanel.setVisible(false);
-			statisticsPanel.setVisible(true);
-
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(roomManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(serviceManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(productManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(employeeManagementButton, false);
-			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(statisticsButton, true);
-		});
 	}
 
 	public void display() {
@@ -296,4 +214,51 @@ public class DashboardView extends JPanel {
 		return mainFrame;
 	}
 
+	public JLabel getUsernameLabel() {
+		return usernameLabel;
+	}
+
+	public ButtonWithResizableIcon getRoomManagementButton() {
+		return roomManagementButton;
+	}
+
+	public ButtonWithResizableIcon getServiceManagementButton() {
+		return serviceManagementButton;
+	}
+
+	public ButtonWithResizableIcon getProductManagementButton() {
+		return productManagementButton;
+	}
+
+	public ButtonWithResizableIcon getEmployeeManagementButton() {
+		return employeeManagementButton;
+	}
+
+	public ButtonWithResizableIcon getStatisticsButton() {
+		return statisticsButton;
+	}
+
+	public ButtonWithResizableIcon getLogoutButton() {
+		return logoutButton;
+	}
+
+	public RoomManagementTabbed getRoomManagementTabbed() {
+		return roomManagementTabbed;
+	}
+
+	public ServiceManagementTabbed getServiceManagementTabbed() {
+		return serviceManagementTabbed;
+	}
+
+	public ProductManagementTabbed getProductManagementTabbed() {
+		return productManagementTabbed;
+	}
+
+	public EmployeeManagementPanel getEmployeeManagementPanel() {
+		return employeeManagementPanel;
+	}
+
+	public StatisticsPanel getStatisticsPanel() {
+		return statisticsPanel;
+	}
 }

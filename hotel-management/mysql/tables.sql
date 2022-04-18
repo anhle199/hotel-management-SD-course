@@ -237,7 +237,7 @@ references `hotel_management`.`room`(`id`);
 
 
 -- Table: service
--- service(sevice_type_id) ==> service_type(id)
+-- service(service_type_id) ==> service_type(id)
 alter table `hotel_management`.`service`
 add constraint FK_service_service_type
 foreign key (`service_type_id`)
@@ -245,7 +245,7 @@ references `hotel_management`.`service_type`(`id`);
 
 
 -- Table: service_invoice
--- service_invoice(sevice_type_id) ==> service_type(id)
+-- service_invoice(service_type_id) ==> service_type(id)
 alter table `hotel_management`.`service_invoice`
 add constraint FK_service_invoice_service_type
 foreign key (`service_type_id`)

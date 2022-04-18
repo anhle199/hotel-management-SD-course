@@ -23,7 +23,12 @@ public class User {
 		this.yearOfBirth = yearOfBirth;
 	}
 
+	public String getFullName() {
+		return fullName;
+	}
+
 	public byte getRole() {
 		return role;
 	}
+
 }

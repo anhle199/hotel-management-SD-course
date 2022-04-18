@@ -24,7 +24,10 @@ public class UserDAO implements DAO<User, Integer> {
 		return Optional.empty();
 	}
 
-	public Optional<User> getByUsername(String username) throws DBConnectionException {
+	public Optional<User> getByUsernameAndEncodedPassword(
+			String username,
+			String encodedPassword
+	) throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
 		if (connection == null)
@@ -34,10 +37,11 @@ public class UserDAO implements DAO<User, Integer> {
 		PreparedStatement preparedStatement = null;
 
 		try {
-			String sqlStatement = "select * from `hotel_management`.`user` where `username` = ?;";
+			String sqlStatement = "select * from `hotel_management`.`user` where `username` = ? and `password` = ?;";
 			preparedStatement = connection.prepareStatement(sqlStatement);
 
 			preparedStatement.setString(1, username);
+			preparedStatement.setString(2, encodedPassword);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next()) {
@@ -46,22 +50,22 @@ public class UserDAO implements DAO<User, Integer> {
 						resultSet.getString("username"),
 						resultSet.getString("password"),
 						resultSet.getByte("role"),
-						resultSet.getString("fullName"),
+						resultSet.getString("full_name"),
 						resultSet.getByte("gender"),
-						resultSet.getShort("yearOfBirth")
+						resultSet.getShort("year_of_birth")
 				));
 			}
 		} catch (SQLException e) {
-			System.out.println("UserDAO.java - getByUsername - catch - " + e.getMessage());
-			System.out.println("UserDAO.java - getByUsername - catch - " + Arrays.toString(e.getStackTrace()));
+			System.out.println("UserDAO.java - getByUsernameAndEncodedPassword - catch - " + e.getMessage());
+			System.out.println("UserDAO.java - getByUsernameAndEncodedPassword - catch - " + Arrays.toString(e.getStackTrace()));
 			throw DBConnectionException.INSTANCE;
 		} finally {
 			try {
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} catch (SQLException e) {
-				System.out.println("UserDAO.java - getByUsername - catch finally - " + e.getMessage());
-				System.out.println("UserDAO.java - getByUsername - catch finally - " + Arrays.toString(e.getStackTrace()));
+				System.out.println("UserDAO.java - getByUsernameAndEncodedPassword - finally/catch - " + e.getMessage());
+				System.out.println("UserDAO.java - getByUsernameAndEncodedPassword - finally/catch - " + Arrays.toString(e.getStackTrace()));
 			}
 		}
 
@@ -69,7 +73,7 @@ public class UserDAO implements DAO<User, Integer> {
 	}
 
 	@Override
-	public void create(User entity) throws DBConnectionException {
+	public void insert(User entity) throws DBConnectionException {
 
 	}
 
@@ -79,7 +83,7 @@ public class UserDAO implements DAO<User, Integer> {
 	}
 
 	@Override
-	public void delete(User entity) throws DBConnectionException {
+	public void delete(Integer id) throws DBConnectionException {
 
 	}
 

@@ -1,5 +1,7 @@
 package utils;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
@@ -60,6 +62,26 @@ public class UtilFunctions {
 
 	public static void showErrorMessage(Component component, String title, String message) {
 		JOptionPane.showMessageDialog(component, message, title, JOptionPane.ERROR_MESSAGE);
+	}
+
+	public static void showWarningMessage(Component component, String title, String message) {
+		JOptionPane.showMessageDialog(component, message, title, JOptionPane.WARNING_MESSAGE);
+	}
+
+	public static void showInfoMessage(Component component, String title, String message) {
+		JOptionPane.showMessageDialog(component, message, title, JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public static String hashPassword(String password) {
+		return DigestUtils.sha256Hex(password);
+	}
+
+	public static String capitalizeFirstLetterInString(String str) {
+		return Character.toUpperCase(str.charAt(0)) + str.substring(1).toLowerCase();
+	}
+
+	public static String removeRedundantWhiteSpace(String str) {
+		return str.trim().replaceAll("\\s{2,}", " ");
 	}
 
 }
