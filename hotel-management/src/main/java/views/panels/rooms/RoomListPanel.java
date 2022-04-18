@@ -18,10 +18,11 @@ public class RoomListPanel extends JPanel {
 
 	// Top Bar.
 	private TextFieldPanel searchBar;
-	private JButton filterButton;
+	private JButton searchButton;
 	private JButton addButton;
 	private JButton removeButton;
 	private ButtonWithResizableIcon moreButton;
+	private JMenuItem updateRulesMenuItem;
 
 	// Filter Bar.
 	private JPanel filterBarPanel;
@@ -40,18 +41,6 @@ public class RoomListPanel extends JPanel {
 		initTopBarPanel();
 		initFilterBarPanel();
 		initTable();
-
-		// Action for filter button.
-		filterButton.addActionListener(event -> {
-			boolean isShowingFilterBar = filterBarPanel.isVisible();
-			int yTable = isShowingFilterBar ? 80 : 140;
-			int heightTable = isShowingFilterBar ? 682 : 622;
-			String filterButtonTitle = isShowingFilterBar ? "Show Filter" : "Hide Filter";
-
-			scrollableTable.setBounds(20, yTable, 1038, heightTable);
-			filterButton.setText(filterButtonTitle);
-			filterBarPanel.setVisible(!isShowingFilterBar);
-		});
 	}
 
 	private void initTopBarPanel() {
@@ -63,28 +52,26 @@ public class RoomListPanel extends JPanel {
 
 		// Search Bar.
 		ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH_BLACK, 24, 24);
-		Dimension searchBarSize = new Dimension(500, 40);
+		Dimension searchBarSize = new Dimension(400, 40);
 		searchBar = new TextFieldPanel("Search", searchIcon, IconPosition.LEADING, searchBarSize);
 		searchBar.setBounds(0, 0, searchBarSize.width, searchBarSize.height);
 		topBarPanel.add(searchBar);
 
+		searchButton = new JButton("Search");
+		searchButton.setBounds(412, 0, 115, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(searchButton);
+		topBarPanel.add(searchButton);
+
 		// Top Bar Buttons Panel.
 		JPanel topBarButtonsPanel = new JPanel();
-		topBarButtonsPanel.setBounds(617, 0, 426, 40);
+		topBarButtonsPanel.setBounds(764, 0, 274, 40);
 		topBarButtonsPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
 		topBarPanel.add(topBarButtonsPanel);
-
-		// Filter Button.
-		filterButton = new JButton("Show Filter");
-		filterButton.setPreferredSize(new Dimension(140, 40));
-		UtilFunctions.configureTopBarButtonOnMainThread(filterButton);
-		topBarButtonsPanel.add(filterButton);
 
 		// Add Button.
 		addButton = new JButton("Add");
 		addButton.setPreferredSize(new Dimension(85, 40));
 		UtilFunctions.configureTopBarButtonOnMainThread(addButton);
-		topBarButtonsPanel.add(Box.createHorizontalStrut(12));
 		topBarButtonsPanel.add(addButton);
 
 		// Remove Button.
@@ -105,7 +92,40 @@ public class RoomListPanel extends JPanel {
 			UtilFunctions.configureTopBarButtonOnMainThread(moreButton);
 			topBarButtonsPanel.add(Box.createHorizontalStrut(12));
 			topBarButtonsPanel.add(moreButton);
+
+			initMoreButtonMenu();
 		}
+	}
+
+	private void initMoreButtonMenu() {
+		JPopupMenu moreButtonMenu = new JPopupMenu();
+
+		// Filter Menu Item.
+		JMenuItem filterMenuItem = new JMenuItem("Show Filter");
+		filterMenuItem.addActionListener((event) -> {
+			boolean isShowingFilterBar = filterBarPanel.isVisible();
+			int yTable = isShowingFilterBar ? 80 : 140;
+			int heightTable = isShowingFilterBar ? 682 : 622;
+			String filterMenuItemTitle = isShowingFilterBar ? "Show Filter" : "Hide Filter";
+
+			JMenuItem menuItem = (JMenuItem) event.getSource();
+			menuItem.setText(filterMenuItemTitle);
+
+			scrollableTable.setBounds(20, yTable, 1038, heightTable);
+			filterBarPanel.setVisible(!isShowingFilterBar);
+		});
+		moreButtonMenu.add(filterMenuItem);
+
+		// Update Rules Menu Item.
+		updateRulesMenuItem = new JMenuItem("Update Rules");
+		moreButtonMenu.add(updateRulesMenuItem);
+
+		// Add an action listener for More button to show menu popup.
+		moreButton.addActionListener((event) -> {
+			Point location = moreButton.getLocationOnScreen();
+			moreButtonMenu.show(this, 0, 0);
+			moreButtonMenu.setLocation(location.x, location.y + moreButton.getHeight());
+		});
 	}
 
 	private void initFilterBarPanel() {
@@ -162,10 +182,11 @@ public class RoomListPanel extends JPanel {
 	}
 
 	private void initTable() {
-		final String[] columnNames = {"", "Room name", "Room type", "Price", "Status"};
-		final int [] columnWidths = {40, 450, 200, 130, 199};
+		final String[] columnNames = {"", "id", "Room name", "Room type", "Price", "Status"};
+		final int[] columnWidths = {40, 0, 450, 200, 130, 198};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
@@ -193,11 +214,35 @@ public class RoomListPanel extends JPanel {
 		scrollableTable.setBounds(20, 80, 1038, 682);
 
 		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Room name", "Room type", "Price", "Status"});
-		model.addRow(new Object[]{2, "Room name", "Room type", "Price", "Status"});
-		model.addRow(new Object[]{3, "Room name", "Room type", "Price", "Status"});
-		model.addRow(new Object[]{4, "Room name", "Room type", "Price", "Status"});
-		model.addRow(new Object[]{5, "Room name", "Room type", "Price", "Status"});
+		model.addRow(new Object[]{1, 1, "Room name", "Room type", "Price", "Status"});
+		model.addRow(new Object[]{2, 2, "Room name", "Room type", "Price", "Status"});
+		model.addRow(new Object[]{3, 3, "Room name", "Room type", "Price", "Status"});
+		model.addRow(new Object[]{4, 4, "Room name", "Room type", "Price", "Status"});
+		model.addRow(new Object[]{5, 5, "Room name", "Room type", "Price", "Status"});
+	}
+
+	public TextFieldPanel getSearchBar() {
+		return searchBar;
+	}
+
+	public JButton getSearchButton() {
+		return searchButton;
+	}
+
+	public JButton getAddButton() {
+		return addButton;
+	}
+
+	public JButton getRemoveButton() {
+		return removeButton;
+	}
+
+	public JMenuItem getUpdateRulesMenuItem() {
+		return updateRulesMenuItem;
+	}
+
+	public ScrollableTablePanel getScrollableTable() {
+		return scrollableTable;
 	}
 
 }

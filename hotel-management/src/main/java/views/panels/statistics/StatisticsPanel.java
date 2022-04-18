@@ -192,6 +192,7 @@ public class StatisticsPanel extends JPanel {
 				}
 
 				setValues(values, rowKeys, columnKeys);
+				break;
 			}
 			case "Statistics of room occupancy rate (top 5 rooms) in month": {
 				ArrayList<String> rowKeys = new ArrayList<>(
@@ -204,6 +205,7 @@ public class StatisticsPanel extends JPanel {
 				}
 
 				setValues(values, rowKeys, columnKeys);
+				break;
 			}
 			case "Statistics of revenue of purchased products (top 5 products) in month":
 			case "Statistics of costs of imported products (top 5 products) in month": {
@@ -218,6 +220,7 @@ public class StatisticsPanel extends JPanel {
 				}
 
 				setValues(values, rowKeys, columnKeys);
+				break;
 			}
 		}
 	}

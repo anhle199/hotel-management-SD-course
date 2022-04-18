@@ -1,4 +1,4 @@
-import controllers.login.LoginController;
+import controllers.LoginController;
 import db.SingletonDBConnection;
 import utils.RoleManager;
 import views.LoginView;
@@ -15,8 +15,8 @@ public class MainFrame {
 		try {
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		} catch(Exception exception) {
-			System.out.println("MainFrame.java - catch setLookAndFeel - " + exception.getMessage());
-			System.out.println("MainFrame.java - catch setLookAndFeel - " + Arrays.toString(exception.getStackTrace()));
+			System.out.println("MainFrame.java - main/setLookAndFeel - catch - " + exception.getMessage());
+			System.out.println("MainFrame.java - main/setLookAndFeel - catch - " + Arrays.toString(exception.getStackTrace()));
 		}
 
 		SwingUtilities.invokeLater(() -> {
@@ -27,12 +27,12 @@ public class MainFrame {
 				@Override
 				public void windowClosing(WindowEvent e) {
 					try {
-						System.out.println("MainFrame.java - windowClosing - try - The HotelManagement app is closing");
+						System.out.println("MainFrame.java - main/windowClosing - try - The HotelManagement app is closing");
 						SingletonDBConnection.getInstance().closeConnection();
-						System.out.println("MainFrame.java - windowClosing - try - The HotelManagement app is closed");
+						System.out.println("MainFrame.java - main/windowClosing - try - The HotelManagement app is closed");
 					} catch (SQLException sqlException) {
-						System.out.println("MainFrame.java - windowClosing - catch - " + sqlException.getMessage());
-						System.out.println("MainFrame.java - windowClosing - catch - " + Arrays.toString(sqlException.getStackTrace()));
+						System.out.println("MainFrame.java - main/windowClosing - catch - " + sqlException.getMessage());
+						System.out.println("MainFrame.java - main/windowClosing - catch - " + Arrays.toString(sqlException.getStackTrace()));
 					}
 				}
 			});
