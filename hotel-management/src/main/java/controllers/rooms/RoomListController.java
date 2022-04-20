@@ -7,7 +7,6 @@ import models.Room;
 import models.RoomType;
 import utils.Constants;
 import utils.Pair;
-import utils.RoleManager;
 import utils.UtilFunctions;
 import views.components.dialogs.ConnectionErrorDialog;
 import views.components.panels.ScrollableTablePanel;
