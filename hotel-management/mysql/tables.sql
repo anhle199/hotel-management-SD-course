@@ -93,24 +93,12 @@ default collate = utf8mb4_bin;
 -- Table: service
 create table if not exists `hotel_management`.`service` (
     `id` INT not null auto_increment,
+    `name` nvarchar(60) not null,
     `description` text not null,
+    `price` int not null,
     `notes` text not null,
-    `service_type_id` int,
 
     constraint PK_service primary key (`id`)
-)
-engine = InnoDB
-default character set = utf8mb4
-default collate = utf8mb4_bin;
-
-
--- Table: service_type
-create table if not exists `hotel_management`.`service_type` (
-    `id` INT not null auto_increment,
-    `name` nvarchar(60) not null,
-    `price` int not null,
-
-    constraint PK_service_type primary key (`id`)
 )
 engine = InnoDB
 default character set = utf8mb4
@@ -126,7 +114,7 @@ create table if not exists `hotel_management`.`service_invoice` (
     `notes` text not null,
     `room_id` int,
     `room_name` nvarchar(50),
-    `service_type_id` int not null,
+    `service_id` int not null,
 
     constraint PK_service_invoice primary key (`id`)
 )
@@ -168,6 +156,7 @@ default collate = utf8mb4_bin;
 -- Table: receipt
 create table if not exists `hotel_management`.`receipt` (
     `id` int not null auto_increment,
+    `customer_name` nvarchar(50) not null,
     `purchased_date` timestamp default current_timestamp,
     `notes` text not null,
     `total_price` int not null,
@@ -196,6 +185,7 @@ default collate = utf8mb4_bin;
 -- Table: import_invoice
 create table if not exists `hotel_management`.`import_invoice` (
     `id` int not null auto_increment,
+    `customer_name` nvarchar(50) not null,
     `imported_date` timestamp default current_timestamp,
     `notes` text not null,
     `total_price` int not null,
@@ -236,20 +226,12 @@ foreign key (`room_id`)
 references `hotel_management`.`room`(`id`);
 
 
--- Table: service
--- service(service_type_id) ==> service_type(id)
-alter table `hotel_management`.`service`
-add constraint FK_service_service_type
-foreign key (`service_type_id`)
-references `hotel_management`.`service_type`(`id`);
-
-
 -- Table: service_invoice
--- service_invoice(service_type_id) ==> service_type(id)
+-- service_invoice(service_id) ==> service(id)
 alter table `hotel_management`.`service_invoice`
 add constraint FK_service_invoice_service_type
-foreign key (`service_type_id`)
-references `hotel_management`.`service_type`(`id`);
+foreign key (`service_id`)
+references `hotel_management`.`service`(`id`);
 
 
 -- Table: service_invoice

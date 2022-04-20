@@ -3,7 +3,11 @@ package utils;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 
 public class UtilFunctions {
@@ -16,6 +20,26 @@ public class UtilFunctions {
 			result += item;
 
 		return result;
+	}
+
+	public static void configureDialogTextFieldOnMainThread(JTextComponent textComponent) {
+		SwingUtilities.invokeLater(() -> {
+			textComponent.setBorder(BorderFactory.createLineBorder(Constants.Colors.LIGHT_GRAY, 1));
+			textComponent.setFont(Constants.Fonts.BODY);
+			textComponent.setForeground(Constants.Colors.BLACK);
+			textComponent.setBackground(Constants.Colors.WHITE);
+		});
+	}
+
+	public static void configureBorderedButtonOnMainThread(JButton button) {
+		SwingUtilities.invokeLater(() -> {
+			button.setFocusPainted(false);
+			button.setRolloverEnabled(false);
+			button.setBorder(BorderFactory.createLineBorder(Constants.Colors.SECONDARY, 1));
+			button.setFont(Constants.Fonts.BODY);
+			button.setForeground(Constants.Colors.SECONDARY);
+			button.setBackground(Constants.Colors.WHITE);
+		});
 	}
 
 	public static void configureTopBarButtonOnMainThread(JButton button) {
@@ -52,6 +76,26 @@ public class UtilFunctions {
 			} else {
 				button.setBackground(Constants.Colors.TERTIARY_90);
 				button.setForeground(Constants.Colors.LIGHT_GRAY);
+			}
+		});
+	}
+
+	public static void addHoverEffectsForBorderedButton(JButton button) {
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				button.setBorderPainted(false);
+				button.setBackground(Constants.Colors.SECONDARY);
+				button.setForeground(Constants.Colors.WHITE);
+				button.setFont(Constants.Fonts.HEADLINE);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				button.setBorderPainted(true);
+				button.setBackground(Constants.Colors.WHITE);
+				button.setForeground(Constants.Colors.SECONDARY);
+				button.setFont(Constants.Fonts.BODY);
 			}
 		});
 	}
