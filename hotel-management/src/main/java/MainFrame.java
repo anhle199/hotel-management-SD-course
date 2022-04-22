@@ -2,6 +2,8 @@ import controllers.LoginController;
 import db.SingletonDBConnection;
 import utils.RoleManager;
 import views.LoginView;
+import views.dialogs.*;
+import views.panels.rooms.RentalInvoiceListPanel;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -38,12 +40,20 @@ public class MainFrame {
 			});
 
 			// Not sign in
-			RoleManager.getInstance().setRole(RoleManager.RoleEnum.NONE);
+//			RoleManager.getInstance().setRole(RoleManager.RoleEnum.NONE);
+//
+//			LoginView loginView = new LoginView(mainFrame);
+//			LoginController loginController = new LoginController(loginView);
 
-			LoginView loginView = new LoginView(mainFrame);
-			LoginController loginController = new LoginController(loginView);
+//			loginView.display();
 
-			loginView.display();
+//			// Testing dialogs
+			RoomDetailDialog roomDetailDialog = new RoomDetailDialog(mainFrame);
+			RentalInvoiceDetailDialog rentalInvoiceDetailDialog = new RentalInvoiceDetailDialog(mainFrame);
+			ServiceDetailDialog serviceDetailDialog = new ServiceDetailDialog(mainFrame);
+			ProductDetailDialog productDetailDialog = new ProductDetailDialog(mainFrame);
+			ServiceInvoiceDetailDialog serviceInvoiceDetailDialog = new ServiceInvoiceDetailDialog(mainFrame);
+			AddEmployeeDialog addEmployeeDialog = new AddEmployeeDialog(mainFrame);
 		});
 	}
 

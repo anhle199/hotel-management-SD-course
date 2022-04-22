@@ -8,22 +8,23 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
 
-public class RoomDetailDialog extends JDialog {
+public class ProductDetailDialog extends JDialog {
 
 	// Components for basic information panel.
-	private JTextField roomNameTextField;
-	private JComboBox<String> roomTypeComboBox;
+	private JTextField productNameTextField;
+	private JComboBox<String> productTypeComboBox;
 	private JFormattedTextField priceTextField;
+	private JTextField quantityTextField;
 	private JTextArea noteTextArea;
 	private JButton editButton;
 	private JButton closeButton;
 
-	public RoomDetailDialog(JFrame frame) {
-		super(frame, "Room Detail", true);
+	public ProductDetailDialog(JFrame frame) {
+		super(frame, "Product Detail", true);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setPreferredSize(new Dimension(450, 356));
+		panel.setPreferredSize(new Dimension(460, 408));
 		initSubviews(panel);
 
 		setResizable(false);
@@ -35,38 +36,38 @@ public class RoomDetailDialog extends JDialog {
 
 	private void initSubviews(JPanel panel) {
 		// Sizes and coordinates
-		Dimension labelSize = new Dimension(75, 40);
-		Dimension textFieldSize = new Dimension(315, 40);
+		Dimension labelSize = new Dimension(80, 40);
+		Dimension textFieldSize = new Dimension(320, 40);
 		int padding = 20;
 		int spacingTextFields = 12;
 		int xTextField = padding * 2 + labelSize.width;
 
-		// Room Name Label.
-		JLabel roomNameLabel = new JLabel("Room name");
-		roomNameLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
-		panel.add(roomNameLabel);
+		// Product Name Label.
+		JLabel productNameLabel = new JLabel("Product name");
+		productNameLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
+		panel.add(productNameLabel);
 
-		// Room Name Text Field.
-		roomNameTextField = new JTextField();
-		roomNameTextField.setBounds(xTextField, roomNameLabel.getY(), textFieldSize.width, textFieldSize.height);
-		UtilFunctions.configureDialogTextFieldOnMainThread(roomNameTextField);
-		roomNameTextField.setEnabled(false);
-		panel.add(roomNameTextField);
+		// Product Name Text Field.
+		productNameTextField = new JTextField();
+		productNameTextField.setBounds(xTextField, productNameLabel.getY(), textFieldSize.width, textFieldSize.height);
+		UtilFunctions.configureDialogTextFieldOnMainThread(productNameTextField);
+		productNameTextField.setEnabled(false);
+		panel.add(productNameTextField);
 
-		// Room Type Label.
-		JLabel roomTypeLabel = new JLabel("Room type");
-		roomTypeLabel.setBounds(padding, roomNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
-		panel.add(roomTypeLabel);
+		// Product Type Label.
+		JLabel productTypeLabel = new JLabel("Product type");
+		productTypeLabel.setBounds(padding, productNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		panel.add(productTypeLabel);
 
-		// Room Type Combo Box.
-		roomTypeComboBox = new JComboBox<>(Constants.ROOM_TYPES);
-		roomTypeComboBox.setBounds(xTextField, roomTypeLabel.getY(), textFieldSize.width, textFieldSize.height);
-		roomTypeComboBox.setEnabled(false);
-		panel.add(roomTypeComboBox);
+		// Product Type Combo Box.
+		productTypeComboBox = new JComboBox<>(Constants.PRODUCT_TYPES);
+		productTypeComboBox.setBounds(xTextField, productTypeLabel.getY(), textFieldSize.width, textFieldSize.height);
+		productTypeComboBox.setEnabled(false);
+		panel.add(productTypeComboBox);
 
 		// Price Label.
 		JLabel priceLabel = new JLabel("Price ($)");
-		priceLabel.setBounds(padding, roomTypeLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		priceLabel.setBounds(padding, productTypeLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(priceLabel);
 
 		// Number formatter without grouping separator
@@ -89,9 +90,21 @@ public class RoomDetailDialog extends JDialog {
 		UtilFunctions.configureDialogTextFieldOnMainThread(priceTextField);
 		panel.add(priceTextField);
 
+		// Quantity Label.
+		JLabel quantityLabel = new JLabel("Quantity");
+		quantityLabel.setBounds(padding, priceLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		panel.add(quantityLabel);
+
+		// Quantity Text Field.
+		quantityTextField = new JTextField();
+		quantityTextField.setBounds(xTextField, quantityLabel.getY(), textFieldSize.width, textFieldSize.height);
+		UtilFunctions.configureDialogTextFieldOnMainThread(quantityTextField);
+		quantityTextField.setEnabled(false);
+		panel.add(quantityTextField);
+
 		// Note Label.
 		JLabel noteLabel = new JLabel("Notes");
-		noteLabel.setBounds(padding, priceLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		noteLabel.setBounds(padding, quantityLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(noteLabel);
 
 		// Note Text Field.

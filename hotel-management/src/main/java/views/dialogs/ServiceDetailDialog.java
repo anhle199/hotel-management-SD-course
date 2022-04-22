@@ -8,22 +8,22 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
 
-public class RoomDetailDialog extends JDialog {
+public class ServiceDetailDialog extends JDialog {
 
 	// Components for basic information panel.
-	private JTextField roomNameTextField;
-	private JComboBox<String> roomTypeComboBox;
+	private JTextField serviceNameTextField;
+	private JTextField descriptionTextField;
 	private JFormattedTextField priceTextField;
 	private JTextArea noteTextArea;
 	private JButton editButton;
 	private JButton closeButton;
 
-	public RoomDetailDialog(JFrame frame) {
-		super(frame, "Room Detail", true);
+	public ServiceDetailDialog(JFrame frame) {
+		super(frame, "Service Detail", true);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setPreferredSize(new Dimension(450, 356));
+		panel.setPreferredSize(new Dimension(460, 356));
 		initSubviews(panel);
 
 		setResizable(false);
@@ -35,38 +35,39 @@ public class RoomDetailDialog extends JDialog {
 
 	private void initSubviews(JPanel panel) {
 		// Sizes and coordinates
-		Dimension labelSize = new Dimension(75, 40);
-		Dimension textFieldSize = new Dimension(315, 40);
+		Dimension labelSize = new Dimension(80, 40);
+		Dimension textFieldSize = new Dimension(320, 40);
 		int padding = 20;
 		int spacingTextFields = 12;
 		int xTextField = padding * 2 + labelSize.width;
 
-		// Room Name Label.
-		JLabel roomNameLabel = new JLabel("Room name");
-		roomNameLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
-		panel.add(roomNameLabel);
+		// Service Name Label.
+		JLabel serviceNameLabel = new JLabel("Service name");
+		serviceNameLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
+		panel.add(serviceNameLabel);
 
-		// Room Name Text Field.
-		roomNameTextField = new JTextField();
-		roomNameTextField.setBounds(xTextField, roomNameLabel.getY(), textFieldSize.width, textFieldSize.height);
-		UtilFunctions.configureDialogTextFieldOnMainThread(roomNameTextField);
-		roomNameTextField.setEnabled(false);
-		panel.add(roomNameTextField);
+		// Service Name Text Field.
+		serviceNameTextField = new JTextField();
+		serviceNameTextField.setBounds(xTextField, serviceNameLabel.getY(), textFieldSize.width, textFieldSize.height);
+		UtilFunctions.configureDialogTextFieldOnMainThread(serviceNameTextField);
+		serviceNameTextField.setEnabled(false);
+		panel.add(serviceNameTextField);
 
-		// Room Type Label.
-		JLabel roomTypeLabel = new JLabel("Room type");
-		roomTypeLabel.setBounds(padding, roomNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
-		panel.add(roomTypeLabel);
+		// Description Label.
+		JLabel descriptionLabel = new JLabel("Description");
+		descriptionLabel.setBounds(padding, serviceNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		panel.add(descriptionLabel);
 
-		// Room Type Combo Box.
-		roomTypeComboBox = new JComboBox<>(Constants.ROOM_TYPES);
-		roomTypeComboBox.setBounds(xTextField, roomTypeLabel.getY(), textFieldSize.width, textFieldSize.height);
-		roomTypeComboBox.setEnabled(false);
-		panel.add(roomTypeComboBox);
+		// Description Text Field.
+		descriptionTextField = new JTextField();
+		descriptionTextField.setBounds(xTextField, descriptionLabel.getY(), textFieldSize.width, textFieldSize.height);
+		UtilFunctions.configureDialogTextFieldOnMainThread(descriptionTextField);
+		descriptionTextField.setEnabled(false);
+		panel.add(descriptionTextField);
 
 		// Price Label.
 		JLabel priceLabel = new JLabel("Price ($)");
-		priceLabel.setBounds(padding, roomTypeLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		priceLabel.setBounds(padding, descriptionLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(priceLabel);
 
 		// Number formatter without grouping separator
