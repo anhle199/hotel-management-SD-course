@@ -67,6 +67,12 @@ public class Constants {
 
 	public static final String[] ROOM_TYPES = {"Affordable", "Normal", "Luxury"};
 
+	public static final String[] CUSTOMER_TYPES = {"Domestic", "Foreign"};
+
+	public static final String[] PRODUCT_TYPES = {"Food", "Drink", "Souvenir"};
+
+	public static final String[] GENDERS = {"Male", "Female"};
+
 	public static final int MIN_PRICE = 0;
 	public static final int MAX_PRICE = 10000;
 
