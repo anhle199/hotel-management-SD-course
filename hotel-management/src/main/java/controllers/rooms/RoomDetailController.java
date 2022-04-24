@@ -65,6 +65,13 @@ public class RoomDetailController implements ActionListener, ItemListener {
 
 	public void displayUI() {
 		loadRoomTypesAndUpdateUI();
+
+		if (room != null) {
+			roomDetailDialog.getRoomNameTextField().setText(room.getName());
+			roomDetailDialog.getNoteTextArea().setText(room.getDescription());
+		}
+
+		roomDetailDialog.setVisible(true);
 	}
 
 	private void loadRoomTypesAndUpdateUI() {
@@ -142,6 +149,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 		connectionErrorDialog.setVisible(false);
 
 		SingletonDBConnection.getInstance().connect();
+		displayUI();
 	}
 
 	private void editButtonAction() {
@@ -151,13 +159,13 @@ public class RoomDetailController implements ActionListener, ItemListener {
 	private void saveButtonAction() {
 		try {
 			RoomDAO daoModel = new RoomDAO();
-			String roomName = UtilFunctions.removeRedundantWhiteSpace(
-					roomDetailDialog.getRoomNameTextField().getText()
-			);
+			Room newRoom = getRoomInstanceFromInputFields();
 
-			if (roomName.isEmpty()) {
-				UtilFunctions.showErrorMessage(roomDetailDialog, "Create Room", "Room name must not be empty.");
-			} else if (daoModel.isExistingRoomName(roomName)) {
+			if (room.equals(newRoom)) {
+				UtilFunctions.showInfoMessage(roomDetailDialog, "Edit Room", "Information does not change.");
+			} else if (newRoom.getName().isEmpty()) {
+				UtilFunctions.showErrorMessage(roomDetailDialog, "Edit Room", "Room name must not be empty.");
+			} else if (daoModel.isExistingRoomName(newRoom.getName())) {
 				UtilFunctions.showErrorMessage(roomDetailDialog, "Edit Room", "This room is existing.");
 			} else {
 				int option = UtilFunctions.showConfirmDialog(
@@ -167,22 +175,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 				);
 
 				if (option == JOptionPane.YES_OPTION) {
-					// Description and status
-					String description = UtilFunctions.removeRedundantWhiteSpace(
-							roomDetailDialog.getNoteTextArea().getText()
-					);
-					byte status = (byte) Room.RoomStatusEnum.AVAILABLE.ordinal();
-
-					// Get room type id
-					int roomTypeId;
-					if (roomTypeList.isEmpty()) {
-						roomTypeId = -1;
-					} else {
-						String roomTypeName = String.valueOf(roomDetailDialog.getRoomTypeComboBox().getSelectedItem());
-						roomTypeId = roomTypeList.get(findRoomTypeIndexByRoomName(roomTypeName)).getId();
-					}
-
-					daoModel.update(new Room(room.getId(), roomName, description, status, roomTypeId));
+					daoModel.update(room);
 					UtilFunctions.showInfoMessage(roomDetailDialog, "Edit Room", "Save successfully.");
 				}
 			}
@@ -195,13 +188,11 @@ public class RoomDetailController implements ActionListener, ItemListener {
 	private void createButtonAction() {
 		try {
 			RoomDAO daoModel = new RoomDAO();
-			String roomName = UtilFunctions.removeRedundantWhiteSpace(
-					roomDetailDialog.getRoomNameTextField().getText()
-			);
+			Room newRoom = getRoomInstanceFromInputFields();
 
-			if (roomName.isEmpty()) {
+			if (newRoom.getName().isEmpty()) {
 				UtilFunctions.showErrorMessage(roomDetailDialog, "Create Room", "Room name must not be empty.");
-			} else if (daoModel.isExistingRoomName(roomName)) {
+			} else if (daoModel.isExistingRoomName(newRoom.getName())) {
 				UtilFunctions.showErrorMessage(roomDetailDialog, "Create Room", "This room is existing.");
 			} else {
 				int option = UtilFunctions.showConfirmDialog(
@@ -211,22 +202,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 				);
 
 				if (option == JOptionPane.YES_OPTION) {
-					// Description and status
-					String description = UtilFunctions.removeRedundantWhiteSpace(
-							roomDetailDialog.getNoteTextArea().getText()
-					);
-					byte status = (byte) Room.RoomStatusEnum.AVAILABLE.ordinal();
-
-					// Get room type id
-					int roomTypeId;
-					if (roomTypeList.isEmpty()) {
-						roomTypeId = -1;
-					} else {
-						String roomTypeName = String.valueOf(roomDetailDialog.getRoomTypeComboBox().getSelectedItem());
-						roomTypeId = roomTypeList.get(findRoomTypeIndexByRoomName(roomTypeName)).getId();
-					}
-
-					daoModel.insert(new Room(-1, roomName, description, status, roomTypeId));
+					daoModel.insert(newRoom);
 					UtilFunctions.showInfoMessage(roomDetailDialog, "Create Room", "Create successfully.");
 
 					roomDetailDialog.setVisible(false);
@@ -272,6 +248,28 @@ public class RoomDetailController implements ActionListener, ItemListener {
 		}
 
 		return -1;
+	}
+
+	private Room getRoomInstanceFromInputFields() {
+		int roomId = room != null ? room.getId() : -1;
+		String roomName = UtilFunctions.removeRedundantWhiteSpace(
+				roomDetailDialog.getRoomNameTextField().getText()
+		);
+		String description = UtilFunctions.removeRedundantWhiteSpace(
+				roomDetailDialog.getNoteTextArea().getText()
+		);
+		byte status = (byte) Room.RoomStatusEnum.AVAILABLE.ordinal();
+
+		// Get room type id
+		int roomTypeId;
+		if (roomTypeList.isEmpty()) {
+			roomTypeId = -1;
+		} else {
+			String roomTypeName = String.valueOf(roomDetailDialog.getRoomTypeComboBox().getSelectedItem());
+			roomTypeId = roomTypeList.get(findRoomTypeIndexByRoomName(roomTypeName)).getId();
+		}
+
+		return new Room(roomId, roomName, description, status, roomTypeId);
 	}
 
 }

@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.rooms.RoomManagementController;
+import controllers.services.ServiceManagementController;
 import models.User;
 import utils.RoleManager;
 import utils.UtilFunctions;
@@ -15,6 +16,7 @@ public class DashboardController implements ActionListener {
 	private final DashboardView dashboardView;
 	private final LoginView loginView;
 	private final RoomManagementController roomManagementController;
+	private final ServiceManagementController serviceManagementController;
 //	private final User user;
 
 	public DashboardController(DashboardView dashboardView, LoginView loginView, User user) {
@@ -22,6 +24,10 @@ public class DashboardController implements ActionListener {
 		this.loginView = loginView;
 		this.roomManagementController = new RoomManagementController(
 				dashboardView.getRoomManagementTabbed(),
+				dashboardView.getMainFrame()
+		);
+		this.serviceManagementController = new ServiceManagementController(
+				dashboardView.getServiceManagementTabbed(),
 				dashboardView.getMainFrame()
 		);
 //		this.user = user;
@@ -91,6 +97,8 @@ public class DashboardController implements ActionListener {
 			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(dashboardView.getEmployeeManagementButton(), false);
 			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(dashboardView.getStatisticsButton(), false);
 		}
+
+		serviceManagementController.displayUI();
 	}
 
 	private void productManagementButtonAction() {

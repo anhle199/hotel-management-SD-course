@@ -129,13 +129,11 @@ public class RoomDetailDialog extends JDialog {
 		this.viewMode = viewMode;
 
 		boolean fieldEditable = viewMode.getFieldEditable();
-		boolean positiveButtonEnabled = viewMode != DetailDialogModeEnum.EDITING;
 
 		roomNameTextField.setEnabled(fieldEditable);
 		roomTypeComboBox.setEnabled(fieldEditable);
 		priceTextField.setEnabled(false);
 		noteTextArea.setEnabled(fieldEditable);
-		positiveButton.setEnabled(positiveButtonEnabled);
 		positiveButton.setText(viewMode.getPositiveButtonTitle());
 		negativeButton.setText(viewMode.getNegativeButtonTitle());
 	}
