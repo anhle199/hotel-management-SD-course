@@ -2,8 +2,6 @@ package views.dialogs;
 
 import utils.Constants;
 import utils.UtilFunctions;
-import views.components.panels.ImagePanel;
-import views.components.panels.TextFieldPanel;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;

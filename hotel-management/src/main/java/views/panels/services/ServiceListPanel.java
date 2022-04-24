@@ -2,10 +2,10 @@ package views.panels.services;
 
 import utils.Constants;
 import utils.UtilFunctions;
-import views.components.table_model.NonEditableTableModel;
 import views.components.panels.ImagePanel;
 import views.components.panels.ScrollableTablePanel;
 import views.components.panels.TextFieldPanel;
+import views.components.table_model.NonEditableTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

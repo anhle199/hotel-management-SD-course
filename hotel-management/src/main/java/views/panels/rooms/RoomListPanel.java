@@ -4,11 +4,11 @@ import utils.Constants;
 import utils.RoleManager;
 import utils.UtilFunctions;
 import views.components.ButtonWithResizableIcon;
-import views.components.table_model.NonEditableTableModel;
 import views.components.panels.ImagePanel;
 import views.components.panels.ScrollableTablePanel;
 import views.components.panels.TextFieldPanel;
 import views.components.panels.TextFieldPanel.IconPosition;
+import views.components.table_model.NonEditableTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

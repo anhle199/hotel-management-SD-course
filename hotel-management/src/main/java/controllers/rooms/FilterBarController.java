@@ -1,7 +1,7 @@
 package controllers.rooms;
 
-import controllers.RangeDatePickerController;
-import controllers.RangePriceInputController;
+import controllers.util_dialogs.RangeDatePickerController;
+import controllers.util_dialogs.RangePriceInputController;
 import dao.RoomDAO;
 import dao.RoomTypeDAO;
 import db.DBConnectionException;
@@ -14,7 +14,10 @@ import views.dialogs.RangePriceInputDialog;
 import views.panels.rooms.RoomListPanel;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Vector;
 

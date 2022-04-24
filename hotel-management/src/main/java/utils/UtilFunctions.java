@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 public class UtilFunctions {
 
@@ -136,6 +137,14 @@ public class UtilFunctions {
 	public static String formatTimestamp(String pattern, Timestamp timestamp) {
 		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 		return formatter.format(timestamp);
+	}
+
+	public static Timestamp getStartTimeOf(int year, int month, int day) {
+		return Timestamp.valueOf(String.format("%d-%d-%d 00:00:00", year, month, day));
+	}
+
+	public static Timestamp getStartTimeOf(LocalDate localDate) {
+		return getStartTimeOf(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
 	}
 
 }

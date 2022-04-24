@@ -1,4 +1,4 @@
-package controllers;
+package controllers.util_dialogs;
 
 import controllers.rooms.FilterBarController;
 import views.components.panels.DateChooserPanel;
