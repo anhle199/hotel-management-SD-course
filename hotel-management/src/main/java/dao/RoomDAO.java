@@ -492,16 +492,16 @@ public class RoomDAO implements DAO<Room, Integer> {
 			resultSet = preparedStatement.executeQuery();
 			isExisting = resultSet.next();  // next() return true if this value is existing, otherwise return false.
 		} catch (SQLException e) {
-			System.out.println("RoomDAO.java - isExisting - catch - " + e.getMessage());
-			System.out.println("RoomDAO.java - isExisting - catch - " + Arrays.toString(e.getStackTrace()));
+			System.out.println("RoomDAO.java - isExistingRoomName - catch - " + e.getMessage());
+			System.out.println("RoomDAO.java - isExistingRoomName - catch - " + Arrays.toString(e.getStackTrace()));
 			throw DBConnectionException.INSTANCE;
 		} finally {
 			try {
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} catch (SQLException e) {
-				System.out.println("RoomDAO.java - isExisting - finally/catch - " + e.getMessage());
-				System.out.println("RoomDAO.java - isExisting - finally/catch - " + Arrays.toString(e.getStackTrace()));
+				System.out.println("RoomDAO.java - isExistingRoomName - finally/catch - " + e.getMessage());
+				System.out.println("RoomDAO.java - isExistingRoomName - finally/catch - " + Arrays.toString(e.getStackTrace()));
 			}
 		}
 

@@ -75,4 +75,12 @@ public class Room {
 		}
 	}
 
+	public boolean equals(Room another) {
+		return id == another.id
+				&& name.equals(another.name)
+				&& description.equals(another.description)
+				&& status == another.status
+				&& roomTypeId == another.roomTypeId;
+	}
+
 }

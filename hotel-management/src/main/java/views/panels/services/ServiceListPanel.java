@@ -12,8 +12,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 public class ServiceListPanel extends JPanel {
+
+	public static final int HIDDE_COLUMN_SERVICE_ID = 1;
+
 	// Top Bar
 	private TextFieldPanel searchBar;
+	private JButton searchButton;
+	private JButton addButton;
 	private JButton removeButton;
 
 	private ScrollableTablePanel scrollableTable;
@@ -35,29 +40,49 @@ public class ServiceListPanel extends JPanel {
 
 		// Search Bar.
 		ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH_BLACK, 24, 24);
-		Dimension searchBarSize = new Dimension(500, 40);
+		Dimension searchBarSize = new Dimension(400, 40);
 		searchBar = new TextFieldPanel("Search", searchIcon, TextFieldPanel.IconPosition.LEADING, searchBarSize);
 		searchBar.setBounds(0, 0, searchBarSize.width, searchBarSize.height);
 		topBarPanel.add(searchBar);
 
+		searchButton = new JButton("Search");
+		searchButton.setBounds(412, 0, 115, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(searchButton);
+		topBarPanel.add(searchButton);
+
+		// Top Bar Buttons Panel.
+		JPanel topBarButtonsPanel = new JPanel();
+		topBarButtonsPanel.setBounds(764, 0, 212, 40);
+		topBarButtonsPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
+		topBarPanel.add(topBarButtonsPanel);
+
+		// Add Button.
+		addButton = new JButton("Add");
+		addButton.setPreferredSize(new Dimension(85, 40));
+		UtilFunctions.configureTopBarButtonOnMainThread(addButton);
+		topBarButtonsPanel.add(addButton);
+
 		// Remove Button.
 		removeButton = new JButton("Remove");
-		removeButton.setBounds(923, 0, 115, 40);
+		removeButton.setPreferredSize(new Dimension(115, 40));
 		UtilFunctions.configureTopBarButtonOnMainThread(removeButton);
-		topBarPanel.add(removeButton);
+		topBarButtonsPanel.add(Box.createHorizontalStrut(12));
+		topBarButtonsPanel.add(removeButton);
 	}
 
 	private void initTable() {
 		final String[] columnNames = {
 				"",  // no
-				"Service type",
+				"id",
+				"Service name",
 				"Description",
 				"Price",
-				"Notes"
+				"Note"
 		};
-		final int [] columnWidths = {50, 241, 242, 242, 244};
+		final int [] columnWidths = {50, 0, 241, 242, 242, 244};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
@@ -83,12 +108,26 @@ public class ServiceListPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 80, 1038, 682);
-
-		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Service type", "Description", "Price", "Notes"});
-		model.addRow(new Object[]{2, "Service type", "Description", "Price", "Notes"});
-		model.addRow(new Object[]{3, "Service type", "Description", "Price", "Notes"});
-		model.addRow(new Object[]{4, "Service type", "Description", "Price", "Notes"});
-		model.addRow(new Object[]{5, "Service type", "Description", "Price", "Notes"});
 	}
+
+	public TextFieldPanel getSearchBar() {
+		return searchBar;
+	}
+
+	public JButton getSearchButton() {
+		return searchButton;
+	}
+
+	public JButton getAddButton() {
+		return addButton;
+	}
+
+	public JButton getRemoveButton() {
+		return removeButton;
+	}
+
+	public ScrollableTablePanel getScrollableTable() {
+		return scrollableTable;
+	}
+
 }
