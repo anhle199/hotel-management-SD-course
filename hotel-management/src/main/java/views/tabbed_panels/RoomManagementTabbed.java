@@ -41,4 +41,8 @@ public class RoomManagementTabbed extends JTabbedPane {
 		return roomListPanel;
 	}
 
+	public RentalInvoiceListPanel getRentalInvoiceListPanel() {
+		return rentalInvoiceListPanel;
+	}
+
 }

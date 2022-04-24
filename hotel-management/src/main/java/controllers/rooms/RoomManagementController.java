@@ -10,12 +10,17 @@ public class RoomManagementController implements ChangeListener {
 
 	private final RoomManagementTabbed roomManagementTabbed;
 	private final RoomListController roomListController;
+	private final RentalInvoiceListController rentalInvoiceListController;
 	private int currentTabIndex;
 
 	public RoomManagementController(RoomManagementTabbed roomManagementTabbed, JFrame mainFrame) {
 		this.roomManagementTabbed = roomManagementTabbed;
 		this.roomListController = new RoomListController(
 				roomManagementTabbed.getRoomListPanel(),
+				mainFrame
+		);
+		this.rentalInvoiceListController = new RentalInvoiceListController(
+				roomManagementTabbed.getRentalInvoiceListPanel(),
 				mainFrame
 		);
 		this.currentTabIndex = RoomManagementTabbed.ROOM_LIST_PANEL_INDEX;
@@ -40,10 +45,11 @@ public class RoomManagementController implements ChangeListener {
 			case RoomManagementTabbed.ROOM_LIST_PANEL_INDEX:
 				roomListController.displayUI();
 				break;
-//			case RoomManagementTabbed.RENTAL_INVOICE_LIST_PANEL_INDEX:
-//				break;
-//			case RoomManagementTabbed.RENTAL_RECEIPT_LIST_PANEL_INDEX:
-//				break;
+			case RoomManagementTabbed.RENTAL_INVOICE_LIST_PANEL_INDEX:
+				rentalInvoiceListController.displayUI();
+				break;
+//       case RoomManagementTabbed.RENTAL_RECEIPT_LIST_PANEL_INDEX:
+//          break;
 		}
 	}
 

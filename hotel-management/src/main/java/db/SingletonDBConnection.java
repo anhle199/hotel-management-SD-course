@@ -15,7 +15,7 @@ public class SingletonDBConnection {
 	private Connection connection = null;
 
 	private SingletonDBConnection() {
-//		connect();
+		connect();
 	}
 
 	private static class BillPughSingleton {

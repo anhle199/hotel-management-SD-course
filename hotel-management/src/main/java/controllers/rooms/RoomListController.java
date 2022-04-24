@@ -101,8 +101,9 @@ public class RoomListController implements ActionListener {
 	}
 
 	private Room mapRowValueToRoomInstance(Vector<Object> rowValue) {
-		String statusInUpperCase = String.valueOf(rowValue.get(5)).toUpperCase();
-		Room.RoomStatusEnum status = Room.RoomStatusEnum.valueOf(statusInUpperCase);
+		Room.RoomStatusEnum status = Room.RoomStatusEnum.valueOfIgnoreCase(
+				String.valueOf(rowValue.get(5))
+		);
 
 		return new Room(
 				(int) rowValue.get(RoomListPanel.HIDDEN_COLUMN_ROOM_ID),
@@ -167,7 +168,7 @@ public class RoomListController implements ActionListener {
 
 			if (option == JOptionPane.YES_OPTION) {
 				int roomId = (int) tablePanel.getTableModel()
-											 .getValueAt(selectedRowIndex, RoomListPanel.HIDDEN_COLUMN_ROOM_ID);
+						.getValueAt(selectedRowIndex, RoomListPanel.HIDDEN_COLUMN_ROOM_ID);
 
 				try {
 					daoModel.delete(roomId);

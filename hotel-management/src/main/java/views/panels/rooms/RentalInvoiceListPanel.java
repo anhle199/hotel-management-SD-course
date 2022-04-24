@@ -10,7 +10,11 @@ import java.awt.*;
 
 public class RentalInvoiceListPanel extends JPanel {
 
+	public static final int HIDDEN_COLUMN_RENTAL_INVOICE_ID = 1;
+	public static final int HIDDEN_COLUMN_ROOM_ID = 2;
+
 	// Top Bar.
+	private JButton addButton;
 	private JButton removeButton;
 
 	private ScrollableTablePanel scrollableTable;
@@ -31,6 +35,12 @@ public class RentalInvoiceListPanel extends JPanel {
 		add(topBarPanel);
 
 		// Remove Button.
+		addButton = new JButton("Add");
+		addButton.setBounds(826, 0, 85, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(addButton);
+		topBarPanel.add(addButton);
+
+		// Remove Button.
 		removeButton = new JButton("Remove");
 		removeButton.setBounds(923, 0, 115, 40);
 		UtilFunctions.configureTopBarButtonOnMainThread(removeButton);
@@ -40,6 +50,8 @@ public class RentalInvoiceListPanel extends JPanel {
 	private void initTable() {
 		final String[] columnNames = {
 				"",  // no
+				"id",
+				"room_id",
 				"Room name",
 				"Renting start date",
 				"Customer name",
@@ -47,9 +59,11 @@ public class RentalInvoiceListPanel extends JPanel {
 				"Identifier number",
 				"Address"
 		};
-		final int [] columnWidths = {40, 300, 120, 200, 120, 150, 200};
+		final int [] columnWidths = {40, 0, 0, 300, 120, 200, 120, 150, 200};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
@@ -79,11 +93,18 @@ public class RentalInvoiceListPanel extends JPanel {
 		scrollableTable.setBounds(20, 80, 1038, 682);
 
 		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
-		model.addRow(new Object[]{2, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
-		model.addRow(new Object[]{3, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
-		model.addRow(new Object[]{4, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
-		model.addRow(new Object[]{5, "Room name", "Renting start date", "Customer name", "Customer type", "Identifier Number", "Address"});
+	}
+
+	public JButton getAddButton() {
+		return addButton;
+	}
+
+	public JButton getRemoveButton() {
+		return removeButton;
+	}
+
+	public ScrollableTablePanel getScrollableTable() {
+		return scrollableTable;
 	}
 
 }

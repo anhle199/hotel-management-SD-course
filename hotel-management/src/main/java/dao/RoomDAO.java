@@ -55,6 +55,50 @@ public class RoomDAO implements DAO<Room, Integer> {
 		return roomList;
 	}
 
+	public ArrayList<Room> getAllAvailable() throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		ArrayList<Room> roomList = new ArrayList<>();
+		PreparedStatement preparedStatement = null;
+
+		try {
+			String sqlStatement = "select * from `hotel_management`.`room` where `status` = ?";
+			preparedStatement = connection.prepareStatement(sqlStatement);
+
+			preparedStatement.setByte(1, Room.RoomStatusEnum.AVAILABLE.byteValue());
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				roomList.add(
+						new Room(
+								resultSet.getInt("id"),
+								resultSet.getNString("name"),
+								resultSet.getString("description"),
+								resultSet.getByte("status"),
+								resultSet.getInt("room_type_id")
+						)
+				);
+			}
+		} catch (SQLException e) {
+			System.out.println("RoomDAO.java - getAllAvailable - catch - " + e.getMessage());
+			System.out.println("RoomDAO.java - getAllAvailable - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("RoomDAO.java - getAllAvailable - finally/catch - " + e.getMessage());
+				System.out.println("RoomDAO.java - getAllAvailable - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return roomList;
+	}
+
 	public ArrayList<Pair<Room, RoomType>> getAllWithRoomType() throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
@@ -107,7 +151,45 @@ public class RoomDAO implements DAO<Room, Integer> {
 
 	@Override
 	public Optional<Room> get(Integer id) throws DBConnectionException {
-		return Optional.empty();
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		Optional<Room> roomOptional = Optional.empty();
+		PreparedStatement preparedStatement = null;
+
+		try {
+			String sqlStatement = "select * from `hotel_management`.`room` where id = ?";
+			preparedStatement = connection.prepareStatement(sqlStatement);
+
+			preparedStatement.setInt(1, id);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				roomOptional = Optional.of(new Room(
+						resultSet.getInt("id"),
+						resultSet.getNString("name"),
+						resultSet.getString("description"),
+						resultSet.getByte("status"),
+						resultSet.getInt("room_type_id")
+				));
+			}
+		} catch (SQLException e) {
+			System.out.println("RoomDAO.java - get - catch - " + e.getMessage());
+			System.out.println("RoomDAO.java - get - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("RoomDAO.java - get - finally/catch - " + e.getMessage());
+				System.out.println("RoomDAO.java - get - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return roomOptional;
 	}
 
 	@Override
@@ -269,7 +351,6 @@ public class RoomDAO implements DAO<Room, Integer> {
 				System.out.println("RoomDAO.java - delete - finally/catch - " + Arrays.toString(e.getStackTrace()));
 			}
 		}
-
 	}
 
 	public ArrayList<Pair<Room, RoomType>> searchByRoomNameReturnWithRoomType(
