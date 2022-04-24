@@ -16,12 +16,16 @@ import java.awt.*;
 
 public class RoomListPanel extends JPanel {
 
+	public static final int HIDDEN_COLUMN_ROOM_ID = 1;
+	public static final int HIDDEN_COLUMN_ROOM_TYPE_ID = 7;
+
 	// Top Bar.
 	private TextFieldPanel searchBar;
 	private JButton searchButton;
 	private JButton addButton;
 	private JButton removeButton;
 	private ButtonWithResizableIcon moreButton;
+	private JMenuItem filterMenuItem;
 	private JMenuItem updateRulesMenuItem;
 
 	// Filter Bar.
@@ -29,7 +33,7 @@ public class RoomListPanel extends JPanel {
 	private JComboBox<String> roomStatusComboBox;
 	private JComboBox<String> roomTypeComboBox;
 	private TextFieldPanel rangeDatePicker;
-	private TextFieldPanel rangePricePicker;
+	private TextFieldPanel rangePriceInput;
 	private JComboBox<String> sortCriterionComboBox;
 
 	private ScrollableTablePanel scrollableTable;
@@ -101,18 +105,9 @@ public class RoomListPanel extends JPanel {
 		JPopupMenu moreButtonMenu = new JPopupMenu();
 
 		// Filter Menu Item.
-		JMenuItem filterMenuItem = new JMenuItem("Show Filter");
+		filterMenuItem = new JMenuItem("Show Filter");
 		filterMenuItem.addActionListener((event) -> {
-			boolean isShowingFilterBar = filterBarPanel.isVisible();
-			int yTable = isShowingFilterBar ? 80 : 140;
-			int heightTable = isShowingFilterBar ? 682 : 622;
-			String filterMenuItemTitle = isShowingFilterBar ? "Show Filter" : "Hide Filter";
-
-			JMenuItem menuItem = (JMenuItem) event.getSource();
-			menuItem.setText(filterMenuItemTitle);
-
-			scrollableTable.setBounds(20, yTable, 1038, heightTable);
-			filterBarPanel.setVisible(!isShowingFilterBar);
+			setVisibleForFilterBar(!filterBarPanel.isVisible());
 		});
 		moreButtonMenu.add(filterMenuItem);
 
@@ -143,14 +138,14 @@ public class RoomListPanel extends JPanel {
 		filterBarPanel.add(filterCriterionPanel);
 
 		// Room Status Combo Box.
-		roomStatusComboBox = new JComboBox<>(new String[]{"All", "Available", "Reserved", "Renting"});
+		roomStatusComboBox = new JComboBox<>();
 		roomStatusComboBox.setPreferredSize(new Dimension(90, 40));
 		roomStatusComboBox.setFont(Constants.Fonts.BODY);
 		filterCriterionPanel.add(roomStatusComboBox);
 		filterCriterionPanel.add(Box.createHorizontalStrut(12));
 
 		// Room Type Combo Box.
-		roomTypeComboBox = new JComboBox<>(new String[]{"Affordable", "Normal", "Luxury"});
+		roomTypeComboBox = new JComboBox<>();
 		roomTypeComboBox.setPreferredSize(new Dimension(100, 40));
 		roomTypeComboBox.setFont(Constants.Fonts.BODY);
 		filterCriterionPanel.add(roomTypeComboBox);
@@ -161,31 +156,31 @@ public class RoomListPanel extends JPanel {
 		Dimension rangeDatePickerSize = new Dimension(205, 40);
 		rangeDatePicker = new TextFieldPanel("", calendarIcon, IconPosition.TRAILING, rangeDatePickerSize);
 		rangeDatePicker.getTextField().setEditable(false);
-		rangeDatePicker.getTextField().setText("31/12/2022 - 31/12/2022");
 		filterCriterionPanel.add(rangeDatePicker);
 		filterCriterionPanel.add(Box.createHorizontalStrut(12));
 
 		// Range Price Picker.
 		ImagePanel filterIcon = new ImagePanel(Constants.IconNames.FILTER_ALT_BLACK, 24, 24);
-		Dimension rangePricePickerSize = new Dimension(150, 40);
-		rangePricePicker = new TextFieldPanel("", filterIcon, IconPosition.TRAILING, rangePricePickerSize);
-		rangePricePicker.getTextField().setEditable(false);
-		rangePricePicker.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-		rangePricePicker.getTextField().setText("200$ - 500$");
-		filterCriterionPanel.add(rangePricePicker);
+		Dimension rangePriceInputSize = new Dimension(150, 40);
+		rangePriceInput = new TextFieldPanel("", filterIcon, IconPosition.TRAILING, rangePriceInputSize);
+		rangePriceInput.getTextField().setEditable(false);
+		rangePriceInput.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+		filterCriterionPanel.add(rangePriceInput);
 
 		// Sort Criterion Combo Box.
-		sortCriterionComboBox = new JComboBox<>(new String[]{"Lowest Price", "Highest Price"});
+		sortCriterionComboBox = new JComboBox<>();
 		sortCriterionComboBox.setBounds(918, 0, 120, 40);
 		sortCriterionComboBox.setFont(Constants.Fonts.BODY);
 		filterBarPanel.add(sortCriterionComboBox);
 	}
 
 	private void initTable() {
-		final String[] columnNames = {"", "id", "Room name", "Room type", "Price", "Status"};
-		final int[] columnWidths = {40, 0, 450, 200, 130, 198};
+		final String[] columnNames = {"", "id", "Room name", "Room type", "Price", "Status", "Note", "room_type_id"};
+		final int[] columnWidths = {40, 0, 320, 200, 130, 130, 198, 0};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
@@ -212,13 +207,16 @@ public class RoomListPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 80, 1038, 682);
+	}
 
-		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, 1, "Room name", "Room type", "Price", "Status"});
-		model.addRow(new Object[]{2, 2, "Room name", "Room type", "Price", "Status"});
-		model.addRow(new Object[]{3, 3, "Room name", "Room type", "Price", "Status"});
-		model.addRow(new Object[]{4, 4, "Room name", "Room type", "Price", "Status"});
-		model.addRow(new Object[]{5, 5, "Room name", "Room type", "Price", "Status"});
+	public void setVisibleForFilterBar(boolean visible) {
+		String filterMenuItemTitle = visible ? "Hide Filter" : "Show Filter";
+		filterMenuItem.setText(filterMenuItemTitle);
+
+		int yTable = visible ? 140 : 80;
+		int heightTable = visible ? 622 : 682;
+		scrollableTable.setBounds(20, yTable, 1038, heightTable);
+		filterBarPanel.setVisible(visible);
 	}
 
 	public TextFieldPanel getSearchBar() {
@@ -243,6 +241,26 @@ public class RoomListPanel extends JPanel {
 
 	public ScrollableTablePanel getScrollableTable() {
 		return scrollableTable;
+	}
+
+	public JComboBox<String> getRoomStatusComboBox() {
+		return roomStatusComboBox;
+	}
+
+	public JComboBox<String> getRoomTypeComboBox() {
+		return roomTypeComboBox;
+	}
+
+	public TextFieldPanel getRangeDatePicker() {
+		return rangeDatePicker;
+	}
+
+	public TextFieldPanel getRangePriceInput() {
+		return rangePriceInput;
+	}
+
+	public JComboBox<String> getSortCriterionComboBox() {
+		return sortCriterionComboBox;
 	}
 
 }

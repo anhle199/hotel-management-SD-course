@@ -1,6 +1,7 @@
 package views.dialogs;
 
 import utils.Constants;
+import utils.DetailDialogModeEnum;
 import utils.UtilFunctions;
 
 import javax.swing.*;
@@ -10,16 +11,23 @@ import java.text.NumberFormat;
 
 public class RoomDetailDialog extends JDialog {
 
+	private DetailDialogModeEnum viewMode;
+
 	// Components for basic information panel.
 	private JTextField roomNameTextField;
 	private JComboBox<String> roomTypeComboBox;
 	private JFormattedTextField priceTextField;
 	private JTextArea noteTextArea;
-	private JButton editButton;
-	private JButton closeButton;
+	private JButton positiveButton;
+	private JButton negativeButton;
 
 	public RoomDetailDialog(JFrame frame) {
+		this(frame, DetailDialogModeEnum.VIEW_ONLY);
+	}
+
+	public RoomDetailDialog(JFrame frame, DetailDialogModeEnum mode) {
 		super(frame, "Room Detail", true);
+		this.viewMode = mode;
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -41,6 +49,8 @@ public class RoomDetailDialog extends JDialog {
 		int spacingTextFields = 12;
 		int xTextField = padding * 2 + labelSize.width;
 
+		boolean fieldEditable = viewMode.getFieldEditable();
+
 		// Room Name Label.
 		JLabel roomNameLabel = new JLabel("Room name");
 		roomNameLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
@@ -50,7 +60,7 @@ public class RoomDetailDialog extends JDialog {
 		roomNameTextField = new JTextField();
 		roomNameTextField.setBounds(xTextField, roomNameLabel.getY(), textFieldSize.width, textFieldSize.height);
 		UtilFunctions.configureDialogTextFieldOnMainThread(roomNameTextField);
-		roomNameTextField.setEnabled(false);
+		roomNameTextField.setEnabled(fieldEditable);
 		panel.add(roomNameTextField);
 
 		// Room Type Label.
@@ -61,7 +71,7 @@ public class RoomDetailDialog extends JDialog {
 		// Room Type Combo Box.
 		roomTypeComboBox = new JComboBox<>(Constants.ROOM_TYPES);
 		roomTypeComboBox.setBounds(xTextField, roomTypeLabel.getY(), textFieldSize.width, textFieldSize.height);
-		roomTypeComboBox.setEnabled(false);
+		roomTypeComboBox.setEnabled(fieldEditable);
 		panel.add(roomTypeComboBox);
 
 		// Price Label.
@@ -83,7 +93,7 @@ public class RoomDetailDialog extends JDialog {
 		// Price Text Field.
 		priceTextField = new JFormattedTextField(priceFormatter);
 		priceTextField.setBounds(xTextField, priceLabel.getY(), textFieldSize.width, textFieldSize.height);
-		priceTextField.setEnabled(false);
+		priceTextField.setEnabled(fieldEditable);
 		priceTextField.setValue(Constants.MIN_PRICE);
 		priceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		UtilFunctions.configureDialogTextFieldOnMainThread(priceTextField);
@@ -102,17 +112,56 @@ public class RoomDetailDialog extends JDialog {
 		panel.add(noteTextArea);
 
 		// Edit Button.
-		editButton = new JButton("Edit");
-		editButton.setBounds(xTextField, noteLabel.getY() + noteTextArea.getHeight() + padding, 100, textFieldSize.height);
-		UtilFunctions.configureTopBarButtonOnMainThread(editButton);
-		panel.add(editButton);
+		positiveButton = new JButton(viewMode.getPositiveButtonTitle());
+		positiveButton.setBounds(xTextField, noteLabel.getY() + noteTextArea.getHeight() + padding, 100, textFieldSize.height);
+		UtilFunctions.configureTopBarButtonOnMainThread(positiveButton);
+		panel.add(positiveButton);
 
 		// Close Button.
-		closeButton = new JButton("Close");
-		closeButton.setBounds(editButton.getX() + editButton.getWidth() + padding, editButton.getY(), 100, textFieldSize.height);
-		UtilFunctions.configureBorderedButtonOnMainThread(closeButton);
-		UtilFunctions.addHoverEffectsForBorderedButton(closeButton);
-		panel.add(closeButton);
+		negativeButton = new JButton(viewMode.getNegativeButtonTitle());
+		negativeButton.setBounds(positiveButton.getX() + positiveButton.getWidth() + padding, positiveButton.getY(), 100, textFieldSize.height);
+		UtilFunctions.configureBorderedButtonOnMainThread(negativeButton);
+		UtilFunctions.addHoverEffectsForBorderedButton(negativeButton);
+		panel.add(negativeButton);
+	}
+
+	public void setViewMode(DetailDialogModeEnum viewMode) {
+		this.viewMode = viewMode;
+
+		boolean fieldEditable = viewMode.getFieldEditable();
+		boolean positiveButtonEnabled = viewMode != DetailDialogModeEnum.EDITING;
+
+		roomNameTextField.setEnabled(fieldEditable);
+		roomTypeComboBox.setEnabled(fieldEditable);
+		priceTextField.setEnabled(false);
+		noteTextArea.setEnabled(fieldEditable);
+		positiveButton.setEnabled(positiveButtonEnabled);
+		positiveButton.setText(viewMode.getPositiveButtonTitle());
+		negativeButton.setText(viewMode.getNegativeButtonTitle());
+	}
+
+	public JTextField getRoomNameTextField() {
+		return roomNameTextField;
+	}
+
+	public JComboBox<String> getRoomTypeComboBox() {
+		return roomTypeComboBox;
+	}
+
+	public JFormattedTextField getPriceTextField() {
+		return priceTextField;
+	}
+
+	public JTextArea getNoteTextArea() {
+		return noteTextArea;
+	}
+
+	public JButton getPositiveButton() {
+		return positiveButton;
+	}
+
+	public JButton getNegativeButton() {
+		return negativeButton;
 	}
 
 }

@@ -63,8 +63,6 @@ public class Constants {
 			"September", "October", "November", "December",
 	};
 
-	public static final int ID_COLUMN_INDEX = 1;
-
 	public static final String[] ROOM_TYPES = {"Affordable", "Normal", "Luxury"};
 
 	public static final String[] CUSTOMER_TYPES = {"Domestic", "Foreign"};
@@ -75,5 +73,6 @@ public class Constants {
 
 	public static final int MIN_PRICE = 0;
 	public static final int MAX_PRICE = 10000;
+	public static final String TIMESTAMP_WITHOUT_NANOSECOND = "yyyy-MM-dd HH:mm:ss";
 
 }

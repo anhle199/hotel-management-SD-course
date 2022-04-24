@@ -5,29 +5,37 @@ import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.Room;
 import models.RoomType;
-import utils.Constants;
+import utils.DetailDialogModeEnum;
 import utils.Pair;
 import utils.UtilFunctions;
 import views.components.dialogs.ConnectionErrorDialog;
 import views.components.panels.ScrollableTablePanel;
 import views.components.table_model.NonEditableTableModel;
+import views.dialogs.RoomDetailDialog;
 import views.panels.rooms.RoomListPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class RoomListController implements ActionListener {
 
 	private final RoomListPanel roomListPanel;
+	private final JFrame mainFrame;
 	private final ConnectionErrorDialog connectionErrorDialog;
 	private final RoomDAO daoModel;
+	private final FilterBarController filterBarController;
 
 	public RoomListController(RoomListPanel roomListPanel, JFrame mainFrame) {
 		this.roomListPanel = roomListPanel;
+		this.mainFrame = mainFrame;
 		this.connectionErrorDialog = new ConnectionErrorDialog(mainFrame);
 		this.daoModel = new RoomDAO();
+		this.filterBarController = new FilterBarController(roomListPanel, this, mainFrame);
 
 		// Add action listeners
 		this.roomListPanel.getSearchButton().addActionListener(this);
@@ -35,9 +43,19 @@ public class RoomListController implements ActionListener {
 		this.roomListPanel.getRemoveButton().addActionListener(this);
 		this.roomListPanel.getUpdateRulesMenuItem().addActionListener(this);
 		this.connectionErrorDialog.getReconnectButton().addActionListener(this);
+
+		// Add double-click listener for each row on the table
+		roomListPanel.getScrollableTable().getTable().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 2) {
+					doubleClicksInRowAction();
+				}
+			}
+		});
 	}
 
-	private void loadRoomListAndReloadTableData(String roomNameToken) {
+	public void loadRoomListAndReloadTableData(String roomNameToken) {
 		try {
 			ArrayList<Pair<Room, RoomType>> data;
 			if (roomNameToken.isEmpty()) {
@@ -46,28 +64,53 @@ public class RoomListController implements ActionListener {
 				data = daoModel.searchByRoomNameReturnWithRoomType(roomNameToken);
 			}
 
-			NonEditableTableModel tableModel = (NonEditableTableModel) roomListPanel.getScrollableTable().getTableModel();
-			tableModel.removeAllRows();
-
-			for (int i = 0; i < data.size(); i++) {
-				Pair<Room, RoomType> element = data.get(i);
-				Object[] rowValue = mapToRowValue(i + 1, element.getLeftValue(), element.getRightValue());
-
-				tableModel.addRow(rowValue);
-			}
-
+			addRoomListToTable(data);
 		} catch (DBConnectionException e) {
 			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 			System.out.println("RoomListController.java - loadRoomListAndReloadTableData - catch - Unavailable connection.");
 		}
 	}
 
-	private Object[] mapToRowValue(int no, Room room, RoomType roomType) {
+	public void addRoomListToTable(ArrayList<Pair<Room, RoomType>> data) {
+		NonEditableTableModel tableModel = (NonEditableTableModel) roomListPanel.getScrollableTable().getTableModel();
+		tableModel.removeAllRows();
+
+		for (int i = 0; i < data.size(); i++) {
+			Pair<Room, RoomType> element = data.get(i);
+			Object[] rowValue = mapRoomInstanceToRowValue(i + 1, element.getLeftValue(), element.getRightValue());
+
+			tableModel.addRow(rowValue);
+		}
+	}
+
+	private Object[] mapRoomInstanceToRowValue(int no, Room room, RoomType roomType) {
 		String capitalizedStatusString = UtilFunctions.capitalizeFirstLetterInString(
 				Room.RoomStatusEnum.valueOf(room.getStatus()).name()
 		);
 
-		return new Object[]{no, room.getId(), room.getName(), roomType.getName(), roomType.getPrice(), capitalizedStatusString};
+		return new Object[]{
+				no,
+				room.getId(),
+				room.getName(),
+				roomType.getName(),
+				roomType.getPrice(),
+				capitalizedStatusString,
+				room.getDescription(),
+				room.getRoomTypeId()
+		};
+	}
+
+	private Room mapRowValueToRoomInstance(Vector<Object> rowValue) {
+		String statusInUpperCase = String.valueOf(rowValue.get(5)).toUpperCase();
+		Room.RoomStatusEnum status = Room.RoomStatusEnum.valueOf(statusInUpperCase);
+
+		return new Room(
+				(int) rowValue.get(RoomListPanel.HIDDEN_COLUMN_ROOM_ID),
+				(String) rowValue.get(2),
+				(String) rowValue.get(6),
+				status.byteValue(),
+				(int) rowValue.get(RoomListPanel.HIDDEN_COLUMN_ROOM_TYPE_ID)
+		);
 	}
 
 	public void displayUI() {
@@ -79,7 +122,7 @@ public class RoomListController implements ActionListener {
 		if (event.getSource() == roomListPanel.getSearchButton()) {
 			searchButtonAction();
 		} else if (event.getSource() == roomListPanel.getAddButton()) {
-//			addButtonAction();
+			addButtonAction();
 		} else if (event.getSource() == roomListPanel.getRemoveButton()) {
 			removeButtonAction();
 		} else if (event.getSource() == roomListPanel.getUpdateRulesMenuItem()) {
@@ -90,16 +133,23 @@ public class RoomListController implements ActionListener {
 	}
 
 	private void searchButtonAction() {
+		roomListPanel.setVisibleForFilterBar(false);
+
 		String searchText = UtilFunctions.removeRedundantWhiteSpace(
 				roomListPanel.getSearchBar().getText()
 		);
-
 		loadRoomListAndReloadTableData(searchText);
 	}
 
-//	private void addButtonAction() {
-//
-//	}
+	private void addButtonAction() {
+		DetailDialogModeEnum viewMode = DetailDialogModeEnum.CREATE;
+		RoomDetailDialog roomDetailDialog = new RoomDetailDialog(mainFrame, viewMode);
+		RoomDetailController roomDetailController = new RoomDetailController(
+				roomDetailDialog, mainFrame, viewMode, this
+		);
+
+		roomDetailController.displayUI();
+	}
 
 	private void removeButtonAction() {
 		ScrollableTablePanel tablePanel = roomListPanel.getScrollableTable();
@@ -117,7 +167,7 @@ public class RoomListController implements ActionListener {
 
 			if (option == JOptionPane.YES_OPTION) {
 				int roomId = (int) tablePanel.getTableModel()
-											 .getValueAt(selectedRowIndex, Constants.ID_COLUMN_INDEX);
+											 .getValueAt(selectedRowIndex, RoomListPanel.HIDDEN_COLUMN_ROOM_ID);
 
 				try {
 					daoModel.delete(roomId);
@@ -146,6 +196,21 @@ public class RoomListController implements ActionListener {
 		SingletonDBConnection.getInstance().connect();
 		roomListPanel.getSearchBar().setText("");
 		loadRoomListAndReloadTableData("");
+	}
+
+	private void doubleClicksInRowAction() {
+		JTable table = roomListPanel.getScrollableTable().getTable();
+		NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
+		Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
+		Room selectedRoom = mapRowValueToRoomInstance(selectedRowValue);
+
+		DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
+		RoomDetailDialog roomDetailDialog = new RoomDetailDialog(mainFrame, viewMode);
+		RoomDetailController roomDetailController = new RoomDetailController(
+				roomDetailDialog, mainFrame, selectedRoom, viewMode, this
+		);
+
+		roomDetailController.displayUI();
 	}
 
 }

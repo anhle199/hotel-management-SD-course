@@ -2,6 +2,7 @@ package models;
 
 import jdk.jfr.DataAmount;
 import utils.Constants;
+import utils.UtilFunctions;
 
 public class Room {
 
@@ -42,6 +43,15 @@ public class Room {
 	public enum RoomStatusEnum {
 		AVAILABLE, RESERVED, RENTED;
 
+		public static RoomStatusEnum valueOfIgnoreCase(String name) {
+			if (name.equalsIgnoreCase(RESERVED.name()))
+				return RESERVED;
+			if (name.equalsIgnoreCase(RENTED.name()))
+				return RENTED;
+
+			return AVAILABLE;
+		}
+
 		public static RoomStatusEnum valueOf(byte value) {
 			if (value == RESERVED.ordinal()) {
 				return RESERVED;
@@ -51,6 +61,19 @@ public class Room {
 			}
 
 			return AVAILABLE;
+		}
+
+		public byte byteValue() {
+			return (byte) this.ordinal();
+		}
+
+		public static String[] allCases() {
+			return new String[]{
+					"All",
+					UtilFunctions.capitalizeFirstLetterInString(AVAILABLE.name()),
+					UtilFunctions.capitalizeFirstLetterInString(RESERVED.name()),
+					UtilFunctions.capitalizeFirstLetterInString(RENTED.name()),
+			};
 		}
 	}
 

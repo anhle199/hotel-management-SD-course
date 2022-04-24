@@ -5,7 +5,7 @@ public class RoleManager {
 	private RoleEnum role;
 
 	private RoleManager() {
-		this.role = RoleEnum.NONE;
+		this.role = RoleEnum.EMPLOYEE;
 	}
 
 	private static class BillPughSingleton {
@@ -34,7 +34,7 @@ public class RoleManager {
 
 	// NONE means that user not logged into the application.
 	public enum RoleEnum {
-		NONE, MANAGER, EMPLOYEE;
+		MANAGER, EMPLOYEE;
 
 		public static RoleEnum valueOf(byte value) {
 			if (MANAGER.ordinal() == value) {
@@ -43,7 +43,7 @@ public class RoleManager {
 				return EMPLOYEE;
 			}
 
-			return NONE;
+			return EMPLOYEE;
 		}
 	}
 

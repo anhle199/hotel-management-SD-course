@@ -123,6 +123,10 @@ public class TextFieldPanel extends JPanel {
 		super.setBackground(backgroundColor);
 	}
 
+	public ImagePanel getIcon() {
+		return icon;
+	}
+
 	public JTextField getTextField() {
 		return textField;
 	}

@@ -3,12 +3,13 @@ package utils;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class UtilFunctions {
 
@@ -116,6 +117,10 @@ public class UtilFunctions {
 		JOptionPane.showMessageDialog(component, message, title, JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	public static int showConfirmDialog(Component component, String title, String message) {
+		return JOptionPane.showConfirmDialog(component, message, title, JOptionPane.YES_NO_OPTION);
+	}
+
 	public static String hashPassword(String password) {
 		return DigestUtils.sha256Hex(password);
 	}
@@ -126,6 +131,11 @@ public class UtilFunctions {
 
 	public static String removeRedundantWhiteSpace(String str) {
 		return str.trim().replaceAll("\\s{2,}", " ");
+	}
+
+	public static String formatTimestamp(String pattern, Timestamp timestamp) {
+		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+		return formatter.format(timestamp);
 	}
 
 }
