@@ -1,7 +1,7 @@
 package views.panels.rooms;
 
-import views.components.table_model.NonEditableTableModel;
 import views.components.panels.ScrollableTablePanel;
+import views.components.table_model.NonEditableTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -54,13 +54,9 @@ public class RentalReceiptListPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 20, 1038, 742);
-
-		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Room name", "Rented days", "Price", "Total price"});
-		model.addRow(new Object[]{2, "Room name", "Rented days", "Price", "Total price"});
-		model.addRow(new Object[]{3, "Room name", "Rented days", "Price", "Total price"});
-		model.addRow(new Object[]{4, "Room name", "Rented days", "Price", "Total price"});
-		model.addRow(new Object[]{5, "Room name", "Rented days", "Price", "Total price"});
 	}
 
+	public ScrollableTablePanel getScrollableTable() {
+		return scrollableTable;
+	}
 }

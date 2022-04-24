@@ -1,15 +1,11 @@
-package controllers;
+package controllers.util_dialogs;
 
 import controllers.rooms.FilterBarController;
-import views.components.panels.DateChooserPanel;
-import views.components.panels.PriceFieldPanel;
 import views.components.panels.TextFieldPanel;
-import views.dialogs.RangeDatePickerDialog;
 import views.dialogs.RangePriceInputDialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class RangePriceInputController implements ActionListener {
 	private final RangePriceInputDialog rangePriceInputDialog;

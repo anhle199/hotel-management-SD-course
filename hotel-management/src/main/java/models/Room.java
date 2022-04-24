@@ -1,7 +1,5 @@
 package models;
 
-import jdk.jfr.DataAmount;
-import utils.Constants;
 import utils.UtilFunctions;
 
 public class Room {

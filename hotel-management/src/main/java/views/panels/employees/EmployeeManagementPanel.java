@@ -1,8 +1,8 @@
 package views.panels.employees;
 
 import utils.UtilFunctions;
-import views.components.table_model.NonEditableTableModel;
 import views.components.panels.ScrollableTablePanel;
+import views.components.table_model.NonEditableTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

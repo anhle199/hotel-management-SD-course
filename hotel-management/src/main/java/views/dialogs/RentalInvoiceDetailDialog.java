@@ -4,13 +4,9 @@ import utils.Constants;
 import utils.DetailDialogModeEnum;
 import utils.UtilFunctions;
 import views.components.panels.DateChooserPanel;
-import views.components.panels.ImagePanel;
-import views.components.panels.TextFieldPanel;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.text.NumberFormat;
 
 public class RentalInvoiceDetailDialog extends JDialog {
 

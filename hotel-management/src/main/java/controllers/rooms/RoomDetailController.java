@@ -155,12 +155,14 @@ public class RoomDetailController implements ActionListener, ItemListener {
 					roomDetailDialog.getRoomNameTextField().getText()
 			);
 
-			if (daoModel.isExistingRoomName(roomName)) {
-				UtilFunctions.showErrorMessage(roomDetailDialog, "Save Room", "This room is existing.");
+			if (roomName.isEmpty()) {
+				UtilFunctions.showErrorMessage(roomDetailDialog, "Create Room", "Room name must not be empty.");
+			} else if (daoModel.isExistingRoomName(roomName)) {
+				UtilFunctions.showErrorMessage(roomDetailDialog, "Edit Room", "This room is existing.");
 			} else {
 				int option = UtilFunctions.showConfirmDialog(
 						roomDetailDialog,
-						"Save Room",
+						"Edit Room",
 						"Are you sure to save new information for this room?"
 				);
 
@@ -181,7 +183,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 					}
 
 					daoModel.update(new Room(room.getId(), roomName, description, status, roomTypeId));
-					UtilFunctions.showInfoMessage(roomDetailDialog, "Save Room", "Save successfully.");
+					UtilFunctions.showInfoMessage(roomDetailDialog, "Edit Room", "Save successfully.");
 				}
 			}
 		} catch (DBConnectionException e) {
@@ -197,7 +199,9 @@ public class RoomDetailController implements ActionListener, ItemListener {
 					roomDetailDialog.getRoomNameTextField().getText()
 			);
 
-			if (daoModel.isExistingRoomName(roomName)) {
+			if (roomName.isEmpty()) {
+				UtilFunctions.showErrorMessage(roomDetailDialog, "Create Room", "Room name must not be empty.");
+			} else if (daoModel.isExistingRoomName(roomName)) {
 				UtilFunctions.showErrorMessage(roomDetailDialog, "Create Room", "This room is existing.");
 			} else {
 				int option = UtilFunctions.showConfirmDialog(

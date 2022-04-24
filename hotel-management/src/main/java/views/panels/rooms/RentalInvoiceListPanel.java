@@ -1,8 +1,8 @@
 package views.panels.rooms;
 
 import utils.UtilFunctions;
-import views.components.table_model.NonEditableTableModel;
 import views.components.panels.ScrollableTablePanel;
+import views.components.table_model.NonEditableTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -91,8 +91,6 @@ public class RentalInvoiceListPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 80, 1038, 682);
-
-		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
 	}
 
 	public JButton getAddButton() {

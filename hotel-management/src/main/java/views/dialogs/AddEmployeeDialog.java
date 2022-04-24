@@ -2,7 +2,6 @@ package views.dialogs;
 
 import utils.Constants;
 import utils.UtilFunctions;
-import views.components.panels.PasswordFieldPanel;
 import views.components.panels.PasswordTextField;
 
 import javax.swing.*;
