@@ -150,7 +150,47 @@ public class RoomDAO implements DAO<Room, Integer> {
 
 	@Override
 	public void update(Room entity) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		PreparedStatement preparedStatement = null;
+
+		try {
+			// Declare sql statement and create PreparedStatement for it.
+			String sqlStatement = "update `hotel_management`.`room` " +
+					"`name` = ?, `description` = ?, `status` = ?, `room_type_id` = ? where `id` = ?";
+
+			preparedStatement = connection.prepareStatement(sqlStatement);
+
+			// Set values for PreparedStatement.
+			preparedStatement.setNString(1, entity.getName());
+			preparedStatement.setString(2, entity.getDescription());
+			preparedStatement.setByte(3, entity.getStatus());
+			preparedStatement.setInt(5, entity.getId());
+
+			if (entity.getRoomTypeId() == -1) {
+				preparedStatement.setNull(4, Types.INTEGER);
+			} else {
+				preparedStatement.setInt(4, entity.getRoomTypeId());
+			}
+
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("RoomDAO.java - update - catch - " + e.getMessage());
+			System.out.println("RoomDAO.java - update - catch - " + Arrays.toString(e.getStackTrace()));
+
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("RoomDAO.java - update - finally/catch - " + e.getMessage());
+				System.out.println("RoomDAO.java - update - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
 	}
 
 	@Override
@@ -283,6 +323,108 @@ public class RoomDAO implements DAO<Room, Integer> {
 		}
 
 		return roomList;
+	}
+
+	public ArrayList<Pair<Room, RoomType>> filterByAndReturnWithRoomType(
+			String roomTypeName,
+			String statusName,
+			String startDate,
+			String endDate,
+			int startPrice,
+			int endPrice,
+			boolean ascendingPrice
+	) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		ArrayList<Pair<Room, RoomType>> roomList = new ArrayList<>();
+		PreparedStatement preparedStatement = null;
+
+		try {
+			String sqlStatement = "select r.*, rt.name as `room_type_name`, rt.price" +
+					" from `hotel_management`.`room` r join `hotel_management`.`room_type` rt" +
+					" on r.room_type_id == rt.id" +
+					" where (? <= rt.price and rt.price <= ?)";
+
+			if (!roomTypeName.equalsIgnoreCase("all"))
+				sqlStatement += " and rt.room_type_name = '" + roomTypeName + "'";
+			if (!statusName.equalsIgnoreCase("all"))
+				sqlStatement += " and r.status = " + Room.RoomStatusEnum.valueOf(statusName).byteValue();
+
+			sqlStatement += "order by rt.price " + (ascendingPrice ? "ASC" : "DESC");
+
+			preparedStatement = connection.prepareStatement(sqlStatement);
+			preparedStatement.setInt(1, startPrice);
+			preparedStatement.setInt(2, endPrice);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				Room room = new Room(
+						resultSet.getInt("id"),
+						resultSet.getNString("name"),
+						resultSet.getString("description"),
+						resultSet.getByte("status"),
+						resultSet.getInt("room_type_id")
+				);
+				RoomType roomType = new RoomType(
+						resultSet.getInt("room_type_id"),
+						resultSet.getNString("room_type_name"),
+						resultSet.getInt("price")
+				);
+
+				roomList.add(new Pair<>(room, roomType));
+			}
+		} catch (SQLException e) {
+			System.out.println("RoomDAO.java - filterByAndReturnWithRoomType - catch - " + e.getMessage());
+			System.out.println("RoomDAO.java - filterByAndReturnWithRoomType - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("RoomDAO.java - filterByAndReturnWithRoomType - finally/catch - " + e.getMessage());
+				System.out.println("RoomDAO.java - filterByAndReturnWithRoomType - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return roomList;
+	}
+
+	public boolean isExistingRoomName(String roomName) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		boolean isExisting = false;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			ResultSet resultSet;
+			String sqlStatement = "select * from `hotel_management`.`room` where `name` = ?";
+
+			preparedStatement = connection.prepareStatement(sqlStatement);
+			preparedStatement.setNString(1, roomName);
+
+			resultSet = preparedStatement.executeQuery();
+			isExisting = resultSet.next();  // next() return true if this value is existing, otherwise return false.
+		} catch (SQLException e) {
+			System.out.println("RoomDAO.java - isExisting - catch - " + e.getMessage());
+			System.out.println("RoomDAO.java - isExisting - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("RoomDAO.java - isExisting - finally/catch - " + e.getMessage());
+				System.out.println("RoomDAO.java - isExisting - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return isExisting;
 	}
 
 }
