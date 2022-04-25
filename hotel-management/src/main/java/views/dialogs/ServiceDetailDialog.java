@@ -31,7 +31,9 @@ public class ServiceDetailDialog extends JDialog {
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setPreferredSize(new Dimension(460, 356));
+
 		initSubviews(panel);
+		setViewMode(viewMode);
 
 		setResizable(false);
 		setContentPane(panel);
@@ -48,8 +50,6 @@ public class ServiceDetailDialog extends JDialog {
 		int spacingTextFields = 12;
 		int xTextField = padding * 2 + labelSize.width;
 
-		boolean fieldEditable = viewMode.getFieldEditable();
-
 		// Service Name Label.
 		JLabel serviceNameLabel = new JLabel("Service name");
 		serviceNameLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
@@ -59,7 +59,6 @@ public class ServiceDetailDialog extends JDialog {
 		serviceNameTextField = new JTextField();
 		serviceNameTextField.setBounds(xTextField, serviceNameLabel.getY(), textFieldSize.width, textFieldSize.height);
 		UtilFunctions.configureDialogTextFieldOnMainThread(serviceNameTextField);
-		serviceNameTextField.setEnabled(fieldEditable);
 		panel.add(serviceNameTextField);
 
 		// Description Label.
@@ -71,7 +70,6 @@ public class ServiceDetailDialog extends JDialog {
 		descriptionTextField = new JTextField();
 		descriptionTextField.setBounds(xTextField, descriptionLabel.getY(), textFieldSize.width, textFieldSize.height);
 		UtilFunctions.configureDialogTextFieldOnMainThread(descriptionTextField);
-		descriptionTextField.setEnabled(fieldEditable);
 		panel.add(descriptionTextField);
 
 		// Price Label.
@@ -93,7 +91,6 @@ public class ServiceDetailDialog extends JDialog {
 		// Price Text Field.
 		priceTextField = new JFormattedTextField(priceFormatter);
 		priceTextField.setBounds(xTextField, priceLabel.getY(), textFieldSize.width, textFieldSize.height);
-		priceTextField.setEnabled(fieldEditable);
 		priceTextField.setValue(Constants.MIN_PRICE);
 		priceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		UtilFunctions.configureDialogTextFieldOnMainThread(priceTextField);
@@ -107,7 +104,6 @@ public class ServiceDetailDialog extends JDialog {
 		// Note Text Field.
 		noteTextArea = new JTextArea();
 		noteTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
-		noteTextArea.setEnabled(fieldEditable);
 		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextArea);
 		panel.add(noteTextArea);
 

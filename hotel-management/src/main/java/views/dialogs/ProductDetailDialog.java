@@ -1,6 +1,7 @@
 package views.dialogs;
 
 import utils.Constants;
+import utils.DetailDialogModeEnum;
 import utils.UtilFunctions;
 
 import javax.swing.*;
@@ -10,22 +11,26 @@ import java.text.NumberFormat;
 
 public class ProductDetailDialog extends JDialog {
 
-	// Components for basic information panel.
+	private DetailDialogModeEnum viewMode;
+
 	private JTextField productNameTextField;
 	private JComboBox<String> productTypeComboBox;
 	private JFormattedTextField priceTextField;
-	private JTextField quantityTextField;
+	private JFormattedTextField quantityTextField;
 	private JTextArea noteTextArea;
-	private JButton editButton;
-	private JButton closeButton;
+	private JButton positiveButton;
+	private JButton negativeButton;
 
-	public ProductDetailDialog(JFrame frame) {
+	public ProductDetailDialog(JFrame frame, DetailDialogModeEnum mode) {
 		super(frame, "Product Detail", true);
+		this.viewMode = mode;
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setPreferredSize(new Dimension(460, 408));
+
 		initSubviews(panel);
+		setViewMode(viewMode);
 
 		setResizable(false);
 		setContentPane(panel);
@@ -51,7 +56,6 @@ public class ProductDetailDialog extends JDialog {
 		productNameTextField = new JTextField();
 		productNameTextField.setBounds(xTextField, productNameLabel.getY(), textFieldSize.width, textFieldSize.height);
 		UtilFunctions.configureDialogTextFieldOnMainThread(productNameTextField);
-		productNameTextField.setEnabled(false);
 		panel.add(productNameTextField);
 
 		// Product Type Label.
@@ -60,9 +64,8 @@ public class ProductDetailDialog extends JDialog {
 		panel.add(productTypeLabel);
 
 		// Product Type Combo Box.
-		productTypeComboBox = new JComboBox<>(Constants.PRODUCT_TYPES);
+		productTypeComboBox = new JComboBox<>();
 		productTypeComboBox.setBounds(xTextField, productTypeLabel.getY(), textFieldSize.width, textFieldSize.height);
-		productTypeComboBox.setEnabled(false);
 		panel.add(productTypeComboBox);
 
 		// Price Label.
@@ -84,7 +87,6 @@ public class ProductDetailDialog extends JDialog {
 		// Price Text Field.
 		priceTextField = new JFormattedTextField(priceFormatter);
 		priceTextField.setBounds(xTextField, priceLabel.getY(), textFieldSize.width, textFieldSize.height);
-		priceTextField.setEnabled(false);
 		priceTextField.setValue(Constants.MIN_PRICE);
 		priceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		UtilFunctions.configureDialogTextFieldOnMainThread(priceTextField);
@@ -95,37 +97,84 @@ public class ProductDetailDialog extends JDialog {
 		quantityLabel.setBounds(padding, priceLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(quantityLabel);
 
+		// Number formatter
+		NumberFormatter quantityFormatter = new NumberFormatter(numberFormat);
+		quantityFormatter.setMinimum(Constants.MIN_QUANTITY);
+		quantityFormatter.setMaximum(Constants.MAX_QUANTITY);
+		quantityFormatter.setAllowsInvalid(false);
+		quantityFormatter.setCommitsOnValidEdit(true);
+
 		// Quantity Text Field.
-		quantityTextField = new JTextField();
+		quantityTextField = new JFormattedTextField(quantityFormatter);
 		quantityTextField.setBounds(xTextField, quantityLabel.getY(), textFieldSize.width, textFieldSize.height);
 		UtilFunctions.configureDialogTextFieldOnMainThread(quantityTextField);
-		quantityTextField.setEnabled(false);
 		panel.add(quantityTextField);
 
 		// Note Label.
-		JLabel noteLabel = new JLabel("Notes");
+		JLabel noteLabel = new JLabel("Note");
 		noteLabel.setBounds(padding, quantityLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(noteLabel);
 
 		// Note Text Field.
 		noteTextArea = new JTextArea();
 		noteTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
-		noteTextArea.setEnabled(false);
 		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextArea);
 		panel.add(noteTextArea);
 
-		// Edit Button.
-		editButton = new JButton("Edit");
-		editButton.setBounds(xTextField, noteLabel.getY() + noteTextArea.getHeight() + padding, 100, textFieldSize.height);
-		UtilFunctions.configureTopBarButtonOnMainThread(editButton);
-		panel.add(editButton);
+		// Positive Button.
+		positiveButton = new JButton(viewMode.getPositiveButtonTitle());
+		positiveButton.setBounds(xTextField, noteLabel.getY() + noteTextArea.getHeight() + padding, 100, textFieldSize.height);
+		UtilFunctions.configureTopBarButtonOnMainThread(positiveButton);
+		panel.add(positiveButton);
 
-		// Close Button.
-		closeButton = new JButton("Close");
-		closeButton.setBounds(editButton.getX() + editButton.getWidth() + padding, editButton.getY(), 100, textFieldSize.height);
-		UtilFunctions.configureBorderedButtonOnMainThread(closeButton);
-		UtilFunctions.addHoverEffectsForBorderedButton(closeButton);
-		panel.add(closeButton);
+		// Negative Button.
+		negativeButton = new JButton(viewMode.getNegativeButtonTitle());
+		negativeButton.setBounds(positiveButton.getX() + positiveButton.getWidth() + padding, positiveButton.getY(), 100, textFieldSize.height);
+		UtilFunctions.configureBorderedButtonOnMainThread(negativeButton);
+		UtilFunctions.addHoverEffectsForBorderedButton(negativeButton);
+		panel.add(negativeButton);
+	}
+
+	public void setViewMode(DetailDialogModeEnum viewMode) {
+		this.viewMode = viewMode;
+
+		boolean fieldEditable = viewMode.getFieldEditable();
+		productNameTextField.setEnabled(fieldEditable);
+		productTypeComboBox.setEnabled(fieldEditable);
+		priceTextField.setEnabled(fieldEditable);
+		quantityTextField.setEnabled(fieldEditable);
+		noteTextArea.setEnabled(fieldEditable);
+
+		positiveButton.setText(viewMode.getPositiveButtonTitle());
+		negativeButton.setText(viewMode.getNegativeButtonTitle());
+	}
+
+	public JTextField getProductNameTextField() {
+		return productNameTextField;
+	}
+
+	public JComboBox<String> getProductTypeComboBox() {
+		return productTypeComboBox;
+	}
+
+	public JFormattedTextField getPriceTextField() {
+		return priceTextField;
+	}
+
+	public JFormattedTextField getQuantityTextField() {
+		return quantityTextField;
+	}
+
+	public JTextArea getNoteTextArea() {
+		return noteTextArea;
+	}
+
+	public JButton getPositiveButton() {
+		return positiveButton;
+	}
+
+	public JButton getNegativeButton() {
+		return negativeButton;
 	}
 
 }
