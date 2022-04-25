@@ -1,6 +1,7 @@
 package views.dialogs;
 
 import utils.Constants;
+import utils.DetailDialogModeEnum;
 import utils.UtilFunctions;
 
 import javax.swing.*;
@@ -10,19 +11,25 @@ import java.text.NumberFormat;
 
 public class ServiceInvoiceDetailDialog extends JDialog {
 
-	// Components for basic information panel.
+	private DetailDialogModeEnum viewMode;
+
 	private JComboBox<String> roomNameComboBox;
 	private JComboBox<String> serviceNameComboBox;
 	private JFormattedTextField priceTextField;
 	private JTextField numberOfCustomersTextField;
 	private JFormattedTextField totalPriceTextField;
-	private JTextField timeUsedTextField;
+	private JFormattedTextField timeUsedTextField;
 	private JTextArea noteTextArea;
-	private JButton editButton;
-	private JButton closeButton;
+	private JButton positiveButton;
+	private JButton negativeButton;
 
 	public ServiceInvoiceDetailDialog(JFrame frame) {
+		this(frame, DetailDialogModeEnum.VIEW_ONLY);
+	}
+
+	public ServiceInvoiceDetailDialog(JFrame frame, DetailDialogModeEnum mode) {
 		super(frame, "Service Invoice Detail", true);
+		this.viewMode = mode;
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -44,6 +51,8 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 		int spacingTextFields = 12;
 		int xTextField = padding * 2 + labelSize.width;
 
+		boolean fieldEditable = viewMode.getFieldEditable();
+
 		// Room Name Label.
 		JLabel roomNameLabel = new JLabel("Room name");
 		roomNameLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
@@ -52,7 +61,7 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 		// Room Name Combo Box.
 		roomNameComboBox = new JComboBox<>();
 		roomNameComboBox.setBounds(xTextField, roomNameLabel.getY(), textFieldSize.width, textFieldSize.height);
-		roomNameComboBox.setEnabled(false);
+		roomNameComboBox.setEnabled(fieldEditable);
 		panel.add(roomNameComboBox);
 
 		// Service Name Label.
@@ -63,7 +72,7 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 		// Service Name Combo Box.
 		serviceNameComboBox = new JComboBox<>();
 		serviceNameComboBox.setBounds(xTextField, serviceNameLabel.getY(), textFieldSize.width, textFieldSize.height);
-		serviceNameComboBox.setEnabled(false);
+		serviceNameComboBox.setEnabled(fieldEditable);
 		panel.add(serviceNameComboBox);
 
 		// Price Label.
@@ -77,16 +86,16 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 
 		// Number formatter
 		NumberFormatter priceFormatter = new NumberFormatter(numberFormat);
-		priceFormatter.setMinimum(Constants.MIN_PRICE);
-		priceFormatter.setMaximum(Constants.MAX_PRICE);
+		priceFormatter.setMinimum(Constants.MIN_CUSTOMERS);
+		priceFormatter.setMaximum(Constants.MAX_CUSTOMERS);
 		priceFormatter.setAllowsInvalid(false);
 		priceFormatter.setCommitsOnValidEdit(true);
 
 		// Price Text Field.
 		priceTextField = new JFormattedTextField(priceFormatter);
 		priceTextField.setBounds(xTextField, priceLabel.getY(), textFieldSize.width, textFieldSize.height);
-		priceTextField.setEnabled(false);
-		priceTextField.setValue(Constants.MIN_PRICE);
+		priceTextField.setEnabled(fieldEditable);
+		priceTextField.setValue(Constants.MIN_CUSTOMERS);
 		priceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		UtilFunctions.configureDialogTextFieldOnMainThread(priceTextField);
 		panel.add(priceTextField);
@@ -99,7 +108,7 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 		// Number Of Customers Text Field.
 		numberOfCustomersTextField = new JTextField();
 		numberOfCustomersTextField.setBounds(xTextField, numberOfCustomersLabel.getY(), textFieldSize.width, textFieldSize.height);
-		numberOfCustomersTextField.setEnabled(false);
+		numberOfCustomersTextField.setEnabled(fieldEditable);
 		UtilFunctions.configureDialogTextFieldOnMainThread(numberOfCustomersTextField);
 		panel.add(numberOfCustomersTextField);
 
@@ -111,7 +120,7 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 		// Total Price Text Field.
 		totalPriceTextField = new JFormattedTextField(priceFormatter);
 		totalPriceTextField.setBounds(xTextField, totalPriceLabel.getY(), textFieldSize.width, textFieldSize.height);
-		totalPriceTextField.setEnabled(false);
+		totalPriceTextField.setEnabled(fieldEditable);
 		totalPriceTextField.setValue(Constants.MIN_PRICE);
 		totalPriceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		UtilFunctions.configureDialogTextFieldOnMainThread(totalPriceTextField);
@@ -122,37 +131,96 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 		timeUsedLabel.setBounds(padding, totalPriceLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(timeUsedLabel);
 
+		// Number formatter
+		NumberFormatter numberFormatter = new NumberFormatter(numberFormat);
+		numberFormatter.setMinimum(Constants.MAX_TIME_USED);
+		numberFormatter.setMaximum(Constants.MAX_TIME_USED);
+		numberFormatter.setAllowsInvalid(false);
+		numberFormatter.setCommitsOnValidEdit(true);
+
 		// Time Used Text Field.
-		timeUsedTextField = new JTextField();
+		timeUsedTextField = new JFormattedTextField(numberFormatter);
 		timeUsedTextField.setBounds(xTextField, timeUsedLabel.getY(), textFieldSize.width, textFieldSize.height);
-		timeUsedTextField.setEnabled(false);
+		timeUsedTextField.setEnabled(fieldEditable);
 		UtilFunctions.configureDialogTextFieldOnMainThread(timeUsedTextField);
 		panel.add(timeUsedTextField);
 
 		// Note Label.
-		JLabel noteLabel = new JLabel("Notes");
+		JLabel noteLabel = new JLabel("Note");
 		noteLabel.setBounds(padding, timeUsedLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(noteLabel);
 
 		// Note Text Field.
 		noteTextArea = new JTextArea();
 		noteTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
-		noteTextArea.setEnabled(false);
+		noteTextArea.setEnabled(fieldEditable);
 		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextArea);
 		panel.add(noteTextArea);
 
 		// Edit Button.
-		editButton = new JButton("Edit");
-		editButton.setBounds(xTextField, noteLabel.getY() + noteTextArea.getHeight() + padding, 100, textFieldSize.height);
-		UtilFunctions.configureTopBarButtonOnMainThread(editButton);
-		panel.add(editButton);
+		positiveButton = new JButton(viewMode.getPositiveButtonTitle());
+		positiveButton.setBounds(xTextField, noteLabel.getY() + noteTextArea.getHeight() + padding, 100, textFieldSize.height);
+		UtilFunctions.configureTopBarButtonOnMainThread(positiveButton);
+		panel.add(positiveButton);
 
 		// Close Button.
-		closeButton = new JButton("Close");
-		closeButton.setBounds(editButton.getX() + editButton.getWidth() + padding, editButton.getY(), 100, textFieldSize.height);
-		UtilFunctions.configureBorderedButtonOnMainThread(closeButton);
-		UtilFunctions.addHoverEffectsForBorderedButton(closeButton);
-		panel.add(closeButton);
+		negativeButton = new JButton(viewMode.getNegativeButtonTitle());
+		negativeButton.setBounds(positiveButton.getX() + positiveButton.getWidth() + padding, positiveButton.getY(), 100, textFieldSize.height);
+		UtilFunctions.configureBorderedButtonOnMainThread(negativeButton);
+		UtilFunctions.addHoverEffectsForBorderedButton(negativeButton);
+		panel.add(negativeButton);
+	}
+
+	public void setViewMode(DetailDialogModeEnum viewMode) {
+		this.viewMode = viewMode;
+
+		boolean fieldEditable = viewMode.getFieldEditable();
+
+		roomNameComboBox.setEnabled(viewMode == DetailDialogModeEnum.CREATE);
+		serviceNameComboBox.setEnabled(fieldEditable);
+		priceTextField.setEnabled(false);
+		numberOfCustomersTextField.setEnabled(fieldEditable);
+		totalPriceTextField.setEnabled(false);
+		timeUsedTextField.setEnabled(fieldEditable);
+		noteTextArea.setEnabled(fieldEditable);
+		positiveButton.setText(viewMode.getPositiveButtonTitle());
+		negativeButton.setText(viewMode.getNegativeButtonTitle());
+	}
+
+	public JComboBox<String> getRoomNameComboBox() {
+		return roomNameComboBox;
+	}
+
+	public JComboBox<String> getServiceNameComboBox() {
+		return serviceNameComboBox;
+	}
+
+	public JFormattedTextField getPriceTextField() {
+		return priceTextField;
+	}
+
+	public JTextField getNumberOfCustomersTextField() {
+		return numberOfCustomersTextField;
+	}
+
+	public JFormattedTextField getTotalPriceTextField() {
+		return totalPriceTextField;
+	}
+
+	public JFormattedTextField getTimeUsedTextField() {
+		return timeUsedTextField;
+	}
+
+	public JTextArea getNoteTextArea() {
+		return noteTextArea;
+	}
+
+	public JButton getPositiveButton() {
+		return positiveButton;
+	}
+
+	public JButton getNegativeButton() {
+		return negativeButton;
 	}
 
 }

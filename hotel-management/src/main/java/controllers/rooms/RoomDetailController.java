@@ -67,8 +67,16 @@ public class RoomDetailController implements ActionListener, ItemListener {
 		loadRoomTypesAndUpdateUI();
 
 		if (room != null) {
-			roomDetailDialog.getRoomNameTextField().setText(room.getName());
-			roomDetailDialog.getNoteTextArea().setText(room.getDescription());
+			RoomType roomType = roomTypeList.get(findRoomTypeIndexByRoomTypeId(room.getRoomTypeId()));
+
+			roomDetailDialog.getRoomNameTextField()
+							.setText(room.getName());
+			roomDetailDialog.getRoomTypeComboBox()
+							.setSelectedItem(roomType.getName());
+			roomDetailDialog.getPriceTextField()
+							.setText(String.valueOf(roomType.getPrice()));
+			roomDetailDialog.getNoteTextArea()
+							.setText(room.getDescription());
 		}
 
 		roomDetailDialog.setVisible(true);
@@ -85,12 +93,10 @@ public class RoomDetailController implements ActionListener, ItemListener {
 			}
 
 			DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(roomTypeNameList);
-			this.roomDetailDialog.getRoomTypeComboBox().setModel(comboBoxModel);
+			this.roomDetailDialog.getRoomTypeComboBox()
+								 .setModel(comboBoxModel);
 			this.roomDetailDialog.getPriceTextField()
-								 .setText(String.valueOf(
-										 roomTypeNameList.isEmpty()
-												 ? 0 : roomTypeList.get(0).getPrice()
-								 ));
+								 .setText(String.valueOf(roomTypeList.get(0).getPrice()));
 		} catch (DBConnectionException e) {
 			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 			System.out.println("RoomDetailController.java - loadRoomTypesAndUpdateUI - catch - Unavailable connection.");
@@ -111,16 +117,10 @@ public class RoomDetailController implements ActionListener, ItemListener {
 	@Override
 	public void itemStateChanged(ItemEvent event) {
 		if (event.getSource() == roomDetailDialog.getRoomTypeComboBox()) {
-			if (roomTypeList.isEmpty()) {
-				this.roomDetailDialog.getPriceTextField().setText("0");
-			} else {
-				for (RoomType item: roomTypeList) {
-					if (item.getName().equals(event.getItem())) {
-						this.roomDetailDialog.getPriceTextField()
-											 .setText(String.valueOf(item.getPrice()));
-					}
-				}
-			}
+			String roomTypeName = String.valueOf(roomDetailDialog.getRoomTypeComboBox().getSelectedItem());
+			RoomType roomType = roomTypeList.get(findRoomTypeIndexByRoomName(roomTypeName));
+
+			roomDetailDialog.getPriceTextField().setText(String.valueOf(roomType.getPrice()));
 		}
 	}
 
@@ -175,7 +175,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 				);
 
 				if (option == JOptionPane.YES_OPTION) {
-					daoModel.update(room);
+					daoModel.update(newRoom);
 					UtilFunctions.showInfoMessage(roomDetailDialog, "Edit Room", "Save successfully.");
 				}
 			}

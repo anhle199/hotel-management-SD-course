@@ -9,6 +9,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 public class ServiceInvoiceListPanel extends JPanel {
+
+	public static final int HIDDEN_COLUMN_SERVICE_INVOICE_ID = 1;
+	public static final int HIDDEN_COLUMN_ROOM_ID = 9;
+	public static final int HIDDEN_COLUMN_SERVICE_ID = 10;
+
 	// Top Bar.
 	private JButton addButton;
 	private JButton removeButton;
@@ -52,17 +57,23 @@ public class ServiceInvoiceListPanel extends JPanel {
 	private void initTable() {
 		final String[] columnNames = {
 				"",  // no
-				"Room",
-				"Service type",
+				"id",
+				"Room name",
+				"Service name",
 				"Price",
 				"Number of customer",
 				"Total price",
 				"Time used",
-				"Notes"
+				"Note",
+				"room_id",
+				"service_id"
 		};
-		final int [] columnWidths = {50, 122, 127, 112, 167, 166, 129, 146};
+		final int [] columnWidths = {50, 0, 122, 127, 112, 167, 166, 129, 146, 0, 0};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
@@ -91,12 +102,18 @@ public class ServiceInvoiceListPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 80, 1038, 682);
-
-		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Room", "Service type", "Price", "Number of customer", "Total price", "Time used", "Notes"});
-		model.addRow(new Object[]{2, "Room", "Service type", "Price", "Number of customer", "Total price", "Time used", "Notes"});
-		model.addRow(new Object[]{3, "Room", "Service type", "Price", "Number of customer", "Total price", "Time used", "Notes"});
-		model.addRow(new Object[]{4, "Room", "Service type", "Price", "Number of customer", "Total price", "Time used", "Notes"});
-		model.addRow(new Object[]{5, "Room", "Service type", "Price", "Number of customer", "Total price", "Time used", "Notes"});
 	}
+
+	public JButton getAddButton() {
+		return addButton;
+	}
+
+	public JButton getRemoveButton() {
+		return removeButton;
+	}
+
+	public ScrollableTablePanel getScrollableTable() {
+		return scrollableTable;
+	}
+
 }

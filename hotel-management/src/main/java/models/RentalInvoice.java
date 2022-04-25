@@ -92,4 +92,15 @@ public class RentalInvoice {
 		}
 	}
 
+	public boolean equals(RentalInvoice another) {
+		return id == another.id
+				&& startDate.compareTo(another.startDate) == 0
+				&& roomId == another.roomId
+				&& roomName.equals(another.roomName)
+				&& customerName.equals(another.customerName)
+				&& identityNumber.equals(another.identityNumber)
+				&& address.equals(another.address)
+				&& customerType == another.customerType;
+	}
+
 }

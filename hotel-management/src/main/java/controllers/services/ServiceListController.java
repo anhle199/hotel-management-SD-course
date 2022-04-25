@@ -63,7 +63,7 @@ public class ServiceListController implements ActionListener {
 			addServiceListToTable(serviceList);
 		} catch (DBConnectionException e) {
 			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
-			System.out.println("ServiceListController.java - loadServiceListAndReloadTableData - catch - Unavailable connection.");
+			System.out.println("ServiceInvoiceListController.java - loadServiceListAndReloadTableData - catch - Unavailable connection.");
 		}
 	}
 
@@ -137,12 +137,12 @@ public class ServiceListController implements ActionListener {
 		int selectedRowIndex = tablePanel.getTable().getSelectedRow();
 
 		if (selectedRowIndex == -1) {
-			UtilFunctions.showWarningMessage(serviceListPanel, "Remove service", "You must select a row.");
+			UtilFunctions.showWarningMessage(serviceListPanel, "Remove Service", "You must select a row.");
 		} else {
 			int option = JOptionPane.showConfirmDialog(
 					serviceListPanel,
 					"Are you sure to remove this service?",
-					"Remove service",
+					"Remove Service",
 					JOptionPane.YES_NO_OPTION
 			);
 
@@ -155,12 +155,12 @@ public class ServiceListController implements ActionListener {
 
 					UtilFunctions.showInfoMessage(
 							serviceListPanel,
-							"Remove service",
+							"Remove Service",
 							"This service is removed successfully."
 					);
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
-					System.out.println("ServiceListController.java - removeButtonAction - catch - Unavailable connection.");
+					System.out.println("ServiceInvoiceListController.java - removeButtonAction - catch - Unavailable connection.");
 				}
 			}
 		}

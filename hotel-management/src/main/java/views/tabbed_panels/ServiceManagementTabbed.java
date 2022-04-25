@@ -34,4 +34,8 @@ public class ServiceManagementTabbed extends JTabbedPane {
         return serviceListPanel;
     }
 
+    public ServiceInvoiceListPanel getServiceInvoiceListPanel() {
+        return serviceInvoiceListPanel;
+    }
+
 }

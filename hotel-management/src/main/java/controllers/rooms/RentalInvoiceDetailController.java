@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Vector;
@@ -61,30 +62,52 @@ public class RentalInvoiceDetailController implements ActionListener {
 
 	public void displayUI() {
 		loadRoomNamesAndUpdateUI();
-		this.rentalInvoiceDetailDialog.getCustomerTypeComboBox()
-									  .setModel(new DefaultComboBoxModel<>(
-											  RentalInvoice.CustomerTypeEnum.allCases()
-									  ));
 
-		if (rentalInvoice != null && (viewMode == DetailDialogModeEnum.VIEW_ONLY || viewMode == DetailDialogModeEnum.EDITING)) {
-			Timestamp today = UtilFunctions.getStartTimeOf(LocalDate.now());
+		if (rentalInvoice != null) {
+			rentalInvoiceDetailDialog.getRentingStartDatePicker()
+									 .setSelectedDate(rentalInvoice.getStartDate());
+			rentalInvoiceDetailDialog.getCustomerNameTextField()
+									 .setText(rentalInvoice.getCustomerName());
+			rentalInvoiceDetailDialog.getIdentifierNumberTextField()
+									 .setText(rentalInvoice.getIdentityNumber());
+			rentalInvoiceDetailDialog.getAddressTextField()
+									 .setText(rentalInvoice.getAddress());
 
-			// day(today) > day(start date)
-			if (today.compareTo(rentalInvoice.getStartDate()) > 0) {
-				rentalInvoiceDetailDialog.getRentingStartDatePicker().setEnabledSelection(false);
+			if (viewMode == DetailDialogModeEnum.VIEW_ONLY || viewMode == DetailDialogModeEnum.EDITING) {
+				Timestamp now = UtilFunctions.getTimestamp(LocalDateTime.now());
+
+				// day(now) > day(start date)
+				if (now.compareTo(rentalInvoice.getStartDate()) > 0) {
+					rentalInvoiceDetailDialog.setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+					rentalInvoiceDetailDialog.getPositiveButton().setEnabled(false);
+				}
 			}
+		} else {
+			Timestamp nowAfterTwoHour = UtilFunctions.getTimestamp(LocalDateTime.now(), 2);
+			rentalInvoiceDetailDialog.getRentingStartDatePicker().setSelectedDate(nowAfterTwoHour);
 		}
+
+		rentalInvoiceDetailDialog.getCustomerTypeComboBox()
+								 .setModel(new DefaultComboBoxModel<>(
+										 RentalInvoice.CustomerTypeEnum.allCases()
+								 ));
+
+		rentalInvoiceDetailDialog.setVisible(true);
 	}
 
 	private void loadRoomNamesAndUpdateUI() {
 		try {
 			RoomDAO daoModel = new RoomDAO();
-			roomList = daoModel.getAllAvailable();
+			roomList = daoModel.getAllByStatus(Room.RoomStatusEnum.RENTED);
 
 			// If the condition is true => view only or edit
 			if (rentalInvoice != null) {
 				Optional<Room> roomOptional = daoModel.get(rentalInvoice.getRoomId());
-				roomOptional.ifPresent(room -> roomList.add(room));
+				roomOptional.ifPresent(room -> {
+					if (!roomList.contains(room)) {
+						roomList.add(room);
+					}
+				});
 			}
 
 			Vector<String> roomNameList = new Vector<>();
@@ -136,6 +159,7 @@ public class RentalInvoiceDetailController implements ActionListener {
 		connectionErrorDialog.setVisible(false);
 
 		SingletonDBConnection.getInstance().connect();
+		displayUI();
 	}
 
 	private void editButtonAction() {
@@ -152,139 +176,97 @@ public class RentalInvoiceDetailController implements ActionListener {
 	}
 
 	private void saveButtonAction() {
-		String customerName = UtilFunctions.removeRedundantWhiteSpace(
-				String.valueOf(rentalInvoiceDetailDialog.getCustomerNameTextField().getText())
-		);
-		String identifierNumber = UtilFunctions.removeRedundantWhiteSpace(
-				String.valueOf(rentalInvoiceDetailDialog.getIdentifierNumberTextField().getText())
-		);
-		String address = UtilFunctions.removeRedundantWhiteSpace(
-				String.valueOf(rentalInvoiceDetailDialog.getAddressTextField().getText())
-		);
+		RentalInvoice newRentalInvoice = getRentalInvoiceInstanceFromInputFields();
 
-		// Validation
-		if (validateFields(customerName, identifierNumber, address)) {
+		if (rentalInvoice.equals(newRentalInvoice)) {
+			UtilFunctions.showInfoMessage(
+					rentalInvoiceDetailDialog,
+					"Edit Rental Invoice",
+					"Information does not change."
+			);
+		} else if (checkEmptyFields(
+				newRentalInvoice.getCustomerName(),
+				newRentalInvoice.getIdentityNumber(),
+				newRentalInvoice.getAddress()
+		)) {
 			UtilFunctions.showErrorMessage(
 					rentalInvoiceDetailDialog,
 					"Edit Rental Invoice",
 					"All fields must not be empty."
 			);
-			return;
-		}
-
-		try {
-			int option = UtilFunctions.showConfirmDialog(
+		} else if (newRentalInvoice.getIdentityNumber().length() != 9 || newRentalInvoice.getIdentityNumber().length() != 12) {
+			UtilFunctions.showErrorMessage(
 					rentalInvoiceDetailDialog,
 					"Edit Rental Invoice",
-					"Are you sure to save new information for this invoice?"
+					"The length of the identity number must be 9 or 12."
 			);
-
-			if (option == JOptionPane.YES_OPTION) {
-				Timestamp rentingStartDate = UtilFunctions.getStartTimeOf(
-						rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedYear(),
-						rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedMonth(),
-						rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedDay()
-				);
-				String roomName = UtilFunctions.removeRedundantWhiteSpace(
-						String.valueOf(rentalInvoiceDetailDialog.getRoomNameComboBox().getSelectedItem())
-				);
-				int roomId = roomList.get(findRoomIndexByRoomName(roomName)).getId();
-				RentalInvoice.CustomerTypeEnum customerType = RentalInvoice.CustomerTypeEnum.valueOfIgnoreCase(
-						String.valueOf(rentalInvoiceDetailDialog.getCustomerTypeComboBox().getSelectedItem())
-				);
-
-				RentalInvoiceDAO daoModel = new RentalInvoiceDAO();
-				daoModel.update(
-						new RentalInvoice(
-								rentalInvoice.getId(),
-								rentingStartDate,
-								roomId,
-								roomName,
-								customerName,
-								identifierNumber,
-								address,
-								customerType.ordinal()
-						)
-				);
-				UtilFunctions.showInfoMessage(
+		} else {
+			try {
+				int option = UtilFunctions.showConfirmDialog(
 						rentalInvoiceDetailDialog,
 						"Edit Rental Invoice",
-						"Save successfully."
+						"Are you sure to save new information for this invoice?"
 				);
+
+				if (option == JOptionPane.YES_OPTION) {
+					RentalInvoiceDAO daoModel = new RentalInvoiceDAO();
+					daoModel.update(newRentalInvoice);
+					UtilFunctions.showInfoMessage(
+							rentalInvoiceDetailDialog,
+							"Edit Rental Invoice",
+							"Save successfully."
+					);
+				}
+			} catch (DBConnectionException e) {
+				SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
+				System.out.println("RentalInvoiceDetailController.java - saveButtonAction - catch - Unavailable connection.");
 			}
-		} catch (DBConnectionException e) {
-			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
-			System.out.println("RentalInvoiceDetailController.java - saveButtonAction - catch - Unavailable connection.");
 		}
 	}
 
 	private void createButtonAction() {
-		String customerName = UtilFunctions.removeRedundantWhiteSpace(
-				String.valueOf(rentalInvoiceDetailDialog.getCustomerNameTextField().getText())
-		);
-		String identifierNumber = UtilFunctions.removeRedundantWhiteSpace(
-				String.valueOf(rentalInvoiceDetailDialog.getIdentifierNumberTextField().getText())
-		);
-		String address = UtilFunctions.removeRedundantWhiteSpace(
-				String.valueOf(rentalInvoiceDetailDialog.getAddressTextField().getText())
-		);
+		RentalInvoice newRentalInvoice = getRentalInvoiceInstanceFromInputFields();
 
-		// Validation
-		if (validateFields(customerName, identifierNumber, address)) {
+		if (checkEmptyFields(
+				newRentalInvoice.getCustomerName(),
+				newRentalInvoice.getIdentityNumber(),
+				newRentalInvoice.getAddress()
+		)) {
 			UtilFunctions.showErrorMessage(
 					rentalInvoiceDetailDialog,
 					"Create Rental Invoice",
 					"All fields must not be empty."
 			);
-			return;
-		}
-
-		try {
-			int option = UtilFunctions.showConfirmDialog(
+		} else if (newRentalInvoice.getIdentityNumber().length() != 9 || newRentalInvoice.getIdentityNumber().length() != 12) {
+			UtilFunctions.showErrorMessage(
 					rentalInvoiceDetailDialog,
-					"Create Rental Invoice",
-					"Are you sure to create this invoice?"
+					"Edit Rental Invoice",
+					"The length of the identity number must be 9 or 12."
 			);
-
-			if (option == JOptionPane.YES_OPTION) {
-				Timestamp rentingStartDate = UtilFunctions.getStartTimeOf(
-						rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedYear(),
-						rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedMonth(),
-						rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedDay()
-				);
-				String roomName = UtilFunctions.removeRedundantWhiteSpace(
-						String.valueOf(rentalInvoiceDetailDialog.getRoomNameComboBox().getSelectedItem())
-				);
-				int roomId = roomList.get(findRoomIndexByRoomName(roomName)).getId();
-				RentalInvoice.CustomerTypeEnum customerType = RentalInvoice.CustomerTypeEnum.valueOfIgnoreCase(
-						String.valueOf(rentalInvoiceDetailDialog.getCustomerTypeComboBox().getSelectedItem())
-				);
-
-				RentalInvoiceDAO daoModel = new RentalInvoiceDAO();
-				daoModel.insert(
-						new RentalInvoice(
-								rentalInvoice.getId(),
-								rentingStartDate,
-								roomId,
-								roomName,
-								customerName,
-								identifierNumber,
-								address,
-								customerType.ordinal()
-						)
-				);
-				UtilFunctions.showInfoMessage(
+		} else {
+			try {
+				int option = UtilFunctions.showConfirmDialog(
 						rentalInvoiceDetailDialog,
 						"Create Rental Invoice",
-						"Create successfully."
+						"Are you sure to create this invoice?"
 				);
 
-				rentalInvoiceDetailDialog.setVisible(false);
-				rentalInvoiceListController.loadRentalInvoiceListAndReloadTableData();
+				if (option == JOptionPane.YES_OPTION) {
+					RentalInvoiceDAO daoModel = new RentalInvoiceDAO();
+					daoModel.insert(newRentalInvoice);
+					UtilFunctions.showInfoMessage(
+							rentalInvoiceDetailDialog,
+							"Create Rental Invoice",
+							"Create successfully."
+					);
+
+					rentalInvoiceDetailDialog.setVisible(false);
+					rentalInvoiceListController.loadRentalInvoiceListAndReloadTableData();
+				}
+			} catch (DBConnectionException e) {
+				SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
+				System.out.println("RentalInvoiceDetailController.java - createButtonAction - catch - Unavailable connection.");
 			}
-		} catch (DBConnectionException e) {
-			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
-			System.out.println("RentalInvoiceDetailController.java - createButtonAction - catch - Unavailable connection.");
 		}
 	}
 
@@ -313,7 +295,43 @@ public class RentalInvoiceDetailController implements ActionListener {
 		return -1;
 	}
 
-	private boolean validateFields(String customerName, String identifierNumber, String address) {
+	private RentalInvoice getRentalInvoiceInstanceFromInputFields() {
+		int rentalInvoiceId = rentalInvoice != null ? rentalInvoice.getId() : -1;
+		String customerName = UtilFunctions.removeRedundantWhiteSpace(
+				String.valueOf(rentalInvoiceDetailDialog.getCustomerNameTextField().getText())
+		);
+		String identifierNumber = UtilFunctions.removeRedundantWhiteSpace(
+				String.valueOf(rentalInvoiceDetailDialog.getIdentifierNumberTextField().getText())
+		);
+		String address = UtilFunctions.removeRedundantWhiteSpace(
+				String.valueOf(rentalInvoiceDetailDialog.getAddressTextField().getText())
+		);
+		Timestamp rentingStartDate = UtilFunctions.getStartTimeOf(
+				rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedYear(),
+				rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedMonth(),
+				rentalInvoiceDetailDialog.getRentingStartDatePicker().getSelectedDay()
+		);
+		String roomName = UtilFunctions.removeRedundantWhiteSpace(
+				String.valueOf(rentalInvoiceDetailDialog.getRoomNameComboBox().getSelectedItem())
+		);
+		int roomId = roomList.get(findRoomIndexByRoomName(roomName)).getId();
+		RentalInvoice.CustomerTypeEnum customerType = RentalInvoice.CustomerTypeEnum.valueOfIgnoreCase(
+				String.valueOf(rentalInvoiceDetailDialog.getCustomerTypeComboBox().getSelectedItem())
+		);
+
+		return new RentalInvoice(
+				rentalInvoiceId,
+				rentingStartDate,
+				roomId,
+				roomName,
+				customerName,
+				identifierNumber,
+				address,
+				customerType.ordinal()
+		);
+	}
+
+	private boolean checkEmptyFields(String customerName, String identifierNumber, String address) {
 		return !customerName.isEmpty() && !identifierNumber.isEmpty() && !address.isEmpty();
 	}
 

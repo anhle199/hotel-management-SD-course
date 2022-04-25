@@ -10,12 +10,17 @@ public class ServiceManagementController implements ChangeListener {
 
 	private final ServiceManagementTabbed serviceManagementTabbed;
 	private final ServiceListController serviceListController;
+	private final ServiceInvoiceListController serviceInvoiceListController;
 	private int currentTabIndex;
 
 	public ServiceManagementController(ServiceManagementTabbed serviceManagementTabbed, JFrame mainFrame) {
 		this.serviceManagementTabbed = serviceManagementTabbed;
 		this.serviceListController = new ServiceListController(
 				serviceManagementTabbed.getServiceListPanel(),
+				mainFrame
+		);
+		this.serviceInvoiceListController = new ServiceInvoiceListController(
+				serviceManagementTabbed.getServiceInvoiceListPanel(),
 				mainFrame
 		);
 		this.currentTabIndex = ServiceManagementTabbed.SERVICE_LIST_PANEL_INDEX;
@@ -40,8 +45,9 @@ public class ServiceManagementController implements ChangeListener {
 			case ServiceManagementTabbed.SERVICE_LIST_PANEL_INDEX:
 				serviceListController.displayUI();
 				break;
-//			case ServiceManagementTabbed.SERVICE_INVOICE_LIST_PANEL_INDEX:
-//				break;
+			case ServiceManagementTabbed.SERVICE_INVOICE_LIST_PANEL_INDEX:
+				serviceInvoiceListController.displayUI();
+				break;
 		}
 	}
 

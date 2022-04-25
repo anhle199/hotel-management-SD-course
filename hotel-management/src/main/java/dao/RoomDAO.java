@@ -55,7 +55,7 @@ public class RoomDAO implements DAO<Room, Integer> {
 		return roomList;
 	}
 
-	public ArrayList<Room> getAllAvailable() throws DBConnectionException {
+	public ArrayList<Room> getAllByStatus(Room.RoomStatusEnum status) throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
 		if (connection == null)
@@ -68,7 +68,7 @@ public class RoomDAO implements DAO<Room, Integer> {
 			String sqlStatement = "select * from `hotel_management`.`room` where `status` = ?";
 			preparedStatement = connection.prepareStatement(sqlStatement);
 
-			preparedStatement.setByte(1, Room.RoomStatusEnum.AVAILABLE.byteValue());
+			preparedStatement.setByte(1, status.byteValue());
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
@@ -83,16 +83,16 @@ public class RoomDAO implements DAO<Room, Integer> {
 				);
 			}
 		} catch (SQLException e) {
-			System.out.println("RoomDAO.java - getAllAvailable - catch - " + e.getMessage());
-			System.out.println("RoomDAO.java - getAllAvailable - catch - " + Arrays.toString(e.getStackTrace()));
+			System.out.println("RoomDAO.java - getAllByStatus - catch - " + e.getMessage());
+			System.out.println("RoomDAO.java - getAllByStatus - catch - " + Arrays.toString(e.getStackTrace()));
 			throw DBConnectionException.INSTANCE;
 		} finally {
 			try {
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} catch (SQLException e) {
-				System.out.println("RoomDAO.java - getAllAvailable - finally/catch - " + e.getMessage());
-				System.out.println("RoomDAO.java - getAllAvailable - finally/catch - " + Arrays.toString(e.getStackTrace()));
+				System.out.println("RoomDAO.java - getAllByStatus - finally/catch - " + e.getMessage());
+				System.out.println("RoomDAO.java - getAllByStatus - finally/catch - " + Arrays.toString(e.getStackTrace()));
 			}
 		}
 

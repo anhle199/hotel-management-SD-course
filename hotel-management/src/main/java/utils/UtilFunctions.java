@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UtilFunctions {
 
@@ -137,6 +138,22 @@ public class UtilFunctions {
 	public static String formatTimestamp(String pattern, Timestamp timestamp) {
 		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 		return formatter.format(timestamp);
+	}
+
+	public static Timestamp getTimestamp(LocalDateTime localDateTime) {
+		return getTimestamp(localDateTime, 0);
+	}
+
+	public static Timestamp getTimestamp(LocalDateTime localDateTime, int addedHour) {
+		localDateTime = localDateTime.plusHours(addedHour);
+
+		return Timestamp.valueOf(
+				String.format(
+						"%d-%d-%d %d:%d:%d",
+						localDateTime.getYear(), localDateTime.getMonthValue(), localDateTime.getDayOfMonth(),
+						localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond()
+				)
+		);
 	}
 
 	public static Timestamp getStartTimeOf(int year, int month, int day) {

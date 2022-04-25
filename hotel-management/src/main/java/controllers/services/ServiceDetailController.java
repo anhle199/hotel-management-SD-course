@@ -111,11 +111,26 @@ public class ServiceDetailController implements ActionListener {
 			Service newService = getServiceInstanceFromInputFields();
 
 			if (service.equals(newService)) {
-				UtilFunctions.showInfoMessage(serviceDetailDialog, "Edit Service", "Information does not change.");
-			} else if (newService.getName().isEmpty()) {
-				UtilFunctions.showErrorMessage(serviceDetailDialog, "Edit Service", "Service name must not be empty.");
+				UtilFunctions.showInfoMessage(
+						serviceDetailDialog,
+						"Edit Service",
+						"Information does not change."
+				);
+			} else if (checkEmptyFields(
+					newService.getName(),
+					newService.getDescription()
+			)) {
+				UtilFunctions.showErrorMessage(
+						serviceDetailDialog,
+						"Edit Service",
+						"All fields must not be empty."
+				);
 			} else if (daoModel.isExistingServiceName(newService.getName())) {
-				UtilFunctions.showErrorMessage(serviceDetailDialog, "Edit Service", "This service name is existing.");
+				UtilFunctions.showErrorMessage(
+						serviceDetailDialog,
+						"Edit Service",
+						"This service name is existing."
+				);
 			} else {
 				int option = UtilFunctions.showConfirmDialog(
 						serviceDetailDialog,
@@ -124,7 +139,7 @@ public class ServiceDetailController implements ActionListener {
 				);
 
 				if (option == JOptionPane.YES_OPTION) {
-					daoModel.update(service);
+					daoModel.update(newService);
 					UtilFunctions.showInfoMessage(serviceDetailDialog, "Edit Service", "Save successfully.");
 				}
 			}
@@ -139,10 +154,21 @@ public class ServiceDetailController implements ActionListener {
 			ServiceDAO daoModel = new ServiceDAO();
 			Service newService = getServiceInstanceFromInputFields();
 
-			if (newService.getName().isEmpty()) {
-				UtilFunctions.showErrorMessage(serviceDetailDialog, "Create Service", "Service name must not be empty.");
+			if (checkEmptyFields(
+					newService.getName(),
+					newService.getDescription()
+			)) {
+				UtilFunctions.showErrorMessage(
+						serviceDetailDialog,
+						"Create Service",
+						"All fields must not be empty."
+				);
 			} else if (daoModel.isExistingServiceName(newService.getName())) {
-				UtilFunctions.showErrorMessage(serviceDetailDialog, "Create Service", "This service name is existing.");
+				UtilFunctions.showErrorMessage(
+						serviceDetailDialog,
+						"Create Service",
+						"This service name is existing."
+				);
 			} else {
 				int option = UtilFunctions.showConfirmDialog(
 						serviceDetailDialog,
@@ -151,7 +177,7 @@ public class ServiceDetailController implements ActionListener {
 				);
 
 				if (option == JOptionPane.YES_OPTION) {
-					daoModel.insert(service);
+					daoModel.insert(newService);
 					UtilFunctions.showInfoMessage(serviceDetailDialog, "Create Room", "Create successfully.");
 
 					serviceDetailDialog.setVisible(false);
@@ -171,6 +197,10 @@ public class ServiceDetailController implements ActionListener {
 		serviceDetailDialog.getNoteTextArea().setText(service.getDescription());
 
 		serviceDetailDialog.setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+	}
+
+	private boolean checkEmptyFields(String serviceName, String description) {
+		return !serviceName.isEmpty() && ! description.isEmpty();
 	}
 
 	private Service getServiceInstanceFromInputFields() {

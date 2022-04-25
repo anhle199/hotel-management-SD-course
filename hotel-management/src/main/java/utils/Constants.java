@@ -73,6 +73,10 @@ public class Constants {
 
 	public static final int MIN_PRICE = 0;
 	public static final int MAX_PRICE = 10000;
+	public static final int MIN_CUSTOMERS = 1;
+	public static final int MAX_CUSTOMERS = 1000;
+	public static final int MIN_TIME_USED = 30;
+	public static final int MAX_TIME_USED = 360;
 	public static final String TIMESTAMP_WITHOUT_NANOSECOND = "yyyy-MM-dd HH:mm:ss";
 
 }

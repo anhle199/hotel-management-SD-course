@@ -108,6 +108,7 @@ default collate = utf8mb4_bin;
 -- Table: service_invoice
 create table if not exists `hotel_management`.`service_invoice` (
     `id` int not null auto_increment,
+    `service_name` nvarchar(60),
     `number_of_customers` int not null,
     `total_price` int not null,
     `time_used` int not null,
