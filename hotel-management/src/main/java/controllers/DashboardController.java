@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.employees.EmployeeManagementController;
 import controllers.rooms.RoomManagementController;
 import controllers.services.ServiceManagementController;
 import models.User;
@@ -17,7 +18,8 @@ public class DashboardController implements ActionListener {
 	private final LoginView loginView;
 	private final RoomManagementController roomManagementController;
 	private final ServiceManagementController serviceManagementController;
-//	private final User user;
+	private final EmployeeManagementController employeeManagementController;
+// private final User user;
 
 	public DashboardController(DashboardView dashboardView, LoginView loginView, User user) {
 		this.dashboardView = dashboardView;
@@ -30,7 +32,11 @@ public class DashboardController implements ActionListener {
 				dashboardView.getServiceManagementTabbed(),
 				dashboardView.getMainFrame()
 		);
-//		this.user = user;
+		this.employeeManagementController = new EmployeeManagementController(
+				dashboardView.getEmployeeManagementPanel(),
+				dashboardView.getMainFrame()
+		);
+//    this.user = user;
 
 		// Add action listeners
 		this.dashboardView.getRoomManagementButton().addActionListener(this);
@@ -135,6 +141,8 @@ public class DashboardController implements ActionListener {
 			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(dashboardView.getEmployeeManagementButton(), true);
 			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(dashboardView.getStatisticsButton(), false);
 		}
+
+		employeeManagementController.displayUI();
 	}
 
 	private void statisticsButtonAction() {

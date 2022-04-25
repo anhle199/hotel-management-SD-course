@@ -69,7 +69,7 @@ public class RoomDetailDialog extends JDialog {
 		panel.add(roomTypeLabel);
 
 		// Room Type Combo Box.
-		roomTypeComboBox = new JComboBox<>(Constants.ROOM_TYPES);
+		roomTypeComboBox = new JComboBox<>();
 		roomTypeComboBox.setBounds(xTextField, roomTypeLabel.getY(), textFieldSize.width, textFieldSize.height);
 		roomTypeComboBox.setEnabled(fieldEditable);
 		panel.add(roomTypeComboBox);

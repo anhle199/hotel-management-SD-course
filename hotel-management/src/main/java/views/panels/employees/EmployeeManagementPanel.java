@@ -9,6 +9,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 public class EmployeeManagementPanel extends JPanel {
+
+	public static final int HIDDEN_COLUMN_USER_ID = 1;
+	public static final int HIDDEN_COLUMN_PASSWORD = 6;
+
 	// Top Bar.
 	private JButton addButton;
 	private JButton removeButton;
@@ -43,14 +47,18 @@ public class EmployeeManagementPanel extends JPanel {
 	private void initTable() {
 		final String[] columnNames = {
 				"",  // no
+				"id",
 				"Employee name",
 				"Username",
 				"Gender",
-				"Birthday (year)",
+				"Year of birth",
+				"password",
 		};
-		final int [] columnWidths = {50, 243, 243, 242, 242};
+		final int [] columnWidths = {50, 0, 243, 243, 242, 242, 0};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
@@ -76,12 +84,18 @@ public class EmployeeManagementPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 80, 1040, 707);
-
-		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Employee name", "Username", "Gender", "Birthday (year)"});
-		model.addRow(new Object[]{2, "Employee name", "Username", "Gender", "Birthday (year)"});
-		model.addRow(new Object[]{3, "Employee name", "Username", "Gender", "Birthday (year)"});
-		model.addRow(new Object[]{4, "Employee name", "Username", "Gender", "Birthday (year)"});
-		model.addRow(new Object[]{5, "Employee name", "Username", "Gender", "Birthday (year)"});
 	}
+
+	public JButton getAddButton() {
+		return addButton;
+	}
+
+	public JButton getRemoveButton() {
+		return removeButton;
+	}
+
+	public ScrollableTablePanel getScrollableTable() {
+		return scrollableTable;
+	}
+
 }
