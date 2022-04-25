@@ -10,7 +10,6 @@ import views.components.dialogs.ConnectionErrorDialog;
 import views.components.panels.ScrollableTablePanel;
 import views.components.table_model.NonEditableTableModel;
 import views.dialogs.ServiceDetailDialog;
-import views.panels.rooms.RoomListPanel;
 import views.panels.services.ServiceListPanel;
 
 import javax.swing.*;
@@ -63,7 +62,7 @@ public class ServiceListController implements ActionListener {
 			addServiceListToTable(serviceList);
 		} catch (DBConnectionException e) {
 			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
-			System.out.println("ServiceInvoiceListController.java - loadServiceListAndReloadTableData - catch - Unavailable connection.");
+			System.out.println("ServiceListController.java - loadServiceListAndReloadTableData - catch - Unavailable connection.");
 		}
 	}
 
@@ -147,11 +146,11 @@ public class ServiceListController implements ActionListener {
 			);
 
 			if (option == JOptionPane.YES_OPTION) {
-				int roomId = (int) tablePanel.getTableModel()
-						.getValueAt(selectedRowIndex, RoomListPanel.HIDDEN_COLUMN_ROOM_ID);
+				int serviceId = (int) tablePanel.getTableModel()
+						.getValueAt(selectedRowIndex, ServiceListPanel.HIDDE_COLUMN_SERVICE_ID);
 
 				try {
-					daoModel.delete(roomId);
+					daoModel.delete(serviceId);
 
 					UtilFunctions.showInfoMessage(
 							serviceListPanel,
@@ -160,7 +159,7 @@ public class ServiceListController implements ActionListener {
 					);
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
-					System.out.println("ServiceInvoiceListController.java - removeButtonAction - catch - Unavailable connection.");
+					System.out.println("ServiceListController.java - removeButtonAction - catch - Unavailable connection.");
 				}
 			}
 		}

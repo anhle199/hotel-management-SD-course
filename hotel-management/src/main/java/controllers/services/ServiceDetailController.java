@@ -178,7 +178,7 @@ public class ServiceDetailController implements ActionListener {
 
 				if (option == JOptionPane.YES_OPTION) {
 					daoModel.insert(newService);
-					UtilFunctions.showInfoMessage(serviceDetailDialog, "Create Room", "Create successfully.");
+					UtilFunctions.showInfoMessage(serviceDetailDialog, "Create Service", "Create successfully.");
 
 					serviceDetailDialog.setVisible(false);
 					serviceListController.loadServiceListAndReloadTableData("");

@@ -12,8 +12,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 public class ProductListPanel extends JPanel {
-	// Top Bar
+
+	public static final int HIDDE_COLUMN_PRODUCT_ID = 1;
+
 	private TextFieldPanel searchBar;
+	private JButton searchButton;
 	private JButton addButton;
 	private JButton removeButton;
 
@@ -36,14 +39,19 @@ public class ProductListPanel extends JPanel {
 
 		// Search Bar.
 		ImagePanel searchIcon = new ImagePanel(Constants.IconNames.SEARCH_BLACK, 24, 24);
-		Dimension searchBarSize = new Dimension(500, 40);
+		Dimension searchBarSize = new Dimension(400, 40);
 		searchBar = new TextFieldPanel("Search", searchIcon, TextFieldPanel.IconPosition.LEADING, searchBarSize);
 		searchBar.setBounds(0, 0, searchBarSize.width, searchBarSize.height);
 		topBarPanel.add(searchBar);
 
+		searchButton = new JButton("Search");
+		searchButton.setBounds(412, 0, 115, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(searchButton);
+		topBarPanel.add(searchButton);
+
 		// Top Bar Buttons Panel.
 		JPanel topBarButtonsPanel = new JPanel();
-		topBarButtonsPanel.setBounds(826, 0, 212, 40);
+		topBarButtonsPanel.setBounds(764, 0, 212, 40);
 		topBarButtonsPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
 		topBarPanel.add(topBarButtonsPanel);
 
@@ -64,15 +72,17 @@ public class ProductListPanel extends JPanel {
 	private void initTable() {
 		final String[] columnNames = {
 				"",  // no
+				"id",
 				"Product name",
 				"Product type",
 				"Price",
 				"Quantity",
-				"Notes"
+				"Note"
 		};
-		final int [] columnWidths = {50, 195, 195, 195, 195, 190};
+		final int [] columnWidths = {50, 0, 195, 195, 195, 195, 190};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
@@ -107,4 +117,25 @@ public class ProductListPanel extends JPanel {
 		model.addRow(new Object[]{4, "Product name", "Product type", "Price", "Quantity", "Notes"});
 		model.addRow(new Object[]{5, "Product name", "Product type", "Price", "Quantity", "Notes"});
 	}
+
+	public TextFieldPanel getSearchBar() {
+		return searchBar;
+	}
+
+	public JButton getSearchButton() {
+		return searchButton;
+	}
+
+	public JButton getAddButton() {
+		return addButton;
+	}
+
+	public JButton getRemoveButton() {
+		return removeButton;
+	}
+
+	public ScrollableTablePanel getScrollableTable() {
+		return scrollableTable;
+	}
+
 }
