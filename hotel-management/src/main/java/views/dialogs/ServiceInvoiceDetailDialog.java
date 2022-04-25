@@ -133,7 +133,7 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 
 		// Number formatter
 		NumberFormatter numberFormatter = new NumberFormatter(numberFormat);
-		numberFormatter.setMinimum(Constants.MAX_TIME_USED);
+		numberFormatter.setMinimum(Constants.MIN_TIME_USED);
 		numberFormatter.setMaximum(Constants.MAX_TIME_USED);
 		numberFormatter.setAllowsInvalid(false);
 		numberFormatter.setCommitsOnValidEdit(true);

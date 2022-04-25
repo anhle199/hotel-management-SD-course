@@ -157,12 +157,12 @@ public class RoomListController implements ActionListener {
 		int selectedRowIndex = tablePanel.getTable().getSelectedRow();
 
 		if (selectedRowIndex == -1) {
-			UtilFunctions.showWarningMessage(roomListPanel, "Remove room", "You must select a row.");
+			UtilFunctions.showWarningMessage(roomListPanel, "Remove Room", "You must select a row.");
 		} else {
 			int option = JOptionPane.showConfirmDialog(
 					roomListPanel,
 					"Are you sure to remove this room?",
-					"Remove room",
+					"Remove Room",
 					JOptionPane.YES_NO_OPTION
 			);
 
@@ -175,7 +175,7 @@ public class RoomListController implements ActionListener {
 
 					UtilFunctions.showInfoMessage(
 							roomListPanel,
-							"Remove room",
+							"Remove Room",
 							"This room is removed successfully."
 					);
 				} catch (DBConnectionException e) {

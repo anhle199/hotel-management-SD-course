@@ -45,6 +45,11 @@ public class RoleManager {
 
 			return EMPLOYEE;
 		}
+
+		public byte byteValue() {
+			return (byte) this.ordinal();
+		}
+
 	}
 
 }

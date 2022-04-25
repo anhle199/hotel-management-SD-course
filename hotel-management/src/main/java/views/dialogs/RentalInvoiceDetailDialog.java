@@ -91,7 +91,7 @@ public class RentalInvoiceDetailDialog extends JDialog {
 		panel.add(customerTypeLabel);
 
 		// Customer Type Combo Box.
-		customerTypeComboBox = new JComboBox<>(Constants.CUSTOMER_TYPES);
+		customerTypeComboBox = new JComboBox<>();
 		customerTypeComboBox.setBounds(xTextField, customerTypeLabel.getY(), textFieldSize.width, textFieldSize.height);
 		customerTypeComboBox.setEnabled(fieldEditable);
 		panel.add(customerTypeComboBox);

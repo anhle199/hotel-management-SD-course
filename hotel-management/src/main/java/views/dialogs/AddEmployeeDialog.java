@@ -1,22 +1,23 @@
 package views.dialogs;
 
-import utils.Constants;
+import models.User;
 import utils.UtilFunctions;
 import views.components.panels.PasswordTextField;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.util.Vector;
 
 public class AddEmployeeDialog extends JDialog {
 
-	// Components for basic information panel.
-	private JComboBox<String> employeeNameComboBox;
+	private JTextField employeeNameTextField;
 	private JComboBox<String> genderComboBox;
-	private JComboBox<String> yearOfBirthComboBox;
+	private JComboBox<Integer> yearOfBirthComboBox;
 	private JTextField usernameTextField;
 	private PasswordTextField passwordTextField;
-	private JButton editButton;
-	private JButton closeButton;
+	private JButton createButton;
+	private JButton cancelButton;
 
 	public AddEmployeeDialog(JFrame frame) {
 		super(frame, "Add Employee", true);
@@ -47,10 +48,10 @@ public class AddEmployeeDialog extends JDialog {
 		panel.add(employeeNameLabel);
 
 		// Employee Name Combo Box.
-		employeeNameComboBox = new JComboBox<>();
-		employeeNameComboBox.setBounds(xTextField, employeeNameLabel.getY(), textFieldSize.width, textFieldSize.height);
-		employeeNameComboBox.setEnabled(false);
-		panel.add(employeeNameComboBox);
+		employeeNameTextField = new JTextField();
+		employeeNameTextField.setBounds(xTextField, employeeNameLabel.getY(), textFieldSize.width, textFieldSize.height);
+		employeeNameTextField.setEnabled(false);
+		panel.add(employeeNameTextField);
 
 		// Gender Label.
 		JLabel genderLabel = new JLabel("Gender");
@@ -58,7 +59,7 @@ public class AddEmployeeDialog extends JDialog {
 		panel.add(genderLabel);
 
 		// Gender Combo Box.
-		genderComboBox = new JComboBox<>(Constants.GENDERS);
+		genderComboBox = new JComboBox<>(User.GenderEnum.allCases());
 		genderComboBox.setBounds(xTextField, genderLabel.getY(), textFieldSize.width, textFieldSize.height);
 		genderComboBox.setEnabled(false);
 		panel.add(genderComboBox);
@@ -68,8 +69,14 @@ public class AddEmployeeDialog extends JDialog {
 		yearOfBirthLabel.setBounds(padding, genderLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(yearOfBirthLabel);
 
+		int currentYear = LocalDate.now().getYear();
+		Vector<Integer> yearList = new Vector<>();
+		for (int i = 1970; i < currentYear - 16; i++) {
+			yearList.add(i);
+		}
+
 		// Year Of Birth Combo Box.
-		yearOfBirthComboBox = new JComboBox<>();
+		yearOfBirthComboBox = new JComboBox<>(yearList);
 		yearOfBirthComboBox.setBounds(xTextField, yearOfBirthLabel.getY(), textFieldSize.width, textFieldSize.height);
 		yearOfBirthComboBox.setEnabled(false);
 		panel.add(yearOfBirthComboBox);
@@ -97,17 +104,45 @@ public class AddEmployeeDialog extends JDialog {
 		panel.add(passwordTextField);
 
 		// Edit Button.
-		editButton = new JButton("Create");
-		editButton.setBounds(xTextField, passwordLabel.getY() + passwordTextField.getHeight() + padding, 100, textFieldSize.height);
-		UtilFunctions.configureTopBarButtonOnMainThread(editButton);
-		panel.add(editButton);
+		createButton = new JButton("Create");
+		createButton.setBounds(xTextField, passwordLabel.getY() + passwordTextField.getHeight() + padding, 100, textFieldSize.height);
+		UtilFunctions.configureTopBarButtonOnMainThread(createButton);
+		panel.add(createButton);
 
 		// Close Button.
-		closeButton = new JButton("Close");
-		closeButton.setBounds(editButton.getX() + editButton.getWidth() + padding, editButton.getY(), 100, textFieldSize.height);
-		UtilFunctions.configureBorderedButtonOnMainThread(closeButton);
-		UtilFunctions.addHoverEffectsForBorderedButton(closeButton);
-		panel.add(closeButton);
+		cancelButton = new JButton("Cancel");
+		cancelButton.setBounds(createButton.getX() + createButton.getWidth() + padding, createButton.getY(), 100, textFieldSize.height);
+		UtilFunctions.configureBorderedButtonOnMainThread(cancelButton);
+		UtilFunctions.addHoverEffectsForBorderedButton(cancelButton);
+		panel.add(cancelButton);
+	}
+
+	public JTextField getEmployeeNameTextField() {
+		return employeeNameTextField;
+	}
+
+	public JComboBox<String> getGenderComboBox() {
+		return genderComboBox;
+	}
+
+	public JComboBox<Integer> getYearOfBirthComboBox() {
+		return yearOfBirthComboBox;
+	}
+
+	public JTextField getUsernameTextField() {
+		return usernameTextField;
+	}
+
+	public PasswordTextField getPasswordTextField() {
+		return passwordTextField;
+	}
+
+	public JButton getCreateButton() {
+		return createButton;
+	}
+
+	public JButton getCancelButton() {
+		return cancelButton;
 	}
 
 }

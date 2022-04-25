@@ -1,5 +1,7 @@
 package models;
 
+import utils.UtilFunctions;
+
 public class User {
 
 	private int id;
@@ -23,12 +25,66 @@ public class User {
 		this.yearOfBirth = yearOfBirth;
 	}
 
-	public String getFullName() {
-		return fullName;
+	public int getId() {
+		return id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 	public byte getRole() {
 		return role;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public byte getGender() {
+		return gender;
+	}
+
+	public short getYearOfBirth() {
+		return yearOfBirth;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public enum GenderEnum {
+		MALE, FEMALE;
+
+		public static GenderEnum valueOfIgnoreCase(String name) {
+			if (name.equalsIgnoreCase(FEMALE.name()))
+				return FEMALE;
+
+			return MALE;
+		}
+
+		public static GenderEnum valueOf(byte value) {
+			if (value == FEMALE.ordinal()) {
+				return FEMALE;
+			}
+
+			return MALE;
+		}
+
+		public byte byteValue() {
+			return (byte) this.ordinal();
+		}
+
+		public static String[] allCases() {
+			return new String[]{
+					UtilFunctions.capitalizeFirstLetterInString(MALE.name()),
+					UtilFunctions.capitalizeFirstLetterInString(FEMALE.name()),
+			};
+		}
 	}
 
 }
