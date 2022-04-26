@@ -27,9 +27,9 @@ public class ProductDetailController implements ActionListener {
 			ProductDetailDialog dialog,
 			JFrame mainFrame,
 			DetailDialogModeEnum viewMode,
-			ProductListController serviceListController
+			ProductListController productListController
 	) {
-		this(dialog, mainFrame, null, viewMode, serviceListController);
+		this(dialog, mainFrame, null, viewMode, productListController);
 	}
 
 	public ProductDetailController(
@@ -37,13 +37,13 @@ public class ProductDetailController implements ActionListener {
 			JFrame mainFrame,
 			Product product,
 			DetailDialogModeEnum viewMode,
-			ProductListController serviceListController
+			ProductListController productListController
 	) {
 		this.productDetailDialog = dialog;
 		this.connectionErrorDialog = new ConnectionErrorDialog(mainFrame);
 		this.product = product;
 		this.viewMode = viewMode;
-		this.productListController = serviceListController;
+		this.productListController = productListController;
 
 		// Add action listeners
 		this.productDetailDialog.getPositiveButton().addActionListener(this);
@@ -53,17 +53,17 @@ public class ProductDetailController implements ActionListener {
 
 	public void displayUI() {
 		productDetailDialog.getProductTypeComboBox()
-						   .setModel(new DefaultComboBoxModel<>(Product.ProductTypeEnum.allCases()));
+				.setModel(new DefaultComboBoxModel<>(Product.ProductTypeEnum.allCases()));
 
 		if (product != null) {
 			productDetailDialog.getProductNameTextField()
-							   .setText(product.getName());
+					.setText(product.getName());
 			productDetailDialog.getPriceTextField()
-							   .setText(String.valueOf(product.getPrice()));
+					.setText(String.valueOf(product.getPrice()));
 			productDetailDialog.getQuantityTextField()
-							   .setText(String.valueOf(product.getStock()));
+					.setText(String.valueOf(product.getStock()));
 			productDetailDialog.getNoteTextArea()
-							   .setText(product.getNote());
+					.setText(product.getNote());
 		}
 
 		productDetailDialog.setVisible(true);
@@ -195,15 +195,15 @@ public class ProductDetailController implements ActionListener {
 		Product.ProductTypeEnum productType = Product.ProductTypeEnum.valueOf(product.getProductType());
 
 		productDetailDialog.getProductNameTextField()
-						   .setText(product.getName());
+				.setText(product.getName());
 		productDetailDialog.getProductTypeComboBox()
-						   .setSelectedItem(productType.name());
+				.setSelectedItem(productType.name());
 		productDetailDialog.getPriceTextField()
-						   .setText(String.valueOf(product.getPrice()));
+				.setText(String.valueOf(product.getPrice()));
 		productDetailDialog.getQuantityTextField()
-						   .setText(String.valueOf(product.getStock()));
+				.setText(String.valueOf(product.getStock()));
 		productDetailDialog.getNoteTextArea()
-						   .setText(product.getNote());
+				.setText(product.getNote());
 
 		productDetailDialog.setViewMode(DetailDialogModeEnum.VIEW_ONLY);
 	}

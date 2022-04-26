@@ -109,13 +109,6 @@ public class ProductListPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 84, 1038, 680);
-
-		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Product name", "Product type", "Price", "Quantity", "Notes"});
-		model.addRow(new Object[]{2, "Product name", "Product type", "Price", "Quantity", "Notes"});
-		model.addRow(new Object[]{3, "Product name", "Product type", "Price", "Quantity", "Notes"});
-		model.addRow(new Object[]{4, "Product name", "Product type", "Price", "Quantity", "Notes"});
-		model.addRow(new Object[]{5, "Product name", "Product type", "Price", "Quantity", "Notes"});
 	}
 
 	public TextFieldPanel getSearchBar() {

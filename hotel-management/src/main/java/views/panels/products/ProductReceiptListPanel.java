@@ -8,13 +8,16 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-public class ReceiptListPanel extends JPanel {
+public class ProductReceiptListPanel extends JPanel {
+
+	public static final int HIDDEN_COLUMN_RECEIPT_ID = 1;
+
 	// Top Bar.
 	private JButton addButton;
 
 	private ScrollableTablePanel scrollableTable;
 
-	public ReceiptListPanel() {
+	public ProductReceiptListPanel() {
 		super();
 		setLayout(null);
 
@@ -39,15 +42,13 @@ public class ReceiptListPanel extends JPanel {
 	private void initTable() {
 		final String[] columnNames = {
 				"",  // no
-				"Product name",
-				"Product type",
+				"id",
+				"Customer name",
 				"Purchased date",
-				"Price",
-				"Quantity",
 				"Total price",
-				"Notes",
+				"Note",
 		};
-		final int [] columnWidths = {50, 140, 140, 140, 140, 140, 140, 130};
+		final int [] columnWidths = {50, 0, 419, 150, 140, 260};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
@@ -55,8 +56,6 @@ public class ReceiptListPanel extends JPanel {
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT
 		};
 
 		scrollableTable = new ScrollableTablePanel(
@@ -78,12 +77,14 @@ public class ReceiptListPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 80, 1038, 682);
-
-		NonEditableTableModel model = (NonEditableTableModel) scrollableTable.getTableModel();
-		model.addRow(new Object[]{1, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
-		model.addRow(new Object[]{2, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
-		model.addRow(new Object[]{3, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
-		model.addRow(new Object[]{4, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
-		model.addRow(new Object[]{5, "Product name", "Product type", "Purchased date", "Price", "Quantity", "Total price", "Notes"});
 	}
+
+	public JButton getAddButton() {
+		return addButton;
+	}
+
+	public ScrollableTablePanel getScrollableTable() {
+		return scrollableTable;
+	}
+
 }

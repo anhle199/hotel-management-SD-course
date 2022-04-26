@@ -146,6 +146,7 @@ create table if not exists `hotel_management`.`receipt_detail` (
     `receipt_id` int not null,
     `quantity` tinyint not null,
     `product_name` nvarchar(60) not null,
+    `product_type` int not null,
     `price` int not null,
 
     constraint PK_receipt_detail primary key (`id`)

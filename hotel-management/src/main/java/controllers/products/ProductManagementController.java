@@ -10,6 +10,7 @@ public class ProductManagementController implements ChangeListener {
 
 	private final ProductManagementTabbed productManagementTabbed;
 	private final ProductListController productListController;
+	private final ProductReceiptListController producReceiptListController;
 
 	private int currentTabIndex;
 
@@ -17,6 +18,10 @@ public class ProductManagementController implements ChangeListener {
 		this.productManagementTabbed = productManagementTabbed;
 		this.productListController = new ProductListController(
 				productManagementTabbed.getProductListPanel(),
+				mainFrame
+		);
+		this.producReceiptListController = new ProductReceiptListController(
+				productManagementTabbed.getProductReceiptListPanel(),
 				mainFrame
 		);
 		this.currentTabIndex = ProductManagementTabbed.PRODUCT_LIST_PANEL_INDEX;
@@ -41,10 +46,11 @@ public class ProductManagementController implements ChangeListener {
 			case ProductManagementTabbed.PRODUCT_LIST_PANEL_INDEX:
 				productListController.displayUI();
 				break;
-//			case ProductManagementTabbed.RECEIPT_LIST_PANEL_INDEX:
-//				break;
-//			case ProductManagementTabbed.IMPORT_INVOICE_LIST_PANEL_INDEX:
-//				break;
+			case ProductManagementTabbed.RECEIPT_LIST_PANEL_INDEX:
+				producReceiptListController.displayUI();
+				break;
+//       case ProductManagementTabbed.IMPORT_INVOICE_LIST_PANEL_INDEX:
+//          break;
 		}
 	}
 

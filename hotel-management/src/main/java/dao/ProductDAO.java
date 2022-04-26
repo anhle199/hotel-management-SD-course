@@ -54,6 +54,48 @@ public class ProductDAO implements DAO<Product, Integer> {
 		return productList;
 	}
 
+	public ArrayList<Product> getAllAvailable() throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		ArrayList<Product> productList = new ArrayList<>();
+		Statement statement = null;
+
+		try {
+			statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery("select * from `hotel_management`.`product` where `stock` > 0");
+
+			while (resultSet.next()) {
+				productList.add(
+						new Product(
+								resultSet.getInt("id"),
+								resultSet.getNString("name"),
+								resultSet.getInt("price"),
+								resultSet.getInt("stock"),
+								resultSet.getNString("notes"),
+								resultSet.getInt("product_type")
+						)
+				);
+			}
+		} catch (SQLException e) {
+			System.out.println("ProductDAO.java - getAllAvailable - catch - " + e.getMessage());
+			System.out.println("ProductDAO.java - getAllAvailable - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				if (statement != null)
+					statement.close();
+			} catch (SQLException e) {
+				System.out.println("ProductDAO.java - getAllAvailable - finally/catch - " + e.getMessage());
+				System.out.println("ProductDAO.java - getAllAvailable - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return productList;
+	}
+
 	public ArrayList<Product> searchByProductName(String productNameToken) throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
 

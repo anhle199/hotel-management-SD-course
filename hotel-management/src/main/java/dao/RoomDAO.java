@@ -213,14 +213,26 @@ public class RoomDAO implements DAO<Room, Integer> {
 			preparedStatement.setByte(3, entity.getStatus());
 			preparedStatement.setInt(4, entity.getRoomTypeId());
 
+			// Execute queries.
+			connection.setAutoCommit(false);
 			preparedStatement.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("RoomDAO.java - insert - catch - " + e.getMessage());
 			System.out.println("RoomDAO.java - insert - catch - " + Arrays.toString(e.getStackTrace()));
 
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("RoomDAO.java - insert - catch/catch - " + ex.getMessage());
+				System.out.println("RoomDAO.java - insert - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
+
 			throw DBConnectionException.INSTANCE;
 		} finally {
 			try {
+				connection.setAutoCommit(true);
+
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} catch (SQLException e) {
