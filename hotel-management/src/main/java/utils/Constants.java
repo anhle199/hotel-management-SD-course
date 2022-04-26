@@ -73,7 +73,7 @@ public class Constants {
 	public static final int MAX_TIME_USED = 360;
 
 	public static final int MIN_QUANTITY = 1;
-	public static final int MAX_QUANTITY = 1000;
+	public static final int MAX_QUANTITY = 100;
 
 	public static final String TIMESTAMP_WITHOUT_NANOSECOND = "yyyy-MM-dd HH:mm:ss";
 

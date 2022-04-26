@@ -140,6 +140,18 @@ public class UtilFunctions {
 		return formatter.format(timestamp);
 	}
 
+	public static Timestamp getTimestamp(int year, int month, int day) {
+		LocalDateTime localDateTime = LocalDateTime.now();
+
+		return Timestamp.valueOf(
+				String.format(
+						"%d-%d-%d %d:%d:%d",
+						year, month, day,
+						localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond()
+				)
+		);
+	}
+
 	public static Timestamp getTimestamp(LocalDateTime localDateTime) {
 		return getTimestamp(localDateTime, 0);
 	}

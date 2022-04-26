@@ -62,7 +62,7 @@ public class ProductListController implements ActionListener {
 			addProductListToTable(productList);
 		} catch (DBConnectionException e) {
 			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
-			System.out.println("RoomListController.java - loadProductListAndReloadTableData - catch - Unavailable connection.");
+			System.out.println("ProductListController.java - loadProductListAndReloadTableData - catch - Unavailable connection.");
 		}
 	}
 
@@ -157,7 +157,7 @@ public class ProductListController implements ActionListener {
 
 			if (option == JOptionPane.YES_OPTION) {
 				int productId = (int) tablePanel.getTableModel()
-											 .getValueAt(selectedRowIndex, ProductListPanel.HIDDE_COLUMN_PRODUCT_ID);
+						.getValueAt(selectedRowIndex, ProductListPanel.HIDDE_COLUMN_PRODUCT_ID);
 
 				try {
 					daoModel.delete(productId);

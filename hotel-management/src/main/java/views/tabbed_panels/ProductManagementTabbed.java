@@ -3,7 +3,7 @@ package views.tabbed_panels;
 import utils.RoleManager;
 import views.panels.products.ImportInvoiceListPanel;
 import views.panels.products.ProductListPanel;
-import views.panels.products.ReceiptListPanel;
+import views.panels.products.ProductReceiptListPanel;
 
 import javax.swing.*;
 
@@ -20,7 +20,7 @@ public class ProductManagementTabbed extends JTabbedPane {
 
 	// Components
 	private final ProductListPanel productListPanel;
-	private final ReceiptListPanel receiptListPanel;
+	private final ProductReceiptListPanel productReceiptListPanel;
 	private ImportInvoiceListPanel importInvoiceListPanel;
 
 	public ProductManagementTabbed() {
@@ -31,8 +31,8 @@ public class ProductManagementTabbed extends JTabbedPane {
 		addTab(PRODUCT_LIST_PANEL_TITLE, productListPanel);
 
 		// Receipt List Panel.
-		receiptListPanel = new ReceiptListPanel();
-		addTab(RECEIPT_LIST_PANEL_TITLE, receiptListPanel);
+		productReceiptListPanel = new ProductReceiptListPanel();
+		addTab(RECEIPT_LIST_PANEL_TITLE, productReceiptListPanel);
 
 		if (RoleManager.getInstance().isManager()) {
 			// Import Invoice List Panel.
@@ -43,6 +43,10 @@ public class ProductManagementTabbed extends JTabbedPane {
 
 	public ProductListPanel getProductListPanel() {
 		return productListPanel;
+	}
+
+	public ProductReceiptListPanel getProductReceiptListPanel() {
+		return productReceiptListPanel;
 	}
 
 }

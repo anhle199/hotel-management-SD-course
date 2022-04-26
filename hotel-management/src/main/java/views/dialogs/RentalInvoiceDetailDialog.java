@@ -1,6 +1,5 @@
 package views.dialogs;
 
-import utils.Constants;
 import utils.DetailDialogModeEnum;
 import utils.UtilFunctions;
 import views.components.panels.DateChooserPanel;
