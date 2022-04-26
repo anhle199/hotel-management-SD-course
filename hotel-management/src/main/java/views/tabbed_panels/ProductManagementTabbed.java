@@ -49,4 +49,8 @@ public class ProductManagementTabbed extends JTabbedPane {
 		return productReceiptListPanel;
 	}
 
+	public ImportInvoiceListPanel getImportInvoiceListPanel() {
+		return importInvoiceListPanel;
+	}
+
 }

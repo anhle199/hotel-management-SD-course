@@ -8,20 +8,21 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
 
-public class AddProductToReceiptDialog extends JDialog {
+public class AddProductToImportInvoiceDialog extends JDialog {
 
 	private JComboBox<String> productNameComboBox;
 	private JFormattedTextField quantityTextField;
+	private JFormattedTextField priceTextField;
 	private JTextField totalPriceTextField;
 	private JButton addButton;
 	private JButton cancelButton;
 
-	public AddProductToReceiptDialog(JFrame frame) {
-		super(frame, "Add Product To Receipt", true);
+	public AddProductToImportInvoiceDialog(JFrame frame) {
+		super(frame, "Add Product To Import Invoice", true);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setPreferredSize(new Dimension(500, 244));
+		panel.setPreferredSize(new Dimension(500, 296));
 		initSubviews(panel);
 
 		setResizable(false);
@@ -59,7 +60,7 @@ public class AddProductToReceiptDialog extends JDialog {
 		NumberFormat numberFormat = NumberFormat.getIntegerInstance();
 		numberFormat.setGroupingUsed(false);
 
-		// Number formatter
+		// Quantity formatter
 		NumberFormatter quantityFormatter = new NumberFormatter(numberFormat);
 		quantityFormatter.setMinimum(Constants.MIN_QUANTITY);
 		quantityFormatter.setMaximum(Constants.MAX_QUANTITY);
@@ -72,9 +73,28 @@ public class AddProductToReceiptDialog extends JDialog {
 		quantityTextField.setEnabled(false);
 		panel.add(quantityTextField);
 
+		// Price Label.
+		JLabel priceLabel = new JLabel("Price ($)");
+		priceLabel.setBounds(padding, quantityLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		panel.add(priceLabel);
+
+		// Price formatter
+		NumberFormatter priceFormatter = new NumberFormatter(numberFormat);
+		priceFormatter.setMinimum(Constants.MIN_PRICE);
+		priceFormatter.setMaximum(Constants.MAX_PRICE);
+		priceFormatter.setAllowsInvalid(false);
+		priceFormatter.setCommitsOnValidEdit(true);
+
+		// Price Text Field.
+		priceTextField = new JFormattedTextField(priceFormatter);
+		priceTextField.setBounds(xTextField, priceLabel.getY(), textFieldSize.width, textFieldSize.height);
+		totalPriceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
+		priceTextField.setEnabled(false);
+		panel.add(priceTextField);
+
 		// Total Price Label.
 		JLabel totalPriceLabel = new JLabel("Total price ($)");
-		totalPriceLabel.setBounds(padding, quantityLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		totalPriceLabel.setBounds(padding, priceTextField.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(totalPriceLabel);
 
 		// Total Price Text Field.
@@ -104,6 +124,10 @@ public class AddProductToReceiptDialog extends JDialog {
 
 	public JFormattedTextField getQuantityTextField() {
 		return quantityTextField;
+	}
+
+	public JFormattedTextField getPriceTextField() {
+		return priceTextField;
 	}
 
 	public JTextField getTotalPriceTextField() {

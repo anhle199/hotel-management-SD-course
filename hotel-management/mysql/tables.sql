@@ -176,6 +176,7 @@ create table if not exists `hotel_management`.`import_invoice_detail` (
     `import_invoice_id` int not null,
     `quantity` tinyint not null,
     `product_name` nvarchar(60) not null,
+    `product_type` int not null,
     `price` int not null,
 
     constraint PK_import_invoice_detail primary key (`id`)
@@ -187,7 +188,6 @@ default collate = utf8mb4_bin;
 -- Table: import_invoice
 create table if not exists `hotel_management`.`import_invoice` (
     `id` int not null auto_increment,
-    `customer_name` nvarchar(50) not null,
     `imported_date` timestamp default current_timestamp,
     `notes` text not null,
     `total_price` int not null,
