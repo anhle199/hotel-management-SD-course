@@ -4,6 +4,7 @@ import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.ImportInvoice;
 import models.ImportInvoiceDetail;
+import utils.Pair;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -148,6 +149,53 @@ public class ImportInvoiceDAO implements DAO<ImportInvoice, Integer> {
 	@Override
 	public void delete(Integer id) throws DBConnectionException {
 
+	}
+
+	public ArrayList<Pair<String, Number>> getTopFiveMostImportedProductsByMonthAndYear(
+			int month, int year
+	) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		ArrayList<Pair<String, Number>> rowKeysAndStatsValues = new ArrayList<>();
+		PreparedStatement preparedStatement = null;
+
+		try {
+			String sqlStatement = "select iid.product_name as 'product_name', sum(iid.quantity) as 'quantity'" +
+					" from `hotel_management`.`import_invoice` ii join `hotel_management`.`import_invoice_detail` iid" +
+					" where (month(ii.imported_date) = ? and year(ii.imported_date) = ?)" +
+					" group by iid.product_name";
+
+			preparedStatement = connection.prepareStatement(sqlStatement);
+			preparedStatement.setInt(1, month);
+			preparedStatement.setInt(2, year);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next() && rowKeysAndStatsValues.size() < 5) {
+				rowKeysAndStatsValues.add(new Pair<>(
+						resultSet.getString("product_name"),
+						resultSet.getInt("quantity")
+				));
+			}
+		} catch (SQLException e) {
+			System.out.println("ImportInvoiceDAO.java - getTopFiveMostImportedProductsByMonthAndYear - catch - " + e.getMessage());
+			System.out.println("ImportInvoiceDAO.java - getTopFiveMostImportedProductsByMonthAndYear - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("ImportInvoiceDAO.java - getTopFiveMostImportedProductsByMonthAndYear - finally/catch - " + e.getMessage());
+				System.out.println("ImportInvoiceDAO.java - getTopFiveMostImportedProductsByMonthAndYear - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return rowKeysAndStatsValues;
 	}
 
 }

@@ -1,18 +1,23 @@
 package views.dialogs;
 
+import utils.Constants;
 import utils.DetailDialogModeEnum;
 import utils.UtilFunctions;
 import views.components.panels.DateChooserPanel;
 
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
+import java.text.NumberFormat;
 
 public class RentalInvoiceDetailDialog extends JDialog {
 
 	private DetailDialogModeEnum viewMode;
 
 	private JComboBox<String> roomNameComboBox;
+	private JFormattedTextField priceTextField;
 	private DateChooserPanel rentingStartDatePicker;
+	private DateChooserPanel rentingEndDatePicker;
 	private JTextField customerNameTextField;
 	private JComboBox<String> customerTypeComboBox;
 	private JTextField identifierNumberTextField;
@@ -20,30 +25,25 @@ public class RentalInvoiceDetailDialog extends JDialog {
 	private JButton positiveButton;
 	private JButton negativeButton;
 
-	public RentalInvoiceDetailDialog(JFrame frame) {
-		this(frame, DetailDialogModeEnum.VIEW_ONLY);
-	}
-
 	public RentalInvoiceDetailDialog(JFrame frame, DetailDialogModeEnum mode) {
 		super(frame, "Rental Invoice Detail", true);
 		this.viewMode = mode;
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setPreferredSize(new Dimension(510, 400));
+		panel.setPreferredSize(new Dimension(510, 504));
 		initSubviews(panel);
 
 		setResizable(false);
 		setContentPane(panel);
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);
 	}
 
 	private void initSubviews(JPanel panel) {
 		// Sizes and coordinates
-		Dimension labelSize = new Dimension(105, 40);
-		Dimension textFieldSize = new Dimension(345, 40);
+		Dimension labelSize = new Dimension(120, 40);
+		Dimension textFieldSize = new Dimension(330, 40);
 		int padding = 20;
 		int spacingTextFields = 12;
 		int xTextField = padding * 2 + labelSize.width;
@@ -61,20 +61,53 @@ public class RentalInvoiceDetailDialog extends JDialog {
 		roomNameComboBox.setEnabled(fieldEditable);
 		panel.add(roomNameComboBox);
 
+		// Number formatter without grouping separator
+		NumberFormat numberFormat = NumberFormat.getIntegerInstance();
+		numberFormat.setGroupingUsed(false);
+
+		// Number formatter
+		NumberFormatter priceFormatter = new NumberFormatter(numberFormat);
+		priceFormatter.setMinimum(Constants.MIN_CUSTOMERS);
+		priceFormatter.setMaximum(Constants.MAX_CUSTOMERS);
+		priceFormatter.setAllowsInvalid(false);
+		priceFormatter.setCommitsOnValidEdit(true);
+
+		// Room Name Label.
+		JLabel priceLabel = new JLabel("Price ($)");
+		priceLabel.setBounds(padding, roomNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		panel.add(priceLabel);
+
+		// Room Name Combo Box.
+		priceTextField = new JFormattedTextField(priceFormatter);
+		priceTextField.setBounds(xTextField, priceLabel.getY(), textFieldSize.width, textFieldSize.height);
+		priceTextField.setEnabled(false);
+		panel.add(priceTextField);
+
 		// Renting Start Date Label.
 		JLabel rentingStartDateLabel = new JLabel("Renting start date");
-		rentingStartDateLabel.setBounds(padding, roomNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		rentingStartDateLabel.setBounds(padding, priceLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(rentingStartDateLabel);
 
 		// Range Date Picker.
 		rentingStartDatePicker = new DateChooserPanel(2022, 2023);
-		rentingStartDatePicker.setBounds(xTextField, roomNameLabel.getY() + labelSize.height + spacingTextFields, textFieldSize.width, textFieldSize.height);
+		rentingStartDatePicker.setBounds(xTextField, priceLabel.getY() + labelSize.height + spacingTextFields, textFieldSize.width, textFieldSize.height);
 		rentingStartDatePicker.setEnabledSelection(fieldEditable);
 		panel.add(rentingStartDatePicker);
 
+		// Renting End Date Label.
+		JLabel rentingEndDateLabel = new JLabel("Renting end date");
+		rentingEndDateLabel.setBounds(padding, rentingStartDateLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		panel.add(rentingEndDateLabel);
+
+		// Range Date Picker.
+		rentingEndDatePicker = new DateChooserPanel(2022, 2023);
+		rentingEndDatePicker.setBounds(xTextField, rentingEndDateLabel.getY(), textFieldSize.width, textFieldSize.height);
+		rentingEndDatePicker.setEnabledSelection(fieldEditable);
+		panel.add(rentingEndDatePicker);
+
 		// Customer Name Label.
 		JLabel customerNameLabel = new JLabel("Customer name");
-		customerNameLabel.setBounds(padding, rentingStartDateLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		customerNameLabel.setBounds(padding, rentingEndDateLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(customerNameLabel);
 
 		// Customer Name Text Field.
@@ -140,7 +173,9 @@ public class RentalInvoiceDetailDialog extends JDialog {
 		boolean positiveButtonEnabled = viewMode != DetailDialogModeEnum.EDITING;
 
 		roomNameComboBox.setEnabled(fieldEditable);
+		priceTextField.setEnabled(false);
 		rentingStartDatePicker.setEnabledSelection(fieldEditable);
+		rentingEndDatePicker.setEnabledSelection(fieldEditable);
 		customerNameTextField.setEnabled(fieldEditable);
 		customerTypeComboBox.setEnabled(fieldEditable);
 		identifierNumberTextField.setEnabled(fieldEditable);
@@ -154,8 +189,16 @@ public class RentalInvoiceDetailDialog extends JDialog {
 		return roomNameComboBox;
 	}
 
+	public JFormattedTextField getPriceTextField() {
+		return priceTextField;
+	}
+
 	public DateChooserPanel getRentingStartDatePicker() {
 		return rentingStartDatePicker;
+	}
+
+	public DateChooserPanel getRentingEndDatePicker() {
+		return rentingEndDatePicker;
 	}
 
 	public JTextField getCustomerNameTextField() {

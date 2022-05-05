@@ -130,7 +130,7 @@ public class StatisticsPanel extends JPanel {
 		dataset.clear();
 	}
 
-	private String createChartTitleFrom(String statisticOption, String monthInEnglish) {
+	public String createChartTitleFrom(String statisticOption, String monthInEnglish) {
 		StringBuilder stringBuilder = new StringBuilder(statisticOption);
 
 		// Remove "month" string in statistic option.
@@ -139,6 +139,10 @@ public class StatisticsPanel extends JPanel {
 		stringBuilder.delete(length - 5, length);
 
 		return stringBuilder.append(monthInEnglish).toString();
+	}
+
+	public void setChartTitle(String chartTitle) {
+		chartPanel.getChart().setTitle(chartTitle);
 	}
 
 	private JFreeChart createBarChart() {
@@ -223,6 +227,18 @@ public class StatisticsPanel extends JPanel {
 				break;
 			}
 		}
+	}
+
+	public JComboBox<String> getStatisticComboBox() {
+		return statisticComboBox;
+	}
+
+	public JComboBox<String> getMonthComboBox() {
+		return monthComboBox;
+	}
+
+	public JButton getRefreshButton() {
+		return refreshButton;
 	}
 
 }

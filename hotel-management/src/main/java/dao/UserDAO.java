@@ -118,7 +118,54 @@ public class UserDAO implements DAO<User, Integer> {
 
 	@Override
 	public void insert(User entity) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		PreparedStatement preparedStatement = null;
+
+		try {
+			// Declare sql statement and create PreparedStatement for it.
+			String sqlStatement = "insert into `hotel_management`.`user` " +
+					"(`username`, `password`, `role`, `full_name`, `gender`, `year_of_birth`) values (?, ?, ?, ?, ?, ?)";
+			preparedStatement = connection.prepareStatement(sqlStatement);
+
+			// Set values for PreparedStatement.
+			preparedStatement.setString(1, entity.getUsername());
+			preparedStatement.setString(2, entity.getPassword());
+			preparedStatement.setByte(3, entity.getRole());
+			preparedStatement.setNString(4, entity.getFullName());
+			preparedStatement.setByte(5, entity.getGender());
+			preparedStatement.setShort(6, entity.getYearOfBirth());
+
+			// Execute queries.
+			connection.setAutoCommit(false);
+			preparedStatement.executeUpdate();
+			connection.commit();
+		} catch (SQLException e) {
+			System.out.println("UserDAO.java - insert - catch - " + e.getMessage());
+			System.out.println("UserDAO.java - insert - catch - " + Arrays.toString(e.getStackTrace()));
+
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("UserDAO.java - insert - catch/catch - " + ex.getMessage());
+				System.out.println("UserDAO.java - insert - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
+
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				connection.setAutoCommit(true);
+
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("UserDAO.java - insert - finally/catch - " + e.getMessage());
+				System.out.println("UserDAO.java - insert - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
 	}
 
 	@Override

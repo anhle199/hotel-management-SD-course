@@ -4,6 +4,7 @@ import controllers.employees.EmployeeManagementController;
 import controllers.products.ProductManagementController;
 import controllers.rooms.RoomManagementController;
 import controllers.services.ServiceManagementController;
+import controllers.statistics.StatisticsController;
 import models.User;
 import utils.RoleManager;
 import utils.UtilFunctions;
@@ -21,7 +22,7 @@ public class DashboardController implements ActionListener {
 	private final ServiceManagementController serviceManagementController;
 	private final ProductManagementController productManagementController;
 	private final EmployeeManagementController employeeManagementController;
-// private final User user;
+	private final StatisticsController statisticsController;
 
 	public DashboardController(DashboardView dashboardView, LoginView loginView, User user) {
 		this.dashboardView = dashboardView;
@@ -42,7 +43,10 @@ public class DashboardController implements ActionListener {
 				dashboardView.getEmployeeManagementPanel(),
 				dashboardView.getMainFrame()
 		);
-//    this.user = user;
+		this.statisticsController = new StatisticsController(
+				dashboardView.getStatisticsPanel(),
+				dashboardView.getMainFrame()
+		);
 
 		// Add action listeners
 		this.dashboardView.getRoomManagementButton().addActionListener(this);
@@ -54,6 +58,8 @@ public class DashboardController implements ActionListener {
 
 		// Update user info
 		this.dashboardView.getUsernameLabel().setText(user.getFullName());
+
+		roomManagementController.displayUI();
 	}
 
 	@Override
@@ -169,6 +175,8 @@ public class DashboardController implements ActionListener {
 			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(dashboardView.getEmployeeManagementButton(), false);
 			UtilFunctions.switchSidebarButtonActiveStateOnMainThread(dashboardView.getStatisticsButton(), true);
 		}
+
+		statisticsController.displayUI();
 	}
 
 }

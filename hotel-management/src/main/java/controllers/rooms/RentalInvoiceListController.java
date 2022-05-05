@@ -1,9 +1,11 @@
 package controllers.rooms;
 
 import dao.RentalInvoiceDAO;
+import dao.RentalReceiptDAO;
 import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.RentalInvoice;
+import models.RentalReceipt;
 import utils.Constants;
 import utils.DetailDialogModeEnum;
 import utils.UtilFunctions;
@@ -36,6 +38,7 @@ public class RentalInvoiceListController implements ActionListener {
 		this.daoModel = new RentalInvoiceDAO();
 
 		// Add action listeners
+		this.rentalInvoiceListPanel.getPayButton().addActionListener(this);
 		this.rentalInvoiceListPanel.getAddButton().addActionListener(this);
 		this.rentalInvoiceListPanel.getRemoveButton().addActionListener(this);
 		this.connectionErrorDialog.getReconnectButton().addActionListener(this);
@@ -82,27 +85,40 @@ public class RentalInvoiceListController implements ActionListener {
 				rentalInvoice.getRoomId(),
 				rentalInvoice.getRoomName(),
 				UtilFunctions.formatTimestamp(Constants.TIMESTAMP_WITHOUT_NANOSECOND, rentalInvoice.getStartDate()),
+				UtilFunctions.formatTimestamp(Constants.TIMESTAMP_WITHOUT_NANOSECOND, rentalInvoice.getEndDate()),
+				RentalInvoice.PaymentStatusEnum.valueOf(rentalInvoice.getIsPaid()).capitalizedName(),
 				rentalInvoice.getCustomerName(),
 				capitalizedCustomerType,
 				rentalInvoice.getIdentityNumber(),
 				rentalInvoice.getAddress(),
+				rentalInvoice.getRoomTypeId(),
+				rentalInvoice.getRoomTypeName(),
+				rentalInvoice.getRoomTypePrice(),
 		};
 	}
 
 	private RentalInvoice mapRowValueToRentalInvoiceInstance(Vector<Object> rowValue) {
 		RentalInvoice.CustomerTypeEnum customerType = RentalInvoice.CustomerTypeEnum.valueOfIgnoreCase(
+				String.valueOf(rowValue.get(8))
+		);
+		RentalInvoice.PaymentStatusEnum paymentStatus = RentalInvoice.PaymentStatusEnum.valueOfIgnoreCase(
 				String.valueOf(rowValue.get(6))
 		);
 
 		return new RentalInvoice(
 				(int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_RENTAL_INVOICE_ID),
 				Timestamp.valueOf(String.valueOf(rowValue.get(4))),
+				Timestamp.valueOf(String.valueOf(rowValue.get(5))),
 				(int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_ID),
 				String.valueOf(rowValue.get(3)),
-				String.valueOf(rowValue.get(5)),
+				(int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_TYPE_ID),
+				String.valueOf(rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_TYPE_NAME)),
+				(int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_TYPE_PRICE),
 				String.valueOf(rowValue.get(7)),
-				String.valueOf(rowValue.get(8)),
-				customerType.ordinal()
+				String.valueOf(rowValue.get(9)),
+				String.valueOf(rowValue.get(10)),
+				customerType.ordinal(),
+				paymentStatus.byteValue()
 		);
 	}
 
@@ -112,12 +128,66 @@ public class RentalInvoiceListController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getSource() == rentalInvoiceListPanel.getAddButton()) {
+		if (event.getSource() == rentalInvoiceListPanel.getPayButton()) {
+			payButtonAction();
+		} else if (event.getSource() == rentalInvoiceListPanel.getAddButton()) {
 			addButtonAction();
 		} else if (event.getSource() == rentalInvoiceListPanel.getRemoveButton()) {
 			removeButtonAction();
 		} else if (event.getSource() == connectionErrorDialog.getReconnectButton()) {
 			reconnectButtonAction();
+		}
+	}
+
+	private void payButtonAction() {
+		ScrollableTablePanel tablePanel = rentalInvoiceListPanel.getScrollableTable();
+		int selectedRowIndex = tablePanel.getTable().getSelectedRow();
+
+		if (selectedRowIndex == -1) {
+			UtilFunctions.showWarningMessage(
+					rentalInvoiceListPanel,
+					"Pay Rental Invoice",
+					"You must select a row."
+			);
+		} else {
+			NonEditableTableModel tableModel = (NonEditableTableModel) tablePanel.getTableModel();
+			RentalInvoice.PaymentStatusEnum paymentStatus = RentalInvoice.PaymentStatusEnum.valueOfIgnoreCase(
+					String.valueOf(tableModel.getValueAt(selectedRowIndex, 6))
+			);
+
+			if (paymentStatus == RentalInvoice.PaymentStatusEnum.PAID) {
+				UtilFunctions.showWarningMessage(
+						rentalInvoiceListPanel,
+						"Pay Rental Invoice",
+						"This invoice has been paid."
+				);
+			} else {
+				int option = JOptionPane.showConfirmDialog(
+						rentalInvoiceListPanel,
+						"Are you sure to pay for this invoice?",
+						"Pay Rental Invoice",
+						JOptionPane.YES_NO_OPTION
+				);
+
+				if (option == JOptionPane.YES_OPTION) {
+					try {
+						RentalReceiptDAO rentalReceiptDaoModel = new RentalReceiptDAO();
+						RentalReceipt rentalReceipt = getRentalReceiptInstanceFromSpecificRow(selectedRowIndex);
+						int rentalInvoiceId = (int) tableModel.getValueAt(selectedRowIndex, RentalInvoiceListPanel.HIDDEN_COLUMN_RENTAL_INVOICE_ID);
+						rentalReceiptDaoModel.insert(rentalReceipt, rentalInvoiceId);
+
+						UtilFunctions.showInfoMessage(
+								rentalInvoiceListPanel,
+								"Pay Rental Invoice",
+								"Pay successfully."
+						);
+						loadRentalInvoiceListAndReloadTableData();
+					} catch (DBConnectionException e) {
+						SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
+						System.out.println("RentalInvoiceListController.java - payButtonAction - catch - Unavailable connection.");
+					}
+				}
+			}
 		}
 	}
 
@@ -136,12 +206,16 @@ public class RentalInvoiceListController implements ActionListener {
 		int selectedRowIndex = tablePanel.getTable().getSelectedRow();
 
 		if (selectedRowIndex == -1) {
-			UtilFunctions.showWarningMessage(rentalInvoiceListPanel, "Remove rental invoice", "You must select a row.");
+			UtilFunctions.showWarningMessage(
+					rentalInvoiceListPanel,
+					"Remove Rental Invoice",
+					"You must select a row."
+			);
 		} else {
 			int option = JOptionPane.showConfirmDialog(
 					rentalInvoiceListPanel,
 					"Are you sure to remove this invoice?",
-					"Remove rental invoice",
+					"Remove Rental Invoice",
 					JOptionPane.YES_NO_OPTION
 			);
 
@@ -154,9 +228,10 @@ public class RentalInvoiceListController implements ActionListener {
 
 					UtilFunctions.showInfoMessage(
 							rentalInvoiceListPanel,
-							"Remove rental invoice",
+							"Remove Rental Invoice",
 							"This invoice is removed successfully."
 					);
+					loadRentalInvoiceListAndReloadTableData();
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 					System.out.println("RentalInvoiceListController.java - removeButtonAction - catch - Unavailable connection.");
@@ -186,6 +261,29 @@ public class RentalInvoiceListController implements ActionListener {
 		);
 
 		rentalInvoiceDetailController.displayUI();
+	}
+
+	private RentalReceipt getRentalReceiptInstanceFromSpecificRow(int row) {
+		NonEditableTableModel tableModel = (NonEditableTableModel) rentalInvoiceListPanel.getScrollableTable().getTableModel();
+		Vector<Object> rowValue = tableModel.getRowValue(row);
+
+		Timestamp startDate = Timestamp.valueOf(String.valueOf(rowValue.get(4)));
+		Timestamp endDate = Timestamp.valueOf(String.valueOf(rowValue.get(5)));
+		int price = (int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_TYPE_PRICE);
+		int diffInDate = (int) (((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) % 365);
+		diffInDate += (diffInDate == 0) ? 1 : 0;
+		int totalPrice = price * diffInDate;
+
+		return new RentalReceipt(
+				-1,
+				startDate,
+				endDate,
+				price,
+				totalPrice,
+				String.valueOf(rowValue.get(3)),
+				String.valueOf(rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_TYPE_NAME)),
+				(int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_ID)
+		);
 	}
 
 }

@@ -17,7 +17,7 @@ public class ProductDetailDialog extends JDialog {
 	private JComboBox<String> productTypeComboBox;
 	private JFormattedTextField priceTextField;
 	private JFormattedTextField quantityTextField;
-	private JTextArea noteTextArea;
+	private JTextArea descriptionTextArea;
 	private JButton positiveButton;
 	private JButton negativeButton;
 
@@ -36,7 +36,6 @@ public class ProductDetailDialog extends JDialog {
 		setContentPane(panel);
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);
 	}
 
 	private void initSubviews(JPanel panel) {
@@ -110,20 +109,20 @@ public class ProductDetailDialog extends JDialog {
 		UtilFunctions.configureDialogTextFieldOnMainThread(quantityTextField);
 		panel.add(quantityTextField);
 
-		// Note Label.
-		JLabel noteLabel = new JLabel("Note");
+		// Description Label.
+		JLabel noteLabel = new JLabel("Description");
 		noteLabel.setBounds(padding, quantityLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(noteLabel);
 
-		// Note Text Field.
-		noteTextArea = new JTextArea();
-		noteTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
-		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextArea);
-		panel.add(noteTextArea);
+		// Description Text Field.
+		descriptionTextArea = new JTextArea();
+		descriptionTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
+		UtilFunctions.configureDialogTextFieldOnMainThread(descriptionTextArea);
+		panel.add(descriptionTextArea);
 
 		// Positive Button.
 		positiveButton = new JButton(viewMode.getPositiveButtonTitle());
-		positiveButton.setBounds(xTextField, noteLabel.getY() + noteTextArea.getHeight() + padding, 100, textFieldSize.height);
+		positiveButton.setBounds(xTextField, noteLabel.getY() + descriptionTextArea.getHeight() + padding, 100, textFieldSize.height);
 		UtilFunctions.configureTopBarButtonOnMainThread(positiveButton);
 		panel.add(positiveButton);
 
@@ -143,7 +142,7 @@ public class ProductDetailDialog extends JDialog {
 		productTypeComboBox.setEnabled(fieldEditable);
 		priceTextField.setEnabled(fieldEditable);
 		quantityTextField.setEnabled(fieldEditable);
-		noteTextArea.setEnabled(fieldEditable);
+		descriptionTextArea.setEnabled(fieldEditable);
 
 		positiveButton.setText(viewMode.getPositiveButtonTitle());
 		negativeButton.setText(viewMode.getNegativeButtonTitle());
@@ -165,8 +164,8 @@ public class ProductDetailDialog extends JDialog {
 		return quantityTextField;
 	}
 
-	public JTextArea getNoteTextArea() {
-		return noteTextArea;
+	public JTextArea getDescriptionTextArea() {
+		return descriptionTextArea;
 	}
 
 	public JButton getPositiveButton() {

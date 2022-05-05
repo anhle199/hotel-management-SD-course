@@ -91,7 +91,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 			for (RoomType item: roomTypeList) {
 				roomTypeNameList.add(item.getName());
 			}
-
+			System.out.println(roomTypeNameList);
 			DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(roomTypeNameList);
 			this.roomDetailDialog.getRoomTypeComboBox()
 								 .setModel(comboBoxModel);
@@ -158,14 +158,14 @@ public class RoomDetailController implements ActionListener, ItemListener {
 
 	private void saveButtonAction() {
 		try {
-			RoomDAO daoModel = new RoomDAO();
+			RoomDAO roomDAO = new RoomDAO();
 			Room newRoom = getRoomInstanceFromInputFields();
 
 			if (room.equals(newRoom)) {
 				UtilFunctions.showInfoMessage(roomDetailDialog, "Edit Room", "Information does not change.");
 			} else if (newRoom.getName().isEmpty()) {
 				UtilFunctions.showErrorMessage(roomDetailDialog, "Edit Room", "Room name must not be empty.");
-			} else if (daoModel.isExistingRoomName(newRoom.getName())) {
+			} else if (roomDAO.isExistingRoomName(newRoom.getName())) {
 				UtilFunctions.showErrorMessage(roomDetailDialog, "Edit Room", "This room is existing.");
 			} else {
 				int option = UtilFunctions.showConfirmDialog(
@@ -175,7 +175,8 @@ public class RoomDetailController implements ActionListener, ItemListener {
 				);
 
 				if (option == JOptionPane.YES_OPTION) {
-					daoModel.update(newRoom);
+					int index = findRoomTypeIndexByRoomTypeId(newRoom.getRoomTypeId());
+					roomDAO.update(newRoom, roomTypeList.get(index));
 					UtilFunctions.showInfoMessage(roomDetailDialog, "Edit Room", "Save successfully.");
 				}
 			}

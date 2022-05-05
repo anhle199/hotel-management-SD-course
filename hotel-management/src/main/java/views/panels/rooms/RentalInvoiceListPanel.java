@@ -12,8 +12,12 @@ public class RentalInvoiceListPanel extends JPanel {
 
 	public static final int HIDDEN_COLUMN_RENTAL_INVOICE_ID = 1;
 	public static final int HIDDEN_COLUMN_ROOM_ID = 2;
+	public static final int HIDDEN_COLUMN_ROOM_TYPE_ID = 11;
+	public static final int HIDDEN_COLUMN_ROOM_TYPE_NAME = 12;
+	public static final int HIDDEN_COLUMN_ROOM_TYPE_PRICE = 13;
 
 	// Top Bar.
+	private JButton payButton;
 	private JButton addButton;
 	private JButton removeButton;
 
@@ -34,7 +38,13 @@ public class RentalInvoiceListPanel extends JPanel {
 		topBarPanel.setLayout(null);
 		add(topBarPanel);
 
-		// Remove Button.
+		// Pay Button.
+		payButton = new JButton("Pay");
+		payButton.setBounds(729, 0, 85, 40);
+		UtilFunctions.configureTopBarButtonOnMainThread(payButton);
+		topBarPanel.add(payButton);
+
+		// Add Button.
 		addButton = new JButton("Add");
 		addButton.setBounds(826, 0, 85, 40);
 		UtilFunctions.configureTopBarButtonOnMainThread(addButton);
@@ -53,13 +63,18 @@ public class RentalInvoiceListPanel extends JPanel {
 				"id",
 				"room_id",
 				"Room name",
-				"Renting start date",
+				"Start date",
+				"End date",
+				"Status",
 				"Customer name",
 				"Customer type",
 				"Identifier number",
-				"Address"
+				"Address",
+				"room_type_id",
+				"room_type_name",
+				"room_type_price",
 		};
-		final int [] columnWidths = {40, 0, 0, 300, 120, 200, 120, 150, 200};
+		final int [] columnWidths = {40, 0, 0, 200, 145, 145, 120, 200, 120, 150, 200, 0, 0, 0};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
@@ -69,7 +84,12 @@ public class RentalInvoiceListPanel extends JPanel {
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
 		};
 
 		scrollableTable = new ScrollableTablePanel(
@@ -91,6 +111,10 @@ public class RentalInvoiceListPanel extends JPanel {
 		scrollableTable.setHeaderSize(new Dimension(tableWidth, 40));
 		scrollableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollableTable.setBounds(20, 80, 1038, 682);
+	}
+
+	public JButton getPayButton() {
+		return payButton;
 	}
 
 	public JButton getAddButton() {

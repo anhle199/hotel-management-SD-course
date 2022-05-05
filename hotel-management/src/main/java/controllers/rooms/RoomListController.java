@@ -168,7 +168,7 @@ public class RoomListController implements ActionListener {
 
 			if (option == JOptionPane.YES_OPTION) {
 				int roomId = (int) tablePanel.getTableModel()
-						.getValueAt(selectedRowIndex, RoomListPanel.HIDDEN_COLUMN_ROOM_ID);
+											 .getValueAt(selectedRowIndex, RoomListPanel.HIDDEN_COLUMN_ROOM_ID);
 
 				try {
 					daoModel.delete(roomId);
@@ -178,6 +178,7 @@ public class RoomListController implements ActionListener {
 							"Remove Room",
 							"This room is removed successfully."
 					);
+					loadRoomListAndReloadTableData("");
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 					System.out.println("RoomListController.java - removeButtonAction - catch - Unavailable connection.");

@@ -53,7 +53,7 @@ public class RentalReceiptListController implements ActionListener {
 		return new Object[]{
 				no,
 				rentalReceipt.getRoomName(),
-				rentalReceipt.getRentedDays(),
+				rentalReceipt.calculateRentedDays(),
 				rentalReceipt.getPrice(),
 				rentalReceipt.getTotalPrice(),
 		};

@@ -1,27 +1,36 @@
 package models;
 
+import java.sql.Timestamp;
+import java.util.concurrent.TimeUnit;
+
 public class RentalReceipt {
 
 	private int id;
-	private byte rentedDays;
+	private Timestamp startDate;
+	private Timestamp endDate;
 	private int price;
 	private int totalPrice;
 	private String roomName;
+	private String roomTypeName;
 	private int roomId;
 
 	public RentalReceipt(
 			int id,
-			byte rentedDays,
+			Timestamp startDate,
+			Timestamp endDate,
 			int price,
 			int totalPrice,
 			String roomName,
+			String roomTypeName,
 			int roomId
 	) {
 		this.id = id;
-		this.rentedDays = rentedDays;
+		this.startDate = startDate;
+		this.endDate = endDate;
 		this.price = price;
 		this.totalPrice = totalPrice;
 		this.roomName = roomName;
+		this.roomTypeName = roomTypeName;
 		this.roomId = roomId;
 	}
 
@@ -29,8 +38,12 @@ public class RentalReceipt {
 		return id;
 	}
 
-	public byte getRentedDays() {
-		return rentedDays;
+	public Timestamp getStartDate() {
+		return startDate;
+	}
+
+	public Timestamp getEndDate() {
+		return endDate;
 	}
 
 	public int getPrice() {
@@ -45,7 +58,17 @@ public class RentalReceipt {
 		return roomName;
 	}
 
+	public String getRoomTypeName() {
+		return roomTypeName;
+	}
+
 	public int getRoomId() {
 		return roomId;
 	}
+
+	public long calculateRentedDays() {
+		long diffInTime = endDate.getTime() - startDate.getTime();
+		return TimeUnit.DAYS.convert(diffInTime, TimeUnit.MILLISECONDS);
+	}
+
 }

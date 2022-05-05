@@ -52,7 +52,7 @@ public class LoginController implements ActionListener {
 				Optional<User> optionalUser = daoModel.getByUsernameAndEncodedPassword(username, encodedPassword);
 
 				if (optionalUser.isEmpty()) {
-					UtilFunctions.showErrorMessage(loginView, "Login", "This account is not exists.");
+					UtilFunctions.showErrorMessage(loginView, "Login", "Incorrect username or password.");
 				} else {
 					// Unwrap optional variable.
 					User user = optionalUser.get();
@@ -77,8 +77,8 @@ public class LoginController implements ActionListener {
 		connectionErrorDialog.setVisible(false);
 
 		SingletonDBConnection.getInstance().connect();
-//		loginView.getUsernameField().setText("");
-//		loginView.getPasswordField().setPassword("");
+		loginView.getUsernameField().setText("");
+		loginView.getPasswordField().setPassword("");
 	}
 
 }

@@ -88,7 +88,7 @@ public class ProductListController implements ActionListener {
 				capitalizedProductType,
 				product.getPrice(),
 				product.getStock(),
-				product.getNote(),
+				product.getDescription(),
 		};
 	}
 

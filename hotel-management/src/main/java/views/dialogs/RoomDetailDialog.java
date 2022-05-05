@@ -38,7 +38,6 @@ public class RoomDetailDialog extends JDialog {
 		setContentPane(panel);
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);
 	}
 
 	private void initSubviews(JPanel panel) {

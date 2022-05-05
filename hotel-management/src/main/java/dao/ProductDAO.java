@@ -32,7 +32,7 @@ public class ProductDAO implements DAO<Product, Integer> {
 								resultSet.getNString("name"),
 								resultSet.getInt("price"),
 								resultSet.getInt("stock"),
-								resultSet.getNString("notes"),
+								resultSet.getNString("description"),
 								resultSet.getInt("product_type")
 						)
 				);
@@ -74,7 +74,7 @@ public class ProductDAO implements DAO<Product, Integer> {
 								resultSet.getNString("name"),
 								resultSet.getInt("price"),
 								resultSet.getInt("stock"),
-								resultSet.getNString("notes"),
+								resultSet.getNString("description"),
 								resultSet.getInt("product_type")
 						)
 				);
@@ -118,7 +118,7 @@ public class ProductDAO implements DAO<Product, Integer> {
 								resultSet.getNString("name"),
 								resultSet.getInt("price"),
 								resultSet.getInt("stock"),
-								resultSet.getNString("notes"),
+								resultSet.getNString("description"),
 								resultSet.getInt("product_type")
 						)
 				);
@@ -147,12 +147,106 @@ public class ProductDAO implements DAO<Product, Integer> {
 
 	@Override
 	public void insert(Product entity) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		PreparedStatement preparedStatement = null;
+
+		try {
+			// Declare sql statement and create PreparedStatement for it.
+			String sqlStatement = "insert into `hotel_management`.`product` " +
+					"(`name`, `price`, `stock`, `description`, `product_type`) values (?, ?, ?, ?, ?)";
+			preparedStatement = connection.prepareStatement(sqlStatement);
+
+			// Set values for PreparedStatement.
+			preparedStatement.setNString(1, entity.getName());
+			preparedStatement.setInt(2, entity.getPrice());
+			preparedStatement.setInt(3, entity.getStock());
+			preparedStatement.setNString(4, entity.getDescription());
+			preparedStatement.setInt(5, entity.getProductType());
+
+			// Execute queries.
+			connection.setAutoCommit(false);
+			preparedStatement.executeUpdate();
+			connection.commit();
+		} catch (SQLException e) {
+			System.out.println("ProductDAO.java - insert - catch - " + e.getMessage());
+			System.out.println("ProductDAO.java - insert - catch - " + Arrays.toString(e.getStackTrace()));
+
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("ProductDAO.java - insert - catch/catch - " + ex.getMessage());
+				System.out.println("ProductDAO.java - insert - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
+
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				connection.setAutoCommit(true);
+
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("ProductDAO.java - insert - finally/catch - " + e.getMessage());
+				System.out.println("ProductDAO.java - insert - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
 	}
 
 	@Override
 	public void update(Product entity) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		PreparedStatement preparedStatement = null;
+
+		try {
+			// Declare sql statement and create PreparedStatement for it.
+			String sqlStatement = "update `hotel_management`.`product` " +
+					"set `name` = ?, `price` = ?, `stock` = ?, `description` = ?, `product_type` = ? where `id` = ?";
+
+			preparedStatement = connection.prepareStatement(sqlStatement);
+
+			// Set values for PreparedStatement.
+			preparedStatement.setNString(1, entity.getName());
+			preparedStatement.setInt(2, entity.getPrice());
+			preparedStatement.setInt(3, entity.getStock());
+			preparedStatement.setNString(4, entity.getDescription());
+			preparedStatement.setInt(5, entity.getProductType());
+			preparedStatement.setInt(6, entity.getId());
+
+			// Execute queries.
+			connection.setAutoCommit(false);
+			preparedStatement.executeUpdate();
+			connection.commit();
+		} catch (SQLException e) {
+			System.out.println("ProductDAO.java - update - catch - " + e.getMessage());
+			System.out.println("ProductDAO.java - update - catch - " + Arrays.toString(e.getStackTrace()));
+
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("ProductDAO.java - update - catch/catch - " + ex.getMessage());
+				System.out.println("ProductDAO.java - update - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
+
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				connection.setAutoCommit(true);
+
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("ProductDAO.java - update - finally/catch - " + e.getMessage());
+				System.out.println("ProductDAO.java - update - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
 	}
 
 	@Override

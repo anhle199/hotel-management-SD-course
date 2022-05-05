@@ -60,12 +60,17 @@ default collate = utf8mb4_bin;
 create table if not exists `hotel_management`.`rental_invoice` (
     `id` int not null auto_increment,
     `start_date` timestamp default current_timestamp,
+    `end_date` timestamp default current_timestamp,
     `room_id` int,
     `room_name` nvarchar(50),
+    `room_type_id` int,
+    `room_type_name` nvarchar(50) not null,
+    `room_type_price` int,
     `customer_name` nvarchar(50) not null,
     `identity_number` VARCHAR(12) not null,
     `address` nvarchar(100) not null,
     `customer_type` int not null,
+    `is_paid` tinyint not null,
 
     constraint PK_rental_invoice primary key (`id`)
 )
@@ -77,10 +82,12 @@ default collate = utf8mb4_bin;
 -- Table: rental_receipt
 create table if not exists `hotel_management`.`rental_receipt` (
     `id` int not null auto_increment,
-    `rented_days` tinyint not null,
+    `start_date` timestamp default current_timestamp,
+    `end_date` timestamp default current_timestamp,
     `price` int not null,
     `total_price` int not null,
     `room_name` nvarchar(50),
+    `room_type_name` nvarchar(50) not null,
     `room_id` int,
 
     constraint PK_rental_receipt primary key (`id`)
@@ -92,7 +99,7 @@ default collate = utf8mb4_bin;
 
 -- Table: service
 create table if not exists `hotel_management`.`service` (
-    `id` INT not null auto_increment,
+    `id` int not null auto_increment,
     `name` nvarchar(60) not null,
     `description` text not null,
     `price` int not null,
@@ -130,7 +137,7 @@ create table if not exists `hotel_management`.`product` (
     `name` nvarchar(60) not null,
     `price` int not null,
     `stock` int not null,
-    `notes` text not null,
+    `description` text not null,
     `product_type` int not null,
 
     constraint PK_product primary key (`id`)

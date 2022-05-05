@@ -9,13 +9,13 @@ public class SingletonDBConnection {
 
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 	private static final String DB_URL ="jdbc:mysql://127.0.0.1:3306/";
-	private static final String DB_USER ="user";
+	private static final String DB_USER ="root";
 	private static final String DB_PASSWORD ="password";
 
 	private Connection connection = null;
 
 	private SingletonDBConnection() {
-//		connect();
+		connect();
 	}
 
 	private static class BillPughSingleton {
