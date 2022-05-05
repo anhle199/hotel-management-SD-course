@@ -40,7 +40,6 @@ public class ServiceInvoiceDetailDialog extends JDialog {
 		setContentPane(panel);
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);
 	}
 
 	private void initSubviews(JPanel panel) {

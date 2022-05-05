@@ -42,7 +42,6 @@ public class ImportInvoiceDetailDialog extends JDialog {
 		setContentPane(panel);
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);
 	}
 
 	private void initSubviews(JPanel panel) {

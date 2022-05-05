@@ -63,6 +63,8 @@ public class Constants {
 			"September", "October", "November", "December",
 	};
 
+	public static final String[] ROOM_TYPE_NAMES = {"Affordable", "Normal", "Luxury"};
+
 	public static final int MIN_PRICE = 0;
 	public static final int MAX_PRICE = 10000;
 

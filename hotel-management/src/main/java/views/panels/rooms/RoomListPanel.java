@@ -32,7 +32,7 @@ public class RoomListPanel extends JPanel {
 	private JPanel filterBarPanel;
 	private JComboBox<String> roomStatusComboBox;
 	private JComboBox<String> roomTypeComboBox;
-	private TextFieldPanel rangeDatePicker;
+//	private TextFieldPanel rangeDatePicker;
 	private TextFieldPanel rangePriceInput;
 	private JComboBox<String> sortCriterionComboBox;
 
@@ -133,7 +133,7 @@ public class RoomListPanel extends JPanel {
 
 		// Filter Criterion Panel.
 		JPanel filterCriterionPanel = new JPanel();
-		filterCriterionPanel.setBounds(0, 0, 581, 40);
+		filterCriterionPanel.setBounds(0, 0, 202, 40);
 		filterCriterionPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
 		filterBarPanel.add(filterCriterionPanel);
 
@@ -149,23 +149,23 @@ public class RoomListPanel extends JPanel {
 		roomTypeComboBox.setPreferredSize(new Dimension(100, 40));
 		roomTypeComboBox.setFont(Constants.Fonts.BODY);
 		filterCriterionPanel.add(roomTypeComboBox);
-		filterCriterionPanel.add(Box.createHorizontalStrut(12));
+//		filterCriterionPanel.add(Box.createHorizontalStrut(12));
 
-		// Range Date Picker.
-		ImagePanel calendarIcon = new ImagePanel(Constants.IconNames.CALENDAR_MONTH_BLACK, 24, 24);
-		Dimension rangeDatePickerSize = new Dimension(205, 40);
-		rangeDatePicker = new TextFieldPanel("", calendarIcon, IconPosition.TRAILING, rangeDatePickerSize);
-		rangeDatePicker.getTextField().setEditable(false);
-		filterCriterionPanel.add(rangeDatePicker);
-		filterCriterionPanel.add(Box.createHorizontalStrut(12));
+//		// Range Date Picker.
+//		ImagePanel calendarIcon = new ImagePanel(Constants.IconNames.CALENDAR_MONTH_BLACK, 24, 24);
+//		Dimension rangeDatePickerSize = new Dimension(205, 40);
+//		rangeDatePicker = new TextFieldPanel("", calendarIcon, IconPosition.TRAILING, rangeDatePickerSize);
+//		rangeDatePicker.getTextField().setEditable(false);
+//		filterCriterionPanel.add(rangeDatePicker);
+//		filterCriterionPanel.add(Box.createHorizontalStrut(12));
 
 		// Range Price Picker.
-		ImagePanel filterIcon = new ImagePanel(Constants.IconNames.FILTER_ALT_BLACK, 24, 24);
-		Dimension rangePriceInputSize = new Dimension(150, 40);
-		rangePriceInput = new TextFieldPanel("", filterIcon, IconPosition.TRAILING, rangePriceInputSize);
-		rangePriceInput.getTextField().setEditable(false);
-		rangePriceInput.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-		filterCriterionPanel.add(rangePriceInput);
+//		ImagePanel filterIcon = new ImagePanel(Constants.IconNames.FILTER_ALT_BLACK, 24, 24);
+//		Dimension rangePriceInputSize = new Dimension(150, 40);
+//		rangePriceInput = new TextFieldPanel("", filterIcon, IconPosition.TRAILING, rangePriceInputSize);
+//		rangePriceInput.getTextField().setEditable(false);
+//		rangePriceInput.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+//		filterCriterionPanel.add(rangePriceInput);
 
 		// Sort Criterion Combo Box.
 		sortCriterionComboBox = new JComboBox<>();
@@ -251,13 +251,13 @@ public class RoomListPanel extends JPanel {
 		return roomTypeComboBox;
 	}
 
-	public TextFieldPanel getRangeDatePicker() {
-		return rangeDatePicker;
-	}
+//	public TextFieldPanel getRangeDatePicker() {
+//		return rangeDatePicker;
+//	}
 
-	public TextFieldPanel getRangePriceInput() {
-		return rangePriceInput;
-	}
+//	public TextFieldPanel getRangePriceInput() {
+//		return rangePriceInput;
+//	}
 
 	public JComboBox<String> getSortCriterionComboBox() {
 		return sortCriterionComboBox;

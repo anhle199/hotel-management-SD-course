@@ -62,8 +62,8 @@ public class ProductDetailController implements ActionListener {
 					.setText(String.valueOf(product.getPrice()));
 			productDetailDialog.getQuantityTextField()
 					.setText(String.valueOf(product.getStock()));
-			productDetailDialog.getNoteTextArea()
-					.setText(product.getNote());
+			productDetailDialog.getDescriptionTextArea()
+					.setText(product.getDescription());
 		}
 
 		productDetailDialog.setVisible(true);
@@ -202,8 +202,8 @@ public class ProductDetailController implements ActionListener {
 				.setText(String.valueOf(product.getPrice()));
 		productDetailDialog.getQuantityTextField()
 				.setText(String.valueOf(product.getStock()));
-		productDetailDialog.getNoteTextArea()
-				.setText(product.getNote());
+		productDetailDialog.getDescriptionTextArea()
+				.setText(product.getDescription());
 
 		productDetailDialog.setViewMode(DetailDialogModeEnum.VIEW_ONLY);
 	}
@@ -219,14 +219,14 @@ public class ProductDetailController implements ActionListener {
 		);
 		int price = Integer.parseInt(productDetailDialog.getPriceTextField().getText());
 		int quantity = Integer.parseInt(productDetailDialog.getQuantityTextField().getText());
-		String note = UtilFunctions.removeRedundantWhiteSpace(
-				productDetailDialog.getNoteTextArea().getText()
+		String description = UtilFunctions.removeRedundantWhiteSpace(
+				productDetailDialog.getDescriptionTextArea().getText()
 		);
 		Product.ProductTypeEnum productType = Product.ProductTypeEnum.valueOfIgnoreCase(
 				String.valueOf(productDetailDialog.getProductTypeComboBox().getSelectedItem())
 		);
 
-		return new Product(productId, productName, price, quantity, note, productType.ordinal());
+		return new Product(productId, productName, price, quantity, description, productType.ordinal());
 	}
 
 }

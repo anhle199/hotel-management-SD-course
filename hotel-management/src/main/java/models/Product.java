@@ -8,15 +8,15 @@ public class Product {
 	private String name;
 	private int price;
 	private int stock;
-	private String note;
+	private String description;
 	private int productType;
 
-	public Product(int id, String name, int price, int stock, String note, int productType) {
+	public Product(int id, String name, int price, int stock, String description, int productType) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.stock = stock;
-		this.note = note;
+		this.description = description;
 		this.productType = productType;
 	}
 
@@ -36,8 +36,8 @@ public class Product {
 		return stock;
 	}
 
-	public String getNote() {
-		return note;
+	public String getDescription() {
+		return description;
 	}
 
 	public int getProductType() {
@@ -49,7 +49,7 @@ public class Product {
 				&& name.equals(another.name)
 				&& price == another.price
 				&& stock == another.stock
-				&& note.equals(another.note)
+				&& description.equals(another.description)
 				&& productType == another.productType;
 	}
 

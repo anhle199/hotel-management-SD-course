@@ -4,10 +4,7 @@ import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.RoomType;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -56,7 +53,43 @@ public class RoomTypeDAO implements DAO<RoomType, Integer> {
 
 	@Override
 	public Optional<RoomType> get(Integer id) throws DBConnectionException {
-		return Optional.empty();
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		Optional<RoomType> optionalRoomType = Optional.empty();
+		PreparedStatement preparedStatement = null;
+
+		try {
+			String sqlStatement = "select * from `hotel_management`.`room_type` where id = ?";
+			preparedStatement = connection.prepareStatement(sqlStatement);
+
+			preparedStatement.setInt(1, id);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				optionalRoomType = Optional.of(new RoomType(
+						resultSet.getInt("id"),
+						resultSet.getNString("name"),
+						resultSet.getInt("price")
+				));
+			}
+		} catch (SQLException e) {
+			System.out.println("RoomTypeDAO.java - get - catch - " + e.getMessage());
+			System.out.println("RoomTypeDAO.java - get - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("RoomTypeDAO.java - get - finally/catch - " + e.getMessage());
+				System.out.println("RoomTypeDAO.java - get - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return optionalRoomType;
 	}
 
 	@Override

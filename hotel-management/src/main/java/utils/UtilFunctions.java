@@ -176,4 +176,8 @@ public class UtilFunctions {
 		return getStartTimeOf(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
 	}
 
+	public static Timestamp getEndTimeOf(int year, int month, int day) {
+		return Timestamp.valueOf(String.format("%d-%d-%d 23:59:59", year, month, day));
+	}
+
 }

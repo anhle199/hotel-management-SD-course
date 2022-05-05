@@ -77,7 +77,7 @@ public class ProductListPanel extends JPanel {
 				"Product type",
 				"Price",
 				"Quantity",
-				"Note"
+				"Description"
 		};
 		final int [] columnWidths = {50, 0, 195, 195, 195, 195, 190};
 		final int[] columnHorizontalAlignments = {

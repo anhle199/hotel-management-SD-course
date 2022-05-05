@@ -1,6 +1,7 @@
 import controllers.LoginController;
 import db.SingletonDBConnection;
 import utils.RoleManager;
+import utils.UtilFunctions;
 import views.LoginView;
 
 import javax.swing.*;

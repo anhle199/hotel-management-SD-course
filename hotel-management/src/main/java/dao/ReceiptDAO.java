@@ -4,6 +4,7 @@ import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.Receipt;
 import models.ReceiptDetail;
+import utils.Pair;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -147,6 +148,53 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 	@Override
 	public void delete(Integer id) throws DBConnectionException {
 
+	}
+
+	public ArrayList<Pair<String, Number>> getTopFiveMostPurchasedProductsByMonthAndYear(
+			int month, int year
+	) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		ArrayList<Pair<String, Number>> rowKeysAndStatsValues = new ArrayList<>();
+		PreparedStatement preparedStatement = null;
+
+		try {
+			String sqlStatement = "select rd.product_name as 'product_name', sum(rd.quantity) as 'quantity'" +
+					" from `hotel_management`.`receipt` r join `hotel_management`.`receipt_detail` rd" +
+					" where (month(r.purchased_date) = ? and year(r.purchased_date) = ?)" +
+					" group by rd.product_name";
+
+			preparedStatement = connection.prepareStatement(sqlStatement);
+			preparedStatement.setInt(1, month);
+			preparedStatement.setInt(2, year);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next() && rowKeysAndStatsValues.size() < 5) {
+				rowKeysAndStatsValues.add(new Pair<>(
+						resultSet.getString("product_name"),
+						resultSet.getInt("quantity")
+				));
+			}
+		} catch (SQLException e) {
+			System.out.println("ReceiptDAO.java - getTopFiveMostPurchasedProductsByMonthAndYear - catch - " + e.getMessage());
+			System.out.println("ReceiptDAO.java - getTopFiveMostPurchasedProductsByMonthAndYear - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("ReceiptDAO.java - getTopFiveMostPurchasedProductsByMonthAndYear - finally/catch - " + e.getMessage());
+				System.out.println("ReceiptDAO.java - getTopFiveMostPurchasedProductsByMonthAndYear - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return rowKeysAndStatsValues;
 	}
 
 }

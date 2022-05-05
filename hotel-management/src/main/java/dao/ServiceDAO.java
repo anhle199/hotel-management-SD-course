@@ -122,14 +122,26 @@ public class ServiceDAO implements DAO<Service, Integer> {
 			preparedStatement.setInt(3, entity.getPrice());
 			preparedStatement.setString(4, entity.getNote());
 
+			// Execute queries.
+			connection.setAutoCommit(false);
 			preparedStatement.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("ServiceDAO.java - insert - catch - " + e.getMessage());
 			System.out.println("ServiceDAO.java - insert - catch - " + Arrays.toString(e.getStackTrace()));
 
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("ServiceDAO.java - insert - catch/catch - " + ex.getMessage());
+				System.out.println("ServiceDAO.java - insert - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
+
 			throw DBConnectionException.INSTANCE;
 		} finally {
 			try {
+				connection.setAutoCommit(true);
+
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} catch (SQLException e) {
@@ -141,7 +153,64 @@ public class ServiceDAO implements DAO<Service, Integer> {
 
 	@Override
 	public void update(Service entity) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		PreparedStatement preparedStatementUpdateService = null;
+		PreparedStatement preparedStatementUpdateServiceInvoice = null;
+
+		try {
+			// Declare sql statements and create PreparedStatement for these.
+			String updateServiceStatement = "update `hotel_management`.`service` " +
+					"set `name` = ?, `description` = ?, `price` = ?, `notes` = ? where `id` = ?";
+			String updateServiceInvoiceStatement = "update `hotel_management`.`service_invoice` " +
+					"set `service_name` = ? where `service_id` = ?";
+
+			preparedStatementUpdateService = connection.prepareStatement(updateServiceStatement);
+			preparedStatementUpdateServiceInvoice = connection.prepareStatement(updateServiceInvoiceStatement);
+
+			// Set values for PreparedStatement.
+			preparedStatementUpdateService.setNString(1, entity.getName());
+			preparedStatementUpdateService.setNString(2, entity.getDescription());
+			preparedStatementUpdateService.setInt(3, entity.getPrice());
+			preparedStatementUpdateService.setNString(4, entity.getNote());
+			preparedStatementUpdateService.setInt(5, entity.getId());
+
+			preparedStatementUpdateServiceInvoice.setNString(1, entity.getName());
+			preparedStatementUpdateServiceInvoice.setInt(2, entity.getId());
+
+			// Execute queries.
+			connection.setAutoCommit(false);
+			preparedStatementUpdateService.executeUpdate();
+			preparedStatementUpdateServiceInvoice.executeUpdate();
+			connection.commit();
+		} catch (SQLException e) {
+			System.out.println("ServiceDAO.java - update - catch - " + e.getMessage());
+			System.out.println("ServiceDAO.java - update - catch - " + Arrays.toString(e.getStackTrace()));
+
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("ServiceDAO.java - update - catch/catch - " + ex.getMessage());
+				System.out.println("ServiceDAO.java - update - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
+
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				connection.setAutoCommit(true);
+
+				if (preparedStatementUpdateService != null)
+					preparedStatementUpdateService.close();
+				if (preparedStatementUpdateServiceInvoice != null)
+					preparedStatementUpdateServiceInvoice.close();
+			} catch (SQLException e) {
+				System.out.println("ServiceDAO.java - update - finally/catch - " + e.getMessage());
+				System.out.println("ServiceDAO.java - update - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
 	}
 
 	@Override
