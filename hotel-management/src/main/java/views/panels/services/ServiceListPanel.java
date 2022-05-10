@@ -52,7 +52,7 @@ public class ServiceListPanel extends JPanel {
 
 		// Top Bar Buttons Panel.
 		JPanel topBarButtonsPanel = new JPanel();
-		topBarButtonsPanel.setBounds(764, 0, 212, 40);
+		topBarButtonsPanel.setBounds(826, 0, 212, 40);
 		topBarButtonsPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
 		topBarPanel.add(topBarButtonsPanel);
 
@@ -75,11 +75,11 @@ public class ServiceListPanel extends JPanel {
 				"",  // no
 				"id",
 				"Service name",
+				"Price ($)",
 				"Description",
-				"Price",
 				"Note"
 		};
-		final int [] columnWidths = {50, 0, 241, 242, 242, 244};
+		final int [] columnWidths = {40, 0, 150, 80, 380, 369};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,

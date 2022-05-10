@@ -51,6 +51,8 @@ public class ServiceListController implements ActionListener {
 	}
 
 	public void loadServiceListAndReloadTableData(String serviceNameToken) {
+		serviceListPanel.getSearchBar().setText(serviceNameToken);
+
 		try {
 			ArrayList<Service> serviceList;
 			if (serviceNameToken.isEmpty()) {
@@ -81,8 +83,8 @@ public class ServiceListController implements ActionListener {
 				no,
 				service.getId(),
 				service.getName(),
-				service.getDescription(),
 				service.getPrice(),
+				service.getDescription(),
 				service.getNote(),
 		};
 	}
@@ -91,10 +93,15 @@ public class ServiceListController implements ActionListener {
 		return new Service(
 				(int) rowValue.get(ServiceListPanel.HIDDE_COLUMN_SERVICE_ID),
 				String.valueOf(rowValue.get(2)),
-				String.valueOf(rowValue.get(3)),
-				(int) rowValue.get(4),
+				String.valueOf(rowValue.get(4)),
+				(int) rowValue.get(3),
 				String.valueOf(rowValue.get(5))
 		);
+	}
+
+	public void reloadTableDataWithCurrentSearchValue() {
+		String searchText = serviceListPanel.getSearchBar().getText();
+		loadServiceListAndReloadTableData(UtilFunctions.removeRedundantWhiteSpace(searchText));
 	}
 
 	public void displayUI() {
@@ -115,10 +122,7 @@ public class ServiceListController implements ActionListener {
 	}
 
 	private void searchButtonAction() {
-		String searchText = UtilFunctions.removeRedundantWhiteSpace(
-				serviceListPanel.getSearchBar().getText()
-		);
-		loadServiceListAndReloadTableData(searchText);
+		reloadTableDataWithCurrentSearchValue();
 	}
 
 	private void addButtonAction() {
@@ -157,6 +161,7 @@ public class ServiceListController implements ActionListener {
 							"Remove Service",
 							"This service is removed successfully."
 					);
+					reloadTableDataWithCurrentSearchValue();
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 					System.out.println("ServiceListController.java - removeButtonAction - catch - Unavailable connection.");
@@ -176,17 +181,21 @@ public class ServiceListController implements ActionListener {
 
 	private void doubleClicksInRowAction() {
 		JTable table = serviceListPanel.getScrollableTable().getTable();
-		NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
-		Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
-		Service selectedService = mapRowValueToServiceInstance(selectedRowValue);
+		int selectedRow = table.getSelectedRow();
 
-		DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
-		ServiceDetailDialog serviceDetailDialog = new ServiceDetailDialog(mainFrame, viewMode);
-		ServiceDetailController serviceDetailController = new ServiceDetailController(
-				serviceDetailDialog, mainFrame, selectedService, viewMode, this
-		);
+		if (selectedRow >= 0 && selectedRow < table.getRowCount()) {
+			NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
+			Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
+			Service selectedService = mapRowValueToServiceInstance(selectedRowValue);
 
-		serviceDetailController.displayUI();
+			DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
+			ServiceDetailDialog serviceDetailDialog = new ServiceDetailDialog(mainFrame, viewMode);
+			ServiceDetailController serviceDetailController = new ServiceDetailController(
+					serviceDetailDialog, mainFrame, selectedService, viewMode, this
+			);
+
+			serviceDetailController.displayUI();
+		}
 	}
 
 }

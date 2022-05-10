@@ -44,4 +44,12 @@ public class Service {
 				&& note.equals(another.note);
 	}
 
+	public void copyFrom(Service another) {
+		this.id = another.id;
+		this.name = another.name;
+		this.description = another.description;
+		this.price = another.price;
+		this.note = another.note;
+	}
+
 }

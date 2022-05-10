@@ -176,4 +176,20 @@ public class RentalInvoice {
 				&& isPaid == another.isPaid;
 	}
 
+	public void copyFrom(RentalInvoice another) {
+		this.id = another.id;
+		this.startDate = (Timestamp) another.startDate.clone();
+		this.endDate = (Timestamp) another.endDate.clone();
+		this.roomId = another.roomId;
+		this.roomName = another.roomName;
+		this.roomTypeId = another.roomTypeId;
+		this.roomTypeName = another.roomTypeName;
+		this.roomTypePrice = another.roomTypePrice;
+		this.customerName = another.customerName;
+		this.identityNumber = another.identityNumber;
+		this.address = another.address;
+		this.customerType = another.customerType;
+		this.isPaid = another.isPaid;
+	}
+
 }

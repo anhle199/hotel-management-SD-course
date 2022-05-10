@@ -1,7 +1,8 @@
 package models;
 
+import utils.Constants;
+
 import java.sql.Timestamp;
-import java.util.concurrent.TimeUnit;
 
 public class RentalReceipt {
 
@@ -67,8 +68,9 @@ public class RentalReceipt {
 	}
 
 	public long calculateRentedDays() {
-		long diffInTime = endDate.getTime() - startDate.getTime();
-		return TimeUnit.DAYS.convert(diffInTime, TimeUnit.MILLISECONDS);
+		int diffInDate = (int) (((endDate.getTime() - startDate.getTime()) / Constants.ONE_DAY_IN_MILLISECONDS) % 365);
+		diffInDate += (diffInDate == 0) ? 1 : 0;
+		return diffInDate;
 	}
 
 }

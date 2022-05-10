@@ -175,8 +175,8 @@ public class RoomListPanel extends JPanel {
 	}
 
 	private void initTable() {
-		final String[] columnNames = {"", "id", "Room name", "Room type", "Price", "Status", "Note", "room_type_id"};
-		final int[] columnWidths = {40, 0, 320, 200, 130, 130, 198, 0};
+		final String[] columnNames = {"", "id", "Room name", "Room type", "Price ($)", "Status", "Note", "room_type_id"};
+		final int[] columnWidths = {40, 0, 200, 100, 70, 90, 518, 0};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,

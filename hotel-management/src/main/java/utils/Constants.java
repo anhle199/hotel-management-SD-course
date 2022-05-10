@@ -26,7 +26,6 @@ public class Constants {
 		public static final Color WHITE = Color.WHITE;
 		public static final Color BLACK = Color.BLACK;
 		public static final Color GRAY = Color.GRAY;
-		public static final Color DARK_GRAY = Color.DARK_GRAY;
 		public static final Color LIGHT_GRAY = Color.LIGHT_GRAY;
 		public static final Color RED = Color.RED;
 
@@ -48,11 +47,7 @@ public class Constants {
 		public static final String LOGOUT_WHITE = "src/main/resources/icons/ic_round_logout_white_24dp.png";
 
 		public static final String SEARCH_BLACK = "src/main/resources/icons/ic_round_search_black_24dp.png";
-		public static final String ADD_WHITE = "src/main/resources/icons/ic_round_add_white_24dp.png";
 		public static final String MORE_HORIZ_WHITE = "src/main/resources/icons/ic_round_more_horiz_white_24dp.png";
-		public static final String CALENDAR_MONTH_BLACK = "src/main/resources/icons/ic_round_calendar_month_black_24dp.png";
-		public static final String FILTER_ALT_BLACK = "src/main/resources/icons/ic_round_filter_alt_black_24dp.png";
-		public static final String FILTER_ALT_WHITE = "src/main/resources/icons/ic_round_filter_alt_white_24dp.png";
 
 		public static final String ERROR_MESSAGE = "src/main/resources/icons/ic_error_message_64dp.png";
 	}
@@ -63,20 +58,19 @@ public class Constants {
 			"September", "October", "November", "December",
 	};
 
-	public static final String[] ROOM_TYPE_NAMES = {"Affordable", "Normal", "Luxury"};
-
 	public static final int MIN_PRICE = 0;
 	public static final int MAX_PRICE = 10000;
 
 	public static final int MIN_CUSTOMERS = 1;
 	public static final int MAX_CUSTOMERS = 1000;
 
-	public static final int MIN_TIME_USED = 30;
-	public static final int MAX_TIME_USED = 360;
-
 	public static final int MIN_QUANTITY = 1;
 	public static final int MAX_QUANTITY = 100;
 
-	public static final String TIMESTAMP_WITHOUT_NANOSECOND = "yyyy-MM-dd HH:mm:ss";
+	public static final String TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_PATTERN = "yyyy-MM-dd";
+	public static final String START_TIME_STRING_VALUE = "00:00:00";
+	public static final String END_TIME_STRING_VALUE = "23:59:59";
 
+	public static final int ONE_DAY_IN_MILLISECONDS = 86400000;
 }

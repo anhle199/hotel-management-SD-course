@@ -74,7 +74,7 @@ public class RentalInvoiceListPanel extends JPanel {
 				"room_type_name",
 				"room_type_price",
 		};
-		final int [] columnWidths = {40, 0, 0, 200, 145, 145, 120, 200, 120, 150, 200, 0, 0, 0};
+		final int [] columnWidths = {40, 0, 0, 250, 100, 100, 70, 225, 110, 120, 305, 0, 0, 0};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,

@@ -56,6 +56,8 @@ public class RoomListController implements ActionListener {
 	}
 
 	public void loadRoomListAndReloadTableData(String roomNameToken) {
+		roomListPanel.getSearchBar().setText(roomNameToken);
+
 		try {
 			ArrayList<Pair<Room, RoomType>> data;
 			if (roomNameToken.isEmpty()) {
@@ -114,6 +116,11 @@ public class RoomListController implements ActionListener {
 		);
 	}
 
+	public void reloadTableDataWithCurrentSearchValue() {
+		String searchText = roomListPanel.getSearchBar().getText();
+		loadRoomListAndReloadTableData(UtilFunctions.removeRedundantWhiteSpace(searchText));
+	}
+
 	public void displayUI() {
 		loadRoomListAndReloadTableData("");
 	}
@@ -126,8 +133,6 @@ public class RoomListController implements ActionListener {
 			addButtonAction();
 		} else if (event.getSource() == roomListPanel.getRemoveButton()) {
 			removeButtonAction();
-		} else if (event.getSource() == roomListPanel.getUpdateRulesMenuItem()) {
-//			updateRulesMenuItemAction();
 		} else if (event.getSource() == connectionErrorDialog.getReconnectButton()) {
 			reconnectButtonAction();
 		}
@@ -135,11 +140,7 @@ public class RoomListController implements ActionListener {
 
 	private void searchButtonAction() {
 		roomListPanel.setVisibleForFilterBar(false);
-
-		String searchText = UtilFunctions.removeRedundantWhiteSpace(
-				roomListPanel.getSearchBar().getText()
-		);
-		loadRoomListAndReloadTableData(searchText);
+		reloadTableDataWithCurrentSearchValue();
 	}
 
 	private void addButtonAction() {
@@ -178,7 +179,7 @@ public class RoomListController implements ActionListener {
 							"Remove Room",
 							"This room is removed successfully."
 					);
-					loadRoomListAndReloadTableData("");
+					reloadTableDataWithCurrentSearchValue();
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 					System.out.println("RoomListController.java - removeButtonAction - catch - Unavailable connection.");
@@ -186,10 +187,6 @@ public class RoomListController implements ActionListener {
 			}
 		}
 	}
-
-//	private void updateRulesMenuItemAction() {
-//
-//	}
 
 	private void reconnectButtonAction() {
 		connectionErrorDialog.setExitOnCloseButton(false);
@@ -202,17 +199,21 @@ public class RoomListController implements ActionListener {
 
 	private void doubleClicksInRowAction() {
 		JTable table = roomListPanel.getScrollableTable().getTable();
-		NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
-		Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
-		Room selectedRoom = mapRowValueToRoomInstance(selectedRowValue);
+		int selectedRow = table.getSelectedRow();
 
-		DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
-		RoomDetailDialog roomDetailDialog = new RoomDetailDialog(mainFrame, viewMode);
-		RoomDetailController roomDetailController = new RoomDetailController(
-				roomDetailDialog, mainFrame, selectedRoom, viewMode, this
-		);
+		if (selectedRow >= 0 && selectedRow < table.getRowCount()) {
+			NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
+			Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
+			Room selectedRoom = mapRowValueToRoomInstance(selectedRowValue);
 
-		roomDetailController.displayUI();
+			DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
+			RoomDetailDialog roomDetailDialog = new RoomDetailDialog(mainFrame, viewMode);
+			RoomDetailController roomDetailController = new RoomDetailController(
+					roomDetailDialog, mainFrame, selectedRoom, viewMode, this
+			);
+
+			roomDetailController.displayUI();
+		}
 	}
 
 }

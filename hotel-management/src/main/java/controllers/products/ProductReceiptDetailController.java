@@ -91,7 +91,7 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 			productReceiptDetailDialog.getPurchasedDateTextField()
 									  .setText(
 											  UtilFunctions.formatTimestamp(
-													  Constants.TIMESTAMP_WITHOUT_NANOSECOND,
+													  Constants.TIMESTAMP_PATTERN,
 													  receipt.getPurchasedDate()
 											  )
 									  );

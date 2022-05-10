@@ -14,15 +14,11 @@ public class ServiceDetailDialog extends JDialog {
 	private DetailDialogModeEnum viewMode;
 
 	private JTextField serviceNameTextField;
-	private JTextField descriptionTextField;
 	private JFormattedTextField priceTextField;
+	private JTextArea descriptionTextArea;
 	private JTextArea noteTextArea;
 	private JButton positiveButton;
 	private JButton negativeButton;
-
-	public ServiceDetailDialog(JFrame frame) {
-		this(frame, DetailDialogModeEnum.VIEW_ONLY);
-	}
 
 	public ServiceDetailDialog(JFrame frame, DetailDialogModeEnum mode) {
 		super(frame, "Service Detail", true);
@@ -30,7 +26,7 @@ public class ServiceDetailDialog extends JDialog {
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setPreferredSize(new Dimension(460, 356));
+		panel.setPreferredSize(new Dimension(470, 416));
 
 		initSubviews(panel);
 		setViewMode(viewMode);
@@ -43,7 +39,7 @@ public class ServiceDetailDialog extends JDialog {
 
 	private void initSubviews(JPanel panel) {
 		// Sizes and coordinates
-		Dimension labelSize = new Dimension(80, 40);
+		Dimension labelSize = new Dimension(90, 40);
 		Dimension textFieldSize = new Dimension(320, 40);
 		int padding = 20;
 		int spacingTextFields = 12;
@@ -60,20 +56,9 @@ public class ServiceDetailDialog extends JDialog {
 		UtilFunctions.configureDialogTextFieldOnMainThread(serviceNameTextField);
 		panel.add(serviceNameTextField);
 
-		// Description Label.
-		JLabel descriptionLabel = new JLabel("Description");
-		descriptionLabel.setBounds(padding, serviceNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
-		panel.add(descriptionLabel);
-
-		// Description Text Field.
-		descriptionTextField = new JTextField();
-		descriptionTextField.setBounds(xTextField, descriptionLabel.getY(), textFieldSize.width, textFieldSize.height);
-		UtilFunctions.configureDialogTextFieldOnMainThread(descriptionTextField);
-		panel.add(descriptionTextField);
-
 		// Price Label.
 		JLabel priceLabel = new JLabel("Price ($)");
-		priceLabel.setBounds(padding, descriptionLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		priceLabel.setBounds(padding, serviceNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(priceLabel);
 
 		// Number formatter without grouping separator
@@ -95,14 +80,29 @@ public class ServiceDetailDialog extends JDialog {
 		UtilFunctions.configureDialogTextFieldOnMainThread(priceTextField);
 		panel.add(priceTextField);
 
+		// Description Label.
+		JLabel descriptionLabel = new JLabel("Description");
+		descriptionLabel.setBounds(padding, priceLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		panel.add(descriptionLabel);
+
+		// Description Text Field.
+		descriptionTextArea = new JTextArea();
+		descriptionTextArea.setBounds(xTextField, descriptionLabel.getY(), textFieldSize.width, 100);
+		descriptionTextArea.setLineWrap(true);
+		descriptionTextArea.setWrapStyleWord(true);
+		UtilFunctions.configureDialogTextFieldOnMainThread(descriptionTextArea);
+		panel.add(descriptionTextArea);
+
 		// Note Label.
 		JLabel noteLabel = new JLabel("Note");
-		noteLabel.setBounds(padding, priceLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		noteLabel.setBounds(padding, descriptionLabel.getY() + descriptionTextArea.getHeight() + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(noteLabel);
 
 		// Note Text Field.
 		noteTextArea = new JTextArea();
 		noteTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
+		noteTextArea.setLineWrap(true);
+		noteTextArea.setWrapStyleWord(true);
 		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextArea);
 		panel.add(noteTextArea);
 
@@ -126,7 +126,7 @@ public class ServiceDetailDialog extends JDialog {
 		boolean fieldEditable = viewMode.getFieldEditable();
 
 		serviceNameTextField.setEnabled(fieldEditable);
-		descriptionTextField.setEnabled(fieldEditable);
+		descriptionTextArea.setEnabled(fieldEditable);
 		priceTextField.setEnabled(fieldEditable);
 		noteTextArea.setEnabled(fieldEditable);
 		positiveButton.setText(viewMode.getPositiveButtonTitle());
@@ -137,8 +137,8 @@ public class ServiceDetailDialog extends JDialog {
 		return serviceNameTextField;
 	}
 
-	public JTextField getDescriptionTextField() {
-		return descriptionTextField;
+	public JTextArea getDescriptionTextArea() {
+		return descriptionTextArea;
 	}
 
 	public JFormattedTextField getPriceTextField() {

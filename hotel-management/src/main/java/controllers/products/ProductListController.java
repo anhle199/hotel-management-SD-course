@@ -186,17 +186,21 @@ public class ProductListController implements ActionListener {
 
 	private void doubleClicksInRowAction() {
 		JTable table = productListPanel.getScrollableTable().getTable();
-		NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
-		Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
-		Product selectedProduct = mapRowValueToProductInstance(selectedRowValue);
+		int selectedRow = table.getSelectedRow();
 
-		DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
-		ProductDetailDialog productDetailDialog = new ProductDetailDialog(mainFrame, viewMode);
-		ProductDetailController productDetailController = new ProductDetailController(
-				productDetailDialog, mainFrame, selectedProduct, viewMode, this
-		);
+		if (selectedRow >= 0 && selectedRow < table.getRowCount()) {
+			NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
+			Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
+			Product selectedProduct = mapRowValueToProductInstance(selectedRowValue);
 
-		productDetailController.displayUI();
+			DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
+			ProductDetailDialog productDetailDialog = new ProductDetailDialog(mainFrame, viewMode);
+			ProductDetailController productDetailController = new ProductDetailController(
+					productDetailDialog, mainFrame, selectedProduct, viewMode, this
+			);
+
+			productDetailController.displayUI();
+		}
 	}
 
 }

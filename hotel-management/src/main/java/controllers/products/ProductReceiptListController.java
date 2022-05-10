@@ -75,7 +75,7 @@ public class ProductReceiptListController implements ActionListener {
 				no,
 				receipt.getId(),
 				receipt.getCustomerName(),
-				UtilFunctions.formatTimestamp(Constants.TIMESTAMP_WITHOUT_NANOSECOND, receipt.getPurchasedDate()),
+				UtilFunctions.formatTimestamp(Constants.TIMESTAMP_PATTERN, receipt.getPurchasedDate()),
 				receipt.getTotalPrice(),
 				receipt.getNote(),
 		};
@@ -124,17 +124,21 @@ public class ProductReceiptListController implements ActionListener {
 
 	private void doubleClicksInRowAction() {
 		JTable table = productReceiptListPanel.getScrollableTable().getTable();
-		NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
-		Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
-		Receipt selectedReceipt = mapRowValueToReceiptInstance(selectedRowValue);
+		int selectedRow = table.getSelectedRow();
 
-		DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
-		ProductReceiptDetailDialog productReceiptDetailDialog = new ProductReceiptDetailDialog(mainFrame, viewMode);
-		ProductReceiptDetailController productReceiptDetailController = new ProductReceiptDetailController(
-				productReceiptDetailDialog, mainFrame, selectedReceipt, viewMode, this
-		);
+		if (selectedRow >= 0 && selectedRow < table.getRowCount()) {
+			NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
+			Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
+			Receipt selectedReceipt = mapRowValueToReceiptInstance(selectedRowValue);
 
-		productReceiptDetailController.displayUI();
+			DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
+			ProductReceiptDetailDialog productReceiptDetailDialog = new ProductReceiptDetailDialog(mainFrame, viewMode);
+			ProductReceiptDetailController productReceiptDetailController = new ProductReceiptDetailController(
+					productReceiptDetailDialog, mainFrame, selectedReceipt, viewMode, this
+			);
+
+			productReceiptDetailController.displayUI();
+		}
 	}
 
 }

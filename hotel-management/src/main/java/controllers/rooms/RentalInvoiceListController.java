@@ -84,8 +84,8 @@ public class RentalInvoiceListController implements ActionListener {
 				rentalInvoice.getId(),
 				rentalInvoice.getRoomId(),
 				rentalInvoice.getRoomName(),
-				UtilFunctions.formatTimestamp(Constants.TIMESTAMP_WITHOUT_NANOSECOND, rentalInvoice.getStartDate()),
-				UtilFunctions.formatTimestamp(Constants.TIMESTAMP_WITHOUT_NANOSECOND, rentalInvoice.getEndDate()),
+				UtilFunctions.formatTimestamp(Constants.DATE_PATTERN, rentalInvoice.getStartDate()),
+				UtilFunctions.formatTimestamp(Constants.DATE_PATTERN, rentalInvoice.getEndDate()),
 				RentalInvoice.PaymentStatusEnum.valueOf(rentalInvoice.getIsPaid()).capitalizedName(),
 				rentalInvoice.getCustomerName(),
 				capitalizedCustomerType,
@@ -105,10 +105,13 @@ public class RentalInvoiceListController implements ActionListener {
 				String.valueOf(rowValue.get(6))
 		);
 
+		String startDateInString = rowValue.get(4) + " " + Constants.START_TIME_STRING_VALUE;
+		String endDateInString = rowValue.get(5) + " " + Constants.END_TIME_STRING_VALUE;
+
 		return new RentalInvoice(
 				(int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_RENTAL_INVOICE_ID),
-				Timestamp.valueOf(String.valueOf(rowValue.get(4))),
-				Timestamp.valueOf(String.valueOf(rowValue.get(5))),
+				Timestamp.valueOf(startDateInString),
+				Timestamp.valueOf(endDateInString),
 				(int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_ID),
 				String.valueOf(rowValue.get(3)),
 				(int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_TYPE_ID),
@@ -250,27 +253,34 @@ public class RentalInvoiceListController implements ActionListener {
 
 	private void doubleClicksInRowAction() {
 		JTable table = rentalInvoiceListPanel.getScrollableTable().getTable();
-		NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
-		Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
-		RentalInvoice selectedRentalInvoice = mapRowValueToRentalInvoiceInstance(selectedRowValue);
+		int selectedRow = table.getSelectedRow();
 
-		DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
-		RentalInvoiceDetailDialog rentalInvoiceDetailDialog = new RentalInvoiceDetailDialog(mainFrame, viewMode);
-		RentalInvoiceDetailController rentalInvoiceDetailController = new RentalInvoiceDetailController(
-				rentalInvoiceDetailDialog, mainFrame, selectedRentalInvoice, viewMode, this
-		);
+		if (selectedRow >= 0 && selectedRow < table.getRowCount()) {
+			NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
+			Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
+			RentalInvoice selectedRentalInvoice = mapRowValueToRentalInvoiceInstance(selectedRowValue);
 
-		rentalInvoiceDetailController.displayUI();
+			DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
+			RentalInvoiceDetailDialog rentalInvoiceDetailDialog = new RentalInvoiceDetailDialog(mainFrame, viewMode);
+			RentalInvoiceDetailController rentalInvoiceDetailController = new RentalInvoiceDetailController(
+					rentalInvoiceDetailDialog, mainFrame, selectedRentalInvoice, viewMode, this
+			);
+
+			rentalInvoiceDetailController.displayUI();
+		}
 	}
 
 	private RentalReceipt getRentalReceiptInstanceFromSpecificRow(int row) {
 		NonEditableTableModel tableModel = (NonEditableTableModel) rentalInvoiceListPanel.getScrollableTable().getTableModel();
 		Vector<Object> rowValue = tableModel.getRowValue(row);
 
-		Timestamp startDate = Timestamp.valueOf(String.valueOf(rowValue.get(4)));
-		Timestamp endDate = Timestamp.valueOf(String.valueOf(rowValue.get(5)));
+		String startDateInString = rowValue.get(4) + " " + Constants.START_TIME_STRING_VALUE;
+		String endDateInString = rowValue.get(5) + " " + Constants.END_TIME_STRING_VALUE;
+		Timestamp startDate = Timestamp.valueOf(startDateInString);
+		Timestamp endDate = Timestamp.valueOf(endDateInString);
+
 		int price = (int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_TYPE_PRICE);
-		int diffInDate = (int) (((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) % 365);
+		int diffInDate = (int) (((endDate.getTime() - startDate.getTime()) / Constants.ONE_DAY_IN_MILLISECONDS) % 365);
 		diffInDate += (diffInDate == 0) ? 1 : 0;
 		int totalPrice = price * diffInDate;
 

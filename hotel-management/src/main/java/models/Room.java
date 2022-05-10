@@ -39,24 +39,18 @@ public class Room {
 	}
 
 	public enum RoomStatusEnum {
-		AVAILABLE, RESERVED, RENTED;
+		AVAILABLE, RESERVED;
 
 		public static RoomStatusEnum valueOfIgnoreCase(String name) {
 			if (name.equalsIgnoreCase(RESERVED.name()))
 				return RESERVED;
-			if (name.equalsIgnoreCase(RENTED.name()))
-				return RENTED;
 
 			return AVAILABLE;
 		}
 
 		public static RoomStatusEnum valueOf(byte value) {
-			if (value == RESERVED.ordinal()) {
+			if (value == RESERVED.ordinal())
 				return RESERVED;
-			}
-			if (value == RENTED.ordinal()) {
-				return RENTED;
-			}
 
 			return AVAILABLE;
 		}
@@ -70,7 +64,6 @@ public class Room {
 					"All",
 					UtilFunctions.capitalizeFirstLetterInString(AVAILABLE.name()),
 					UtilFunctions.capitalizeFirstLetterInString(RESERVED.name()),
-					UtilFunctions.capitalizeFirstLetterInString(RENTED.name()),
 			};
 		}
 	}
@@ -81,6 +74,14 @@ public class Room {
 				&& description.equals(another.description)
 				&& status == another.status
 				&& roomTypeId == another.roomTypeId;
+	}
+
+	public void copyFrom(Room another) {
+		this.id = another.id;
+		this.name = another.name;
+		this.description = another.description;
+		this.status = another.status;
+		this.roomTypeId = another.roomTypeId;
 	}
 
 }

@@ -85,7 +85,7 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 			importInvoiceDetailDialog.getImportedDateTextField()
 									 .setText(
 											 UtilFunctions.formatTimestamp(
-													 Constants.TIMESTAMP_WITHOUT_NANOSECOND,
+													 Constants.TIMESTAMP_PATTERN,
 													 importInvoice.getImportedDate()
 											 )
 									 );
