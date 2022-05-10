@@ -108,7 +108,7 @@ public class ProductDAO implements DAO<Product, Integer> {
 		try {
 			statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(
-					"select * from `hotel_management`.`product` where `name` like '" + productNameToken + "'"
+					"select * from `hotel_management`.`product` where `name` like '%" + productNameToken + "%'"
 			);
 
 			while (resultSet.next()) {

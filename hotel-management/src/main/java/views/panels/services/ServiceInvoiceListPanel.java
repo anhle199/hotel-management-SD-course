@@ -11,8 +11,8 @@ import java.awt.*;
 public class ServiceInvoiceListPanel extends JPanel {
 
 	public static final int HIDDEN_COLUMN_SERVICE_INVOICE_ID = 1;
-	public static final int HIDDEN_COLUMN_ROOM_ID = 9;
-	public static final int HIDDEN_COLUMN_SERVICE_ID = 10;
+	public static final int HIDDEN_COLUMN_ROOM_ID = 8;
+	public static final int HIDDEN_COLUMN_SERVICE_ID = 9;
 
 	// Top Bar.
 	private JButton addButton;
@@ -60,23 +60,21 @@ public class ServiceInvoiceListPanel extends JPanel {
 				"id",
 				"Room name",
 				"Service name",
-				"Price",
-				"Number of customer",
-				"Total price",
-				"Time used",
+				"Price ($)",
+				"Number of customers",
+				"Total price ($)",
 				"Note",
 				"room_id",
 				"service_id"
 		};
-		final int [] columnWidths = {50, 0, 122, 127, 112, 167, 166, 129, 146, 0, 0};
+		final int [] columnWidths = {40, 0, 150, 150, 80, 150, 100, 349, 0, 0};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,

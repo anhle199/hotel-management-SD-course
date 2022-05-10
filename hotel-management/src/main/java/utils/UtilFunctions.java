@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class UtilFunctions {
@@ -169,15 +168,21 @@ public class UtilFunctions {
 	}
 
 	public static Timestamp getStartTimeOf(int year, int month, int day) {
-		return Timestamp.valueOf(String.format("%d-%d-%d 00:00:00", year, month, day));
-	}
-
-	public static Timestamp getStartTimeOf(LocalDate localDate) {
-		return getStartTimeOf(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
+		return Timestamp.valueOf(String.format("%d-%d-%d " + Constants.START_TIME_STRING_VALUE, year, month, day));
 	}
 
 	public static Timestamp getEndTimeOf(int year, int month, int day) {
-		return Timestamp.valueOf(String.format("%d-%d-%d 23:59:59", year, month, day));
+		return Timestamp.valueOf(String.format("%d-%d-%d " + Constants.END_TIME_STRING_VALUE, year, month, day));
+	}
+
+	public static int calculateTotalPrice(int unitPrice, Timestamp startDate, Timestamp endDate) {
+		if (startDate.compareTo(endDate) >= 0)
+			return 0;
+
+		int diffInDate = (int) (((endDate.getTime() - startDate.getTime()) / Constants.ONE_DAY_IN_MILLISECONDS) % 365);
+		diffInDate += (diffInDate == 0) ? 1 : 0;
+
+		return unitPrice * diffInDate;
 	}
 
 }

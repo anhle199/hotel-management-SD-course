@@ -107,6 +107,8 @@ public class RoomDetailDialog extends JDialog {
 		noteTextArea = new JTextArea();
 		noteTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
 		noteTextArea.setEnabled(false);
+		noteTextArea.setLineWrap(true);
+		noteTextArea.setWrapStyleWord(true);
 		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextArea);
 		panel.add(noteTextArea);
 

@@ -75,10 +75,9 @@ public class ServiceInvoiceListController implements ActionListener {
 				serviceInvoice.getId(),
 				serviceInvoice.getRoomName(),
 				serviceInvoice.getServiceName(),
+				serviceInvoice.getPrice(),
 				serviceInvoice.getNumberOfCustomers(),
-				serviceInvoice.getNumberOfCustomers(),
-				serviceInvoice.getTotalPrice(),
-				serviceInvoice.getTimeUsed(),
+				serviceInvoice.getPrice() * serviceInvoice.getNumberOfCustomers(),
 				serviceInvoice.getNote(),
 				serviceInvoice.getRoomId(),
 				serviceInvoice.getServiceId(),
@@ -90,9 +89,8 @@ public class ServiceInvoiceListController implements ActionListener {
 				(int) rowValue.get(ServiceInvoiceListPanel.HIDDEN_COLUMN_SERVICE_INVOICE_ID),
 				String.valueOf(rowValue.get(3)),
 				(int) rowValue.get(5),
-				(int) rowValue.get(6),
-				(int) rowValue.get(7),
-				String.valueOf(rowValue.get(8)),
+				(int) rowValue.get(4),
+				String.valueOf(rowValue.get(7)),
 				(int) rowValue.get(ServiceInvoiceListPanel.HIDDEN_COLUMN_ROOM_ID),
 				String.valueOf(rowValue.get(2)),
 				(int) rowValue.get(ServiceInvoiceListPanel.HIDDEN_COLUMN_SERVICE_ID)
@@ -150,6 +148,7 @@ public class ServiceInvoiceListController implements ActionListener {
 							"Remove Service Invoice",
 							"This invoice is removed successfully."
 					);
+					loadServiceInvoiceListAndReloadTableData();
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 					System.out.println("ServiceInvoiceListController.java - removeButtonAction - catch - Unavailable connection.");
@@ -168,17 +167,21 @@ public class ServiceInvoiceListController implements ActionListener {
 
 	private void doubleClicksInRowAction() {
 		JTable table = serviceInvoiceListPanel.getScrollableTable().getTable();
-		NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
-		Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
-		ServiceInvoice selectedServiceInvoice = mapRowValueToServiceInvoiceInstance(selectedRowValue);
+		int selectedRow = table.getSelectedRow();
 
-		DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
-		ServiceInvoiceDetailDialog serviceInvoiceDetailDialog = new ServiceInvoiceDetailDialog(mainFrame, viewMode);
-		ServiceInvoiceDetailController serviceInvoiceDetailController = new ServiceInvoiceDetailController(
-				serviceInvoiceDetailDialog, mainFrame, selectedServiceInvoice, viewMode, this
-		);
+		if (selectedRow >= 0 && selectedRow < table.getRowCount()) {
+			NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
+			Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
+			ServiceInvoice selectedServiceInvoice = mapRowValueToServiceInvoiceInstance(selectedRowValue);
 
-		serviceInvoiceDetailController.displayUI();
+			DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
+			ServiceInvoiceDetailDialog serviceInvoiceDetailDialog = new ServiceInvoiceDetailDialog(mainFrame, viewMode);
+			ServiceInvoiceDetailController serviceInvoiceDetailController = new ServiceInvoiceDetailController(
+					serviceInvoiceDetailDialog, mainFrame, selectedServiceInvoice, viewMode, this
+			);
+
+			serviceInvoiceDetailController.displayUI();
+		}
 	}
 
 }

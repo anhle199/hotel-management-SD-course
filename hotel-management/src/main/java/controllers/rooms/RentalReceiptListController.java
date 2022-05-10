@@ -4,6 +4,8 @@ import dao.RentalReceiptDAO;
 import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.RentalReceipt;
+import utils.Constants;
+import utils.UtilFunctions;
 import views.components.dialogs.ConnectionErrorDialog;
 import views.components.table_model.NonEditableTableModel;
 import views.panels.rooms.RentalReceiptListPanel;
@@ -53,6 +55,8 @@ public class RentalReceiptListController implements ActionListener {
 		return new Object[]{
 				no,
 				rentalReceipt.getRoomName(),
+				UtilFunctions.formatTimestamp(Constants.DATE_PATTERN, rentalReceipt.getStartDate()),
+				UtilFunctions.formatTimestamp(Constants.DATE_PATTERN, rentalReceipt.getEndDate()),
 				rentalReceipt.calculateRentedDays(),
 				rentalReceipt.getPrice(),
 				rentalReceipt.getTotalPrice(),

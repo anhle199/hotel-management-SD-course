@@ -162,10 +162,10 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 		PreparedStatement preparedStatement = null;
 
 		try {
-			String sqlStatement = "select rd.product_name as 'product_name', sum(rd.quantity) as 'quantity'" +
+			String sqlStatement = "select rd.product_name as 'product_name', sum(rd.quantity * rd.price) as 'total_price_per_product'" +
 					" from `hotel_management`.`receipt` r join `hotel_management`.`receipt_detail` rd" +
-					" where (month(r.purchased_date) = ? and year(r.purchased_date) = ?)" +
-					" group by rd.product_name";
+					" on r.id = rd.receipt_id where (month(r.purchased_date) = ? and year(r.purchased_date) = ?)" +
+					" group by rd.product_name order by `total_price_per_product` desc";
 
 			preparedStatement = connection.prepareStatement(sqlStatement);
 			preparedStatement.setInt(1, month);
@@ -176,7 +176,7 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 			while (resultSet.next() && rowKeysAndStatsValues.size() < 5) {
 				rowKeysAndStatsValues.add(new Pair<>(
 						resultSet.getString("product_name"),
-						resultSet.getInt("quantity")
+						resultSet.getInt("total_price_per_product")
 				));
 			}
 		} catch (SQLException e) {

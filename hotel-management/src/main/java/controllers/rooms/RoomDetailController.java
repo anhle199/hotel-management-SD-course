@@ -25,7 +25,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 	private final ConnectionErrorDialog connectionErrorDialog;
 
 	private final Room room;
-	private final DetailDialogModeEnum viewMode;
+	private DetailDialogModeEnum viewMode;
 	private ArrayList<RoomType> roomTypeList;
 
 	private final RoomListController roomListController;
@@ -91,7 +91,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 			for (RoomType item: roomTypeList) {
 				roomTypeNameList.add(item.getName());
 			}
-			System.out.println(roomTypeNameList);
+
 			DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(roomTypeNameList);
 			this.roomDetailDialog.getRoomTypeComboBox()
 								 .setModel(comboBoxModel);
@@ -153,7 +153,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 	}
 
 	private void editButtonAction() {
-		roomDetailDialog.setViewMode(DetailDialogModeEnum.EDITING);
+		setViewMode(DetailDialogModeEnum.EDITING);
 	}
 
 	private void saveButtonAction() {
@@ -178,6 +178,10 @@ public class RoomDetailController implements ActionListener, ItemListener {
 					int index = findRoomTypeIndexByRoomTypeId(newRoom.getRoomTypeId());
 					roomDAO.update(newRoom, roomTypeList.get(index));
 					UtilFunctions.showInfoMessage(roomDetailDialog, "Edit Room", "Save successfully.");
+
+					this.room.copyFrom(newRoom);
+					setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+					roomListController.reloadTableDataWithCurrentSearchValue();
 				}
 			}
 		} catch (DBConnectionException e) {
@@ -207,7 +211,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 					UtilFunctions.showInfoMessage(roomDetailDialog, "Create Room", "Create successfully.");
 
 					roomDetailDialog.setVisible(false);
-					roomListController.loadRoomListAndReloadTableData("");
+					roomListController.reloadTableDataWithCurrentSearchValue();
 				}
 			}
 		} catch (DBConnectionException e) {
@@ -228,7 +232,7 @@ public class RoomDetailController implements ActionListener, ItemListener {
 							);
 		}
 
-		roomDetailDialog.setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+		setViewMode(DetailDialogModeEnum.VIEW_ONLY);
 	}
 
 	public int findRoomTypeIndexByRoomName(String roomName) {
@@ -271,6 +275,11 @@ public class RoomDetailController implements ActionListener, ItemListener {
 		}
 
 		return new Room(roomId, roomName, description, status, roomTypeId);
+	}
+
+	private void setViewMode(DetailDialogModeEnum mode) {
+		roomDetailDialog.setViewMode(mode);
+		viewMode = mode;
 	}
 
 }

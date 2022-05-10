@@ -117,6 +117,8 @@ public class ProductDetailDialog extends JDialog {
 		// Description Text Field.
 		descriptionTextArea = new JTextArea();
 		descriptionTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
+		descriptionTextArea.setLineWrap(true);
+		descriptionTextArea.setWrapStyleWord(true);
 		UtilFunctions.configureDialogTextFieldOnMainThread(descriptionTextArea);
 		panel.add(descriptionTextArea);
 

@@ -31,7 +31,7 @@ public class RentalInvoiceDetailDialog extends JDialog {
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setPreferredSize(new Dimension(510, 504));
+		panel.setPreferredSize(new Dimension(540, 504));
 		initSubviews(panel);
 
 		setResizable(false);
@@ -43,7 +43,7 @@ public class RentalInvoiceDetailDialog extends JDialog {
 	private void initSubviews(JPanel panel) {
 		// Sizes and coordinates
 		Dimension labelSize = new Dimension(120, 40);
-		Dimension textFieldSize = new Dimension(330, 40);
+		Dimension textFieldSize = new Dimension(360, 40);
 		int padding = 20;
 		int spacingTextFields = 12;
 		int xTextField = padding * 2 + labelSize.width;
@@ -67,13 +67,13 @@ public class RentalInvoiceDetailDialog extends JDialog {
 
 		// Number formatter
 		NumberFormatter priceFormatter = new NumberFormatter(numberFormat);
-		priceFormatter.setMinimum(Constants.MIN_CUSTOMERS);
-		priceFormatter.setMaximum(Constants.MAX_CUSTOMERS);
+		priceFormatter.setMinimum(Constants.MIN_PRICE);
+		priceFormatter.setMaximum(Constants.MAX_PRICE);
 		priceFormatter.setAllowsInvalid(false);
 		priceFormatter.setCommitsOnValidEdit(true);
 
 		// Room Name Label.
-		JLabel priceLabel = new JLabel("Price ($)");
+		JLabel priceLabel = new JLabel("Total price ($)");
 		priceLabel.setBounds(padding, roomNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
 		panel.add(priceLabel);
 
@@ -170,7 +170,6 @@ public class RentalInvoiceDetailDialog extends JDialog {
 		this.viewMode = viewMode;
 
 		boolean fieldEditable = viewMode.getFieldEditable();
-		boolean positiveButtonEnabled = viewMode != DetailDialogModeEnum.EDITING;
 
 		roomNameComboBox.setEnabled(fieldEditable);
 		priceTextField.setEnabled(false);
@@ -180,7 +179,6 @@ public class RentalInvoiceDetailDialog extends JDialog {
 		customerTypeComboBox.setEnabled(fieldEditable);
 		identifierNumberTextField.setEnabled(fieldEditable);
 		addressTextField.setEnabled(fieldEditable);
-		positiveButton.setEnabled(positiveButtonEnabled);
 		positiveButton.setText(viewMode.getPositiveButtonTitle());
 		negativeButton.setText(viewMode.getNegativeButtonTitle());
 	}

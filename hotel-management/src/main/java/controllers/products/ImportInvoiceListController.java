@@ -73,7 +73,7 @@ public class ImportInvoiceListController implements ActionListener {
 		return new Object[]{
 				no,
 				importInvoice.getId(),
-				UtilFunctions.formatTimestamp(Constants.TIMESTAMP_WITHOUT_NANOSECOND, importInvoice.getImportedDate()),
+				UtilFunctions.formatTimestamp(Constants.TIMESTAMP_PATTERN, importInvoice.getImportedDate()),
 				importInvoice.getTotalPrice(),
 				importInvoice.getNote(),
 		};
@@ -121,17 +121,21 @@ public class ImportInvoiceListController implements ActionListener {
 
 	private void doubleClicksInRowAction() {
 		JTable table = importInvoiceListPanel.getScrollableTable().getTable();
-		NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
-		Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
-		ImportInvoice selectedInvoice = mapRowValueToImportInvoiceInstance(selectedRowValue);
+		int selectedRow = table.getSelectedRow();
 
-		DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
-		ImportInvoiceDetailDialog importInvoiceDetailDialog = new ImportInvoiceDetailDialog(mainFrame, viewMode);
-		ImportInvoiceDetailController productReceiptDetailController = new ImportInvoiceDetailController(
-				importInvoiceDetailDialog, mainFrame, selectedInvoice, viewMode, this
-		);
+		if (selectedRow >= 0 && selectedRow < table.getRowCount()) {
+			NonEditableTableModel tableModel = (NonEditableTableModel) table.getModel();
+			Vector<Object> selectedRowValue = tableModel.getRowValue(table.getSelectedRow());
+			ImportInvoice selectedInvoice = mapRowValueToImportInvoiceInstance(selectedRowValue);
 
-		productReceiptDetailController.displayUI();
+			DetailDialogModeEnum viewMode = DetailDialogModeEnum.VIEW_ONLY;
+			ImportInvoiceDetailDialog importInvoiceDetailDialog = new ImportInvoiceDetailDialog(mainFrame, viewMode);
+			ImportInvoiceDetailController productReceiptDetailController = new ImportInvoiceDetailController(
+					importInvoiceDetailDialog, mainFrame, selectedInvoice, viewMode, this
+			);
+
+			productReceiptDetailController.displayUI();
+		}
 	}
 
 }

@@ -65,7 +65,7 @@ public class ServiceDAO implements DAO<Service, Integer> {
 		try {
 			statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(
-					"select * from `hotel_management`.`service` where `name` like '" + serviceNameToken + "'"
+					"select * from `hotel_management`.`service` where `name` like '%" + serviceNameToken + "%'"
 			);
 
 			while (resultSet.next()) {

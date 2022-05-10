@@ -19,7 +19,7 @@ public class ServiceDetailController implements ActionListener {
 	private final ConnectionErrorDialog connectionErrorDialog;
 
 	private final Service service;
-	private final DetailDialogModeEnum viewMode;
+	private DetailDialogModeEnum viewMode;
 
 	private final ServiceListController serviceListController;
 
@@ -54,12 +54,17 @@ public class ServiceDetailController implements ActionListener {
 	public void displayUI() {
 		if (service != null) {
 			serviceDetailDialog.getServiceNameTextField().setText(service.getName());
-			serviceDetailDialog.getDescriptionTextField().setText(service.getDescription());
 			serviceDetailDialog.getPriceTextField().setText(String.valueOf(service.getPrice()));
+			serviceDetailDialog.getDescriptionTextArea().setText(service.getDescription());
 			serviceDetailDialog.getNoteTextArea().setText(service.getNote());
 		}
 
 		serviceDetailDialog.setVisible(true);
+	}
+
+	private void setViewMode(DetailDialogModeEnum mode) {
+		serviceDetailDialog.setViewMode(mode);
+		viewMode = mode;
 	}
 
 	@Override
@@ -102,7 +107,7 @@ public class ServiceDetailController implements ActionListener {
 	}
 
 	private void editButtonAction() {
-		serviceDetailDialog.setViewMode(DetailDialogModeEnum.EDITING);
+		setViewMode(DetailDialogModeEnum.EDITING);
 	}
 
 	private void saveButtonAction() {
@@ -131,6 +136,12 @@ public class ServiceDetailController implements ActionListener {
 						"Edit Service",
 						"This service name is existing."
 				);
+			} else if (newService.getPrice() == 0) {
+				UtilFunctions.showErrorMessage(
+						serviceDetailDialog,
+						"Edit Service",
+						"Price must be greater than zero."
+				);
 			} else {
 				int option = UtilFunctions.showConfirmDialog(
 						serviceDetailDialog,
@@ -141,6 +152,10 @@ public class ServiceDetailController implements ActionListener {
 				if (option == JOptionPane.YES_OPTION) {
 					daoModel.update(newService);
 					UtilFunctions.showInfoMessage(serviceDetailDialog, "Edit Service", "Save successfully.");
+
+					this.service.copyFrom(newService);
+					setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+					serviceListController.reloadTableDataWithCurrentSearchValue();
 				}
 			}
 		} catch (DBConnectionException e) {
@@ -161,13 +176,19 @@ public class ServiceDetailController implements ActionListener {
 				UtilFunctions.showErrorMessage(
 						serviceDetailDialog,
 						"Create Service",
-						"All fields must not be empty."
+						"All fields (except note) must not be empty."
 				);
 			} else if (daoModel.isExistingServiceName(newService.getName())) {
 				UtilFunctions.showErrorMessage(
 						serviceDetailDialog,
 						"Create Service",
 						"This service name is existing."
+				);
+			} else if (newService.getPrice() == 0) {
+				UtilFunctions.showErrorMessage(
+						serviceDetailDialog,
+						"Create Service",
+						"Price must be greater than zero."
 				);
 			} else {
 				int option = UtilFunctions.showConfirmDialog(
@@ -181,7 +202,7 @@ public class ServiceDetailController implements ActionListener {
 					UtilFunctions.showInfoMessage(serviceDetailDialog, "Create Service", "Create successfully.");
 
 					serviceDetailDialog.setVisible(false);
-					serviceListController.loadServiceListAndReloadTableData("");
+					serviceListController.reloadTableDataWithCurrentSearchValue();
 				}
 			}
 		} catch (DBConnectionException e) {
@@ -192,15 +213,15 @@ public class ServiceDetailController implements ActionListener {
 
 	private void rollbackAllChanges() {
 		serviceDetailDialog.getServiceNameTextField().setText(service.getName());
-		serviceDetailDialog.getDescriptionTextField().setText(service.getDescription());
 		serviceDetailDialog.getPriceTextField().setText(String.valueOf(service.getPrice()));
+		serviceDetailDialog.getDescriptionTextArea().setText(service.getDescription());
 		serviceDetailDialog.getNoteTextArea().setText(service.getDescription());
 
-		serviceDetailDialog.setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+		setViewMode(DetailDialogModeEnum.VIEW_ONLY);
 	}
 
 	private boolean checkEmptyFields(String serviceName, String description) {
-		return !serviceName.isEmpty() && ! description.isEmpty();
+		return serviceName.isEmpty() ||  description.isEmpty();
 	}
 
 	private Service getServiceInstanceFromInputFields() {
@@ -208,10 +229,10 @@ public class ServiceDetailController implements ActionListener {
 		String serviceName = UtilFunctions.removeRedundantWhiteSpace(
 				serviceDetailDialog.getServiceNameTextField().getText()
 		);
-		String description = UtilFunctions.removeRedundantWhiteSpace(
-				serviceDetailDialog.getDescriptionTextField().getText()
-		);
 		int price = Integer.parseInt(serviceDetailDialog.getPriceTextField().getText());
+		String description = UtilFunctions.removeRedundantWhiteSpace(
+				serviceDetailDialog.getDescriptionTextArea().getText()
+		);
 		String note = UtilFunctions.removeRedundantWhiteSpace(
 				serviceDetailDialog.getNoteTextArea().getText()
 		);

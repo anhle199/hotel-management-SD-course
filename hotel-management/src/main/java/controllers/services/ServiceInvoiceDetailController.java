@@ -15,6 +15,8 @@ import views.components.dialogs.ConnectionErrorDialog;
 import views.dialogs.ServiceInvoiceDetailDialog;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -22,13 +24,13 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class ServiceInvoiceDetailController implements ActionListener, ItemListener {
+public class ServiceInvoiceDetailController implements ActionListener, ItemListener, DocumentListener {
 
 	private final ServiceInvoiceDetailDialog serviceInvoiceDetailDialog;
 	private final ConnectionErrorDialog connectionErrorDialog;
 
 	private final ServiceInvoice serviceInvoice;
-	private final DetailDialogModeEnum viewMode;
+	private DetailDialogModeEnum viewMode;
 	private ArrayList<Room> roomList;
 	private ArrayList<Service> serviceList;
 
@@ -63,55 +65,87 @@ public class ServiceInvoiceDetailController implements ActionListener, ItemListe
 
 		// Add item change listener
 		this.serviceInvoiceDetailDialog.getServiceNameComboBox().addItemListener(this);
+
+		// Add document listener
+		this.serviceInvoiceDetailDialog.getNumberOfCustomersTextField().getDocument().addDocumentListener(this);
 	}
 
 	public void displayUI() {
-		loadServiceList();
-
 		if (viewMode == DetailDialogModeEnum.CREATE) {
 			loadRoomList();
 		}
 
 		if (serviceInvoice != null) {
-			int pricePerPerson = serviceInvoice.getTotalPrice() / serviceInvoice.getNumberOfCustomers();
+			int totalPrice = serviceInvoice.getPrice() * serviceInvoice.getNumberOfCustomers();
+
 			serviceInvoiceDetailDialog.getRoomNameComboBox()
-									  .setSelectedItem(serviceInvoice.getRoomName());
-			serviceInvoiceDetailDialog.getServiceNameComboBox()
-									  .setSelectedItem(serviceInvoice.getRoomName());
+									  .addItem(serviceInvoice.getRoomName());
 			serviceInvoiceDetailDialog.getPriceTextField()
-									  .setText(String.valueOf(pricePerPerson));
+									  .setValue(serviceInvoice.getPrice());
 			serviceInvoiceDetailDialog.getNumberOfCustomersTextField()
-									  .setText(String.valueOf(serviceInvoice.getNumberOfCustomers()));
+									  .setValue(serviceInvoice.getNumberOfCustomers());
 			serviceInvoiceDetailDialog.getTotalPriceTextField()
-									  .setText(String.valueOf(serviceInvoice.getTotalPrice()));
-			serviceInvoiceDetailDialog.getTimeUsedTextField()
-									  .setText(String.valueOf(serviceInvoice.getTimeUsed()));
+									  .setValue(totalPrice);
 			serviceInvoiceDetailDialog.getNoteTextArea()
 									  .setText(serviceInvoice.getNote());
-		} else {
-			Room room = roomList.get(0);
+		}
+
+		loadServiceList();
+
+		if (serviceInvoice == null) {
 			Service service = serviceList.get(0);
 			int numberOfCustomers = Constants.MIN_CUSTOMERS;
 
-			serviceInvoiceDetailDialog.getRoomNameComboBox()
-									  .setSelectedItem(room.getName());
-			serviceInvoiceDetailDialog.getServiceNameComboBox()
-									  .setSelectedItem(service.getName());
 			serviceInvoiceDetailDialog.getPriceTextField()
-									  .setText(String.valueOf(service.getPrice()));
+									  .setValue(service.getPrice());
 			serviceInvoiceDetailDialog.getNumberOfCustomersTextField()
-									  .setText(String.valueOf(numberOfCustomers));
+									  .setValue(numberOfCustomers);
 			serviceInvoiceDetailDialog.getTotalPriceTextField()
-									  .setText(String.valueOf(numberOfCustomers * service.getPrice()));
+									  .setValue(numberOfCustomers * service.getPrice());
 		}
 
 		serviceInvoiceDetailDialog.setVisible(true);
 	}
 
+	private void loadServiceList() {
+		try {
+			ServiceDAO daoModel = new ServiceDAO();
+			serviceList = daoModel.getAll();
+
+			boolean isExistCurrentServiceName = serviceInvoice == null;
+			Vector<String> serviceNameList = new Vector<>();
+			for (Service item: serviceList) {
+				serviceNameList.add(item.getName());
+
+				if (isExistCurrentServiceName || item.getName().equals(serviceInvoice.getServiceName()))
+					isExistCurrentServiceName = true;
+			}
+
+			if (isExistCurrentServiceName) {
+				serviceInvoiceDetailDialog.getServiceNameComboBox()
+										  .setModel(new DefaultComboBoxModel<>(serviceNameList));
+			}
+
+			if (serviceInvoice != null) {
+				String serviceName = serviceInvoice.getServiceName();
+
+				if (isExistCurrentServiceName)
+					serviceInvoiceDetailDialog.getServiceNameComboBox().setSelectedItem(serviceName);
+				else {
+					serviceInvoiceDetailDialog.getServiceNameComboBox().addItem(serviceName);
+					serviceInvoiceDetailDialog.getPositiveButton().setEnabled(false);
+				}
+			}
+		} catch (DBConnectionException e) {
+			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
+			System.out.println("ServiceInvoiceDetailController.java - loadServiceList - catch - Unavailable connection.");
+		}
+	}
+
 	private void loadRoomList() {
 		try {
 			RoomDAO daoModel = new RoomDAO();
-			roomList = daoModel.getAllByStatus(Room.RoomStatusEnum.RENTED);
+			roomList = daoModel.getAllByStatus(Room.RoomStatusEnum.RESERVED);
 
 			Vector<String> roomNameList = new Vector<>();
 			for (Room item: roomList) {
@@ -125,21 +159,9 @@ public class ServiceInvoiceDetailController implements ActionListener, ItemListe
 		}
 	}
 
-	private void loadServiceList() {
-		try {
-			ServiceDAO daoModel = new ServiceDAO();
-			serviceList = daoModel.getAll();
-
-			Vector<String> serviceNameList = new Vector<>();
-			for (Service item: serviceList) {
-				serviceNameList.add(item.getName());
-			}
-
-			serviceInvoiceDetailDialog.getServiceNameComboBox().setModel(new DefaultComboBoxModel<>(serviceNameList));
-		} catch (DBConnectionException e) {
-			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
-			System.out.println("ServiceInvoiceDetailController.java - loadServiceList - catch - Unavailable connection.");
-		}
+	private void setViewMode(DetailDialogModeEnum mode) {
+		serviceInvoiceDetailDialog.setViewMode(mode);
+		viewMode = mode;
 	}
 
 	@Override
@@ -189,7 +211,7 @@ public class ServiceInvoiceDetailController implements ActionListener, ItemListe
 	}
 
 	private void editButtonAction() {
-		serviceInvoiceDetailDialog.setViewMode(DetailDialogModeEnum.EDITING);
+		setViewMode(DetailDialogModeEnum.EDITING);
 		serviceInvoiceDetailDialog.getPriceTextField().setEnabled(false);
 	}
 
@@ -214,6 +236,10 @@ public class ServiceInvoiceDetailController implements ActionListener, ItemListe
 				if (option == JOptionPane.YES_OPTION) {
 					daoModel.update(newServiceInvoice);
 					UtilFunctions.showInfoMessage(serviceInvoiceDetailDialog, "Edit Service Invoice", "Save successfully.");
+
+					this.serviceInvoice.copyFrom(newServiceInvoice);
+					setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+					serviceInvoiceListController.loadServiceInvoiceListAndReloadTableData();
 				}
 			}
 		} catch (DBConnectionException e) {
@@ -253,14 +279,13 @@ public class ServiceInvoiceDetailController implements ActionListener, ItemListe
 		serviceInvoiceDetailDialog.getRoomNameComboBox().setSelectedItem(serviceInvoice.getRoomName());
 		serviceInvoiceDetailDialog.getServiceNameComboBox().setSelectedItem(serviceInvoice.getRoomName());
 		serviceInvoiceDetailDialog.getPriceTextField().setText(
-				String.valueOf(serviceInvoice.getTotalPrice() / serviceInvoice.getNumberOfCustomers())
+				String.valueOf(serviceInvoice.getPrice() / serviceInvoice.getNumberOfCustomers())
 		);
 		serviceInvoiceDetailDialog.getNumberOfCustomersTextField().setText(String.valueOf(serviceInvoice.getNumberOfCustomers()));
-		serviceInvoiceDetailDialog.getTotalPriceTextField().setText(String.valueOf(serviceInvoice.getTotalPrice()));
-		serviceInvoiceDetailDialog.getTimeUsedTextField().setText(String.valueOf(serviceInvoice.getTimeUsed()));
+		serviceInvoiceDetailDialog.getTotalPriceTextField().setText(String.valueOf(serviceInvoice.getPrice()));
 		serviceInvoiceDetailDialog.getNoteTextArea().setText(serviceInvoice.getNote());
 
-		serviceInvoiceDetailDialog.setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+		setViewMode(DetailDialogModeEnum.VIEW_ONLY);
 	}
 
 	private void serviceNameComboBoxAction() {
@@ -289,7 +314,6 @@ public class ServiceInvoiceDetailController implements ActionListener, ItemListe
 		);
 		int numberOfCustomers = Integer.parseInt(serviceInvoiceDetailDialog.getNumberOfCustomersTextField().getText());
 		int totalPrice = Integer.parseInt(serviceInvoiceDetailDialog.getTotalPriceTextField().getText());
-		int timeUsed = Integer.parseInt(serviceInvoiceDetailDialog.getTimeUsedTextField().getText());
 		String note = UtilFunctions.removeRedundantWhiteSpace(
 				String.valueOf(serviceInvoiceDetailDialog.getNoteTextArea().getText())
 		);
@@ -301,9 +325,30 @@ public class ServiceInvoiceDetailController implements ActionListener, ItemListe
 
 		return new ServiceInvoice(
 				serviceInvoiceId, serviceName,
-				numberOfCustomers, totalPrice, timeUsed, note,
+				numberOfCustomers, totalPrice, note,
 				roomId, roomName, serviceId
 		);
+	}
+
+
+	// MARK: Document Listener methods
+
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		int price = Integer.parseInt(String.valueOf(serviceInvoiceDetailDialog.getPriceTextField().getText()));
+		int numberOfCustomers = Integer.parseInt(String.valueOf(serviceInvoiceDetailDialog.getNumberOfCustomersTextField().getText()));
+		serviceInvoiceDetailDialog.getTotalPriceTextField().setValue(price * numberOfCustomers);
+		System.out.println("(price: " + price + ", numberOfCustomers: " + numberOfCustomers + ")");
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent event) {
+
 	}
 
 }

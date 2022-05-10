@@ -117,12 +117,11 @@ create table if not exists `hotel_management`.`service_invoice` (
     `id` int not null auto_increment,
     `service_name` nvarchar(60),
     `number_of_customers` int not null,
-    `total_price` int not null,
-    `time_used` int not null,
+    `price` int not null,
     `notes` text not null,
     `room_id` int,
     `room_name` nvarchar(50),
-    `service_id` int not null,
+    `service_id` int,
 
     constraint PK_service_invoice primary key (`id`)
 )

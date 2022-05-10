@@ -3,6 +3,7 @@ package dao;
 import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.RentalInvoice;
+import models.Room;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -73,44 +74,59 @@ public class RentalInvoiceDAO implements DAO<RentalInvoice, Integer> {
 		if (connection == null)
 			throw DBConnectionException.INSTANCE;
 
-		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatementInsertRentalInvoice = null;
+		PreparedStatement preparedStatementUpdateRoomStatus = null;
 
 		try {
-			// Declare sql statement and create PreparedStatement for it.
-			String sqlStatement = "insert into `hotel_management`.`rental_invoice` " +
+			// Declare sql statements and create PreparedStatement for it.
+			String insertRentalInvoiceStatement = "insert into `hotel_management`.`rental_invoice` " +
 					"(`start_date`, `end_date`, `room_id`, `room_name`," +
 					" `room_type_id`, `room_type_name`, `room_type_price`, `customer_name`," +
 					" `identity_number`, `address`, `customer_type`, `is_paid`) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
-			preparedStatement = connection.prepareStatement(sqlStatement);
+			String updateRoomStatusStatement = "update `hotel_management`.`room` set `status` = ? where `id` = ?";
+
+			preparedStatementInsertRentalInvoice = connection.prepareStatement(insertRentalInvoiceStatement);
+			preparedStatementUpdateRoomStatus = connection.prepareStatement(updateRoomStatusStatement);
 
 			// Set values for PreparedStatement.
-			preparedStatement.setTimestamp(1, entity.getStartDate());
-			preparedStatement.setTimestamp(2, entity.getEndDate());
-			preparedStatement.setNString(4, entity.getRoomName());
-			preparedStatement.setInt(5, entity.getRoomTypeId());
-			preparedStatement.setNString(6, entity.getRoomTypeName());
-			preparedStatement.setInt(7, entity.getRoomTypePrice());
-			preparedStatement.setNString(8, entity.getCustomerName());
-			preparedStatement.setString(9, entity.getIdentityNumber());
-			preparedStatement.setNString(10, entity.getAddress());
-			preparedStatement.setInt(11, entity.getCustomerType());
+			preparedStatementInsertRentalInvoice.setTimestamp(1, entity.getStartDate());
+			preparedStatementInsertRentalInvoice.setTimestamp(2, entity.getEndDate());
+			preparedStatementInsertRentalInvoice.setInt(3, entity.getRoomId());
+			preparedStatementInsertRentalInvoice.setNString(4, entity.getRoomName());
+			preparedStatementInsertRentalInvoice.setInt(5, entity.getRoomTypeId());
+			preparedStatementInsertRentalInvoice.setNString(6, entity.getRoomTypeName());
+			preparedStatementInsertRentalInvoice.setInt(7, entity.getRoomTypePrice());
+			preparedStatementInsertRentalInvoice.setNString(8, entity.getCustomerName());
+			preparedStatementInsertRentalInvoice.setString(9, entity.getIdentityNumber());
+			preparedStatementInsertRentalInvoice.setNString(10, entity.getAddress());
+			preparedStatementInsertRentalInvoice.setInt(11, entity.getCustomerType());
+			preparedStatementUpdateRoomStatus.setByte(1, Room.RoomStatusEnum.RESERVED.byteValue());
+			preparedStatementUpdateRoomStatus.setInt(2, entity.getRoomId());
 
-			if (entity.getRoomId() == 0 || entity.getRoomId() == -1) {
-				preparedStatement.setNull(3, Types.INTEGER);
-			} else {
-				preparedStatement.setInt(3, entity.getRoomId());
-			}
-
-			preparedStatement.executeUpdate();
+			connection.setAutoCommit(false);
+			preparedStatementInsertRentalInvoice.executeUpdate();
+			preparedStatementUpdateRoomStatus.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("RentalInvoiceDAO.java - insert - catch - " + e.getMessage());
 			System.out.println("RentalInvoiceDAO.java - insert - catch - " + Arrays.toString(e.getStackTrace()));
 
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("RentalInvoiceDAO.java - insert - catch/catch - " + ex.getMessage());
+				System.out.println("RentalInvoiceDAO.java - insert - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
+
 			throw DBConnectionException.INSTANCE;
 		} finally {
 			try {
-				if (preparedStatement != null)
-					preparedStatement.close();
+				connection.setAutoCommit(true);
+
+				if (preparedStatementInsertRentalInvoice != null)
+					preparedStatementInsertRentalInvoice.close();
+				if (preparedStatementUpdateRoomStatus != null)
+					preparedStatementUpdateRoomStatus.close();
 			} catch (SQLException e) {
 				System.out.println("RentalInvoiceDAO.java - insert - finally/catch - " + e.getMessage());
 				System.out.println("RentalInvoiceDAO.java - insert - finally/catch - " + Arrays.toString(e.getStackTrace()));
@@ -120,55 +136,94 @@ public class RentalInvoiceDAO implements DAO<RentalInvoice, Integer> {
 
 	@Override
 	public void update(RentalInvoice entity) throws DBConnectionException {
+
+	}
+
+	public void update(RentalInvoice entity, int oldRoomId) throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
 		if (connection == null)
 			throw DBConnectionException.INSTANCE;
 
-		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatementUpdateRentalInvoice = null;
+		PreparedStatement preparedStatementUpdateOldRoomStatus = null;
+		PreparedStatement preparedStatementUpdateNewRoomStatus = null;
 
 		try {
-			// Declare sql statement and create PreparedStatement for it.
-			String sqlStatement = "update `hotel_management`.`rental_invoice` " +
+			// Declare sql statements and create PreparedStatement for it.
+			String updateRentalInvoiceStatement = "update `hotel_management`.`rental_invoice` " +
 					"set `start_date` = ?, `end_date` = ?, `room_id` = ?, `room_name` = ?, " +
 					"`room_type_id` = ?, `room_type_name` = ?, `room_type_price` = ?, " +
 					"`customer_name` = ?, `identity_number` = ?, `address` = ?, `customer_type` = ? " +
 					"where `id` = ?";
 
-			preparedStatement = connection.prepareStatement(sqlStatement);
+			if (entity.getRoomId() != oldRoomId) {
+				String updateOldRoomStatusStatement = "update `hotel_management`.`room` set `status` = ? where `id` = ?";
+				String updateNewRoomStatusStatement = "update `hotel_management`.`room` set `status` = ? where `id` = ?";
 
-			// Set values for PreparedStatement.
-			preparedStatement.setTimestamp(1, entity.getStartDate());
-			preparedStatement.setTimestamp(2, entity.getEndDate());
-			preparedStatement.setNString(4, entity.getRoomName());
-			preparedStatement.setInt(5, entity.getRoomTypeId());
-			preparedStatement.setNString(6, entity.getRoomTypeName());
-			preparedStatement.setInt(7, entity.getRoomTypePrice());
-			preparedStatement.setNString(8, entity.getCustomerName());
-			preparedStatement.setString(9, entity.getIdentityNumber());
-			preparedStatement.setNString(10, entity.getAddress());
-			preparedStatement.setInt(11, entity.getCustomerType());
-			preparedStatement.setInt(12, entity.getId());
+				preparedStatementUpdateOldRoomStatus = connection.prepareStatement(updateOldRoomStatusStatement);
+				preparedStatementUpdateNewRoomStatus = connection.prepareStatement(updateNewRoomStatusStatement);
 
-			if (entity.getRoomId() == 0 || entity.getRoomId() == -1) {
-				preparedStatement.setNull(3, Types.INTEGER);
-			} else {
-				preparedStatement.setInt(3, entity.getRoomId());
+				preparedStatementUpdateOldRoomStatus.setByte(1, Room.RoomStatusEnum.AVAILABLE.byteValue());
+				preparedStatementUpdateOldRoomStatus.setInt(2, oldRoomId);
+				preparedStatementUpdateNewRoomStatus.setByte(1, Room.RoomStatusEnum.RESERVED.byteValue());
+				preparedStatementUpdateNewRoomStatus.setInt(2, entity.getRoomId());
 			}
 
-			preparedStatement.executeUpdate();
+			preparedStatementUpdateRentalInvoice = connection.prepareStatement(updateRentalInvoiceStatement);
+
+			// Set values for PreparedStatement.
+			preparedStatementUpdateRentalInvoice.setTimestamp(1, entity.getStartDate());
+			preparedStatementUpdateRentalInvoice.setTimestamp(2, entity.getEndDate());
+			preparedStatementUpdateRentalInvoice.setNString(4, entity.getRoomName());
+			preparedStatementUpdateRentalInvoice.setInt(5, entity.getRoomTypeId());
+			preparedStatementUpdateRentalInvoice.setNString(6, entity.getRoomTypeName());
+			preparedStatementUpdateRentalInvoice.setInt(7, entity.getRoomTypePrice());
+			preparedStatementUpdateRentalInvoice.setNString(8, entity.getCustomerName());
+			preparedStatementUpdateRentalInvoice.setString(9, entity.getIdentityNumber());
+			preparedStatementUpdateRentalInvoice.setNString(10, entity.getAddress());
+			preparedStatementUpdateRentalInvoice.setInt(11, entity.getCustomerType());
+			preparedStatementUpdateRentalInvoice.setInt(12, entity.getId());
+
+			if (entity.getRoomId() == 0 || entity.getRoomId() == -1) {
+				preparedStatementUpdateRentalInvoice.setNull(3, Types.INTEGER);
+			} else {
+				preparedStatementUpdateRentalInvoice.setInt(3, entity.getRoomId());
+			}
+
+			// Execute queries.
+			connection.setAutoCommit(false);
+			if (entity.getRoomId() != oldRoomId) {
+				preparedStatementUpdateOldRoomStatus.executeUpdate();
+				preparedStatementUpdateNewRoomStatus.executeUpdate();
+			}
+			preparedStatementUpdateRentalInvoice.executeUpdate();
+			connection.commit();
 		} catch (SQLException e) {
-			System.out.println("RentalInvoiceDAO.java - update - catch - " + e.getMessage());
-			System.out.println("RentalInvoiceDAO.java - update - catch - " + Arrays.toString(e.getStackTrace()));
+			System.out.println("RentalInvoiceDAO.java - update 2 params - catch - " + e.getMessage());
+			System.out.println("RentalInvoiceDAO.java - update 2 params - catch - " + Arrays.toString(e.getStackTrace()));
+
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("RentalInvoiceDAO.java - update 2 params - catch/catch - " + ex.getMessage());
+				System.out.println("RentalInvoiceDAO.java - update 2 params - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
 
 			throw DBConnectionException.INSTANCE;
 		} finally {
 			try {
-				if (preparedStatement != null)
-					preparedStatement.close();
+				connection.setAutoCommit(true);
+
+				if (preparedStatementUpdateRentalInvoice != null)
+					preparedStatementUpdateRentalInvoice.close();
+				if (preparedStatementUpdateOldRoomStatus != null)
+					preparedStatementUpdateOldRoomStatus.close();
+				if (preparedStatementUpdateNewRoomStatus != null)
+					preparedStatementUpdateNewRoomStatus.close();
 			} catch (SQLException e) {
-				System.out.println("RentalInvoiceDAO.java - update - finally/catch - " + e.getMessage());
-				System.out.println("RentalInvoiceDAO.java - update - finally/catch - " + Arrays.toString(e.getStackTrace()));
+				System.out.println("RentalInvoiceDAO.java - update 2 params - finally/catch - " + e.getMessage());
+				System.out.println("RentalInvoiceDAO.java - update 2 params - finally/catch - " + Arrays.toString(e.getStackTrace()));
 			}
 		}
 	}

@@ -22,15 +22,19 @@ public class RentalReceiptListPanel extends JPanel {
 		final String[] columnNames = {
 				"",  // no
 				"Room name",
+				"Start date",
+				"End date",
 				"Rented days",
-				"Price",
-				"Total price",
+				"Price ($)",
+				"Total price ($)",
 		};
-		final int [] columnWidths = {40, 560, 120, 150, 150};
+		final int [] columnWidths = {40, 498, 100, 100, 100, 80, 100};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 		};

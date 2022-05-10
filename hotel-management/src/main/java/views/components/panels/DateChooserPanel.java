@@ -70,7 +70,7 @@ public class DateChooserPanel extends JPanel {
 
 	public void setSelectedDate(Timestamp timestamp) {
 		String timestampAsString = UtilFunctions.formatTimestamp(
-				Constants.TIMESTAMP_WITHOUT_NANOSECOND,
+				Constants.TIMESTAMP_PATTERN,
 				timestamp
 		);
 
@@ -130,6 +130,18 @@ public class DateChooserPanel extends JPanel {
 		yearOptions.setEnabled(enabled);
 		monthOptions.setEnabled(enabled);
 		dayOptions.setEnabled(enabled);
+	}
+
+	public JComboBox<Integer> getYearOptions() {
+		return yearOptions;
+	}
+
+	public JComboBox<Integer> getMonthOptions() {
+		return monthOptions;
+	}
+
+	public JComboBox<Integer> getDayOptions() {
+		return dayOptions;
 	}
 
 }

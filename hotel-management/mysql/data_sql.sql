@@ -55,39 +55,39 @@ values
 
 insert into hotel_management.rental_invoice (start_date, end_date, room_id, room_name, room_type_id, room_type_name, room_type_price, customer_name, identity_number, address, customer_type, is_paid)
 VALUES
-('2022-03-01', '2022-03-02', 1, 'Room 101', 1, 'Affordable', 70, 'John Doe', '456783472', '5100 Oakland Dr Rio, Wisconsin(WI)', 0, 1),
-('2022-03-03', '2022-03-04', 3, 'Room 103', 1, 'Affordable', 70, 'Anna Kim', '912456165', '405 1st Ave Brookings, South Dakota(SD)', 0, 0),
-('2022-03-04', '2022-03-05', 4, 'Room 104', 1, 'Affordable', 70, 'Kenny John', '234578952', '13824 Baker Rd Durand, Illinois(IL)', 0, 1),
-('2022-03-06', '2022-03-07', 6, 'Room 106', 1, 'Affordable', 70, 'Sarah Betty', '278156712', '123 Russell St Everett, Massachusetts(MA)', 0, 0),
-('2022-03-07', '2022-03-08', 7, 'Room 107', 1, 'Affordable', 70, 'Anthony Simon', '123678496', '190 Woodcroft Dr Youngsville, North Carolina(NC)', 0, 1),
-('2022-03-08', '2022-03-09', 8, 'Room 108', 1, 'Affordable', 70, 'Andy Higg', '257931561', '639 Lemke Dr Placentia, California(CA)', 0, 0),
-('2022-03-10', '2022-03-11', 10, 'Room 110', 1, 'Affordable', 70, 'Bob Dunson', '197283455', '144 County 81 Rd Woodland, Mississippi(MS)', 0, 1),
-('2022-03-11', '2022-03-13', 11, 'Room 211', 2, 'Normal', 100, 'Cindy Hugh', '891245763', '9311 Dorrington Pl Pacoima, California(CA)', 0, 0),
-('2022-03-12', '2022-03-14', 12, 'Room 212', 2, 'Normal', 100, 'Clara Bill', '912678576', '3885 Housers Mill Rd Byron, Georgia(GA)', 0, 0),
-('2022-03-13', '2022-03-15', 13, 'Room 213', 2, 'Normal', 100, 'Nancy Drew', '125789346', '6160 W 8th St Tulsa, Oklahoma(OK)', 0, 1),
-('2022-03-15', '2022-03-18', 15, 'Room 315', 3, 'Luxury', 200, 'Gibson Hope', '918267342', '146 Park Ave Arlington, Massachusetts(MA)', 1, 1),
-('2022-03-16', '2022-03-19', 16, 'Room 316', 3, 'Luxury', 200, 'Kim Ash', '790234565', '207 Live Oak Ave Belmont, North Carolina(NC)', 1, 0),
-('2022-03-17', '2022-03-20', 17, 'Room 317', 3, 'Luxury', 200, 'Lucas Hopper', '789234512', '1901 Winston Dr Saint Marys, Ohio(OH)', 1, 0),
-('2022-03-18', '2022-03-21', 18, 'Room 318', 3, 'Luxury', 200, 'Maria Acharteur', '256789423', '33 Highland Dr Caldwell, Ohio(OH)', 1, 0),
-('2022-03-19', '2022-03-22', 19, 'Room 319', 3, 'Luxury', 200, 'Thomas Anderson', '578234612', '1403 S Robin Way Rushville, Indiana(IN)', 1, 0);
+('2022-03-01 00:00:00', '2022-03-02 23:59:59', 1, 'Room 101', 1, 'Affordable', 70, 'John Doe', '456783472', '5100 Oakland Dr Rio, Wisconsin(WI)', 0, 1),
+('2022-03-03 00:00:00', '2022-03-04 23:59:59', 3, 'Room 103', 1, 'Affordable', 70, 'Anna Kim', '912456165', '405 1st Ave Brookings, South Dakota(SD)', 0, 0),
+('2022-03-04 00:00:00', '2022-03-05 23:59:59', 4, 'Room 104', 1, 'Affordable', 70, 'Kenny John', '234578952', '13824 Baker Rd Durand, Illinois(IL)', 0, 1),
+('2022-03-06 00:00:00', '2022-03-07 23:59:59', 6, 'Room 106', 1, 'Affordable', 70, 'Sarah Betty', '278156712', '123 Russell St Everett, Massachusetts(MA)', 0, 0),
+('2022-03-07 00:00:00', '2022-03-08 23:59:59', 7, 'Room 107', 1, 'Affordable', 70, 'Anthony Simon', '123678496', '190 Woodcroft Dr Youngsville, North Carolina(NC)', 0, 1),
+('2022-03-08 00:00:00', '2022-03-09 23:59:59', 8, 'Room 108', 1, 'Affordable', 70, 'Andy Higg', '257931561', '639 Lemke Dr Placentia, California(CA)', 0, 0),
+('2022-03-10 00:00:00', '2022-03-11 23:59:59', 10, 'Room 110', 1, 'Affordable', 70, 'Bob Dunson', '197283455', '144 County 81 Rd Woodland, Mississippi(MS)', 0, 1),
+('2022-03-11 00:00:00', '2022-03-13 23:59:59', 11, 'Room 211', 2, 'Normal', 100, 'Cindy Hugh', '891245763', '9311 Dorrington Pl Pacoima, California(CA)', 0, 0),
+('2022-03-12 00:00:00', '2022-03-14 23:59:59', 12, 'Room 212', 2, 'Normal', 100, 'Clara Bill', '912678576', '3885 Housers Mill Rd Byron, Georgia(GA)', 0, 0),
+('2022-03-13 00:00:00', '2022-03-15 23:59:59', 13, 'Room 213', 2, 'Normal', 100, 'Nancy Drew', '125789346', '6160 W 8th St Tulsa, Oklahoma(OK)', 0, 1),
+('2022-03-15 00:00:00', '2022-03-18 23:59:59', 15, 'Room 315', 3, 'Luxury', 200, 'Gibson Hope', '918267342', '146 Park Ave Arlington, Massachusetts(MA)', 1, 1),
+('2022-03-16 00:00:00', '2022-03-19 23:59:59', 16, 'Room 316', 3, 'Luxury', 200, 'Kim Ash', '790234565', '207 Live Oak Ave Belmont, North Carolina(NC)', 1, 0),
+('2022-03-17 00:00:00', '2022-03-20 23:59:59', 17, 'Room 317', 3, 'Luxury', 200, 'Lucas Hopper', '789234512', '1901 Winston Dr Saint Marys, Ohio(OH)', 1, 0),
+('2022-03-18 00:00:00', '2022-03-21 23:59:59', 18, 'Room 318', 3, 'Luxury', 200, 'Maria Acharteur', '256789423', '33 Highland Dr Caldwell, Ohio(OH)', 1, 0),
+('2022-03-19 00:00:00', '2022-03-22 23:59:59', 19, 'Room 319', 3, 'Luxury', 200, 'Thomas Anderson', '578234612', '1403 S Robin Way Rushville, Indiana(IN)', 1, 0);
 
 insert into hotel_management.rental_receipt (start_date, end_date, price, total_price, room_name, room_type_name, room_id)
 values
-('2022-03-01', '2022-03-02', 70, 70, 'Room 101', 'Affordable', 1),
-('2022-03-03', '2022-03-04', 70, 70, 'Room 103', 'Affordable', 3),
-('2022-03-04', '2022-03-05', 70, 70, 'Room 104', 'Affordable', 4),
-('2022-03-06', '2022-03-07', 70, 70, 'Room 106', 'Affordable', 6),
-('2022-03-07', '2022-03-08', 70, 70, 'Room 107', 'Affordable', 7),
-('2022-03-08', '2022-03-09', 70, 70, 'Room 108', 'Affordable', 8),
-('2022-03-10', '2022-03-11', 70, 70, 'Room 110', 'Affordable', 10),
-('2022-03-11', '2022-03-13', 100, 200, 'Room 211', 'Normal', 11),
-('2022-03-12', '2022-03-14', 100, 200, 'Room 212', 'Normal', 12),
-('2022-03-13', '2022-03-15', 100, 200, 'Room 213', 'Normal', 13),
-('2022-03-15', '2022-03-18', 200, 600, 'Room 315', 'Luxury', 15),
-('2022-03-16', '2022-03-19', 200, 600, 'Room 316', 'Luxury', 16),
-('2022-03-17', '2022-03-20', 200, 600, 'Room 317', 'Luxury', 17),
-('2022-03-18', '2022-03-21', 200, 600, 'Room 318', 'Luxury', 18),
-('2022-03-19', '2022-03-22', 200, 600, 'Room 319', 'Luxury', 19);
+('2022-03-01 00:00:00', '2022-03-02 23:59:59', 70, 70, 'Room 101', 'Affordable', 1),
+('2022-03-03 00:00:00', '2022-03-04 23:59:59', 70, 70, 'Room 103', 'Affordable', 3),
+('2022-03-04 00:00:00', '2022-03-05 23:59:59', 70, 70, 'Room 104', 'Affordable', 4),
+('2022-03-06 00:00:00', '2022-03-07 23:59:59', 70, 70, 'Room 106', 'Affordable', 6),
+('2022-03-07 00:00:00', '2022-03-08 23:59:59', 70, 70, 'Room 107', 'Affordable', 7),
+('2022-03-08 00:00:00', '2022-03-09 23:59:59', 70, 70, 'Room 108', 'Affordable', 8),
+('2022-03-10 00:00:00', '2022-03-11 23:59:59', 70, 70, 'Room 110', 'Affordable', 10),
+('2022-03-11 00:00:00', '2022-03-13 23:59:59', 100, 200, 'Room 211', 'Normal', 11),
+('2022-03-12 00:00:00', '2022-03-14 23:59:59', 100, 200, 'Room 212', 'Normal', 12),
+('2022-03-13 00:00:00', '2022-03-15 23:59:59', 100, 200, 'Room 213', 'Normal', 13),
+('2022-03-15 00:00:00', '2022-03-18 23:59:59', 200, 600, 'Room 315', 'Luxury', 15),
+('2022-03-16 00:00:00', '2022-03-19 23:59:59', 200, 600, 'Room 316', 'Luxury', 16),
+('2022-03-17 00:00:00', '2022-03-20 23:59:59', 200, 600, 'Room 317', 'Luxury', 17),
+('2022-03-18 00:00:00', '2022-03-21 23:59:59', 200, 600, 'Room 318', 'Luxury', 18),
+('2022-03-19 00:00:00', '2022-03-22 23:59:59', 200, 600, 'Room 319', 'Luxury', 19);
 
 insert into service(name, description, price, notes)
 values
@@ -97,12 +97,12 @@ values
 ('Car Rental', 'Our car rental service is available 24/7. We provide a wide range of car rental services including private transfer, shared transfer, and car transfer. We also provide car rental services for our guests who are staying in our hotel.', 80, 'We have a large fleet of cars available for rent.');
 
 
-insert into hotel_management.service_invoice(service_name, number_of_customers, total_price, time_used, notes, room_id, room_name, service_id)
+insert into hotel_management.service_invoice(service_name, number_of_customers, price, notes, room_id, room_name, service_id)
 values
-('Buffet', 2, 20, 2, 'Include 1 children (below 1.2m)', 17, 'Room 317', 1),
-('Bar', 1, 50, 4, 'Broke 1 wine glass, charge for $10' ,7, 'Room 107', 2),
-('Golf', 3, 180, 1, 'Customer lost a hat during play', 19, 'Room 319', 3),
-('Car Rental', 2, 320, 2, 'Need a 7-seat car', 20, 'Room 320', 4);
+('Buffet', 2, 20, 'Include 1 children (below 1.2m)', 17, 'Room 317', 1),
+('Bar', 1, 10, 'Broke 1 wine glass, charge for $10' ,7, 'Room 107', 2),
+('Golf', 3, 60, 'Customer lost a hat during play', 19, 'Room 319', 3),
+('Car Rental', 2, 80, 'Need a 7-seat car', 20, 'Room 320', 4);
 
 
 insert into `hotel_management`.product(name, price, stock, description, product_type)
@@ -133,20 +133,20 @@ values
 ('Shirt', 25, 40, 'A shirt is a cloth garment for the upper body (from the neck to the waist).', 2),
 ('Coffee Cup', 17, 25, 'A coffee cup is a container that coffee and espresso-based drinks are served in. Coffee cups are typically made of glazed ceramic, and have a single handle for portability while the beverage is hot. Ceramic construction allows a beverage to be drunk while hot, providing insulation to the beverage, and quickly washed with cold water without fear of breakage, compared to typical glassware.', 2),
 ('Keychain', 3, 26, 'A keychain (also key fob or keyring) is a small ring or chain of metal to which several keys can be attached. The length of a keychain allows an item to be used more easily than if connected directly to a keyring. Some keychains allow one or both ends the ability to rotate, keeping the keychain from becoming twisted, while the item is being used.', 2),
-('Jewelry', 1700, 20, 'Jewellery or jewelry consists of decorative items worn for personal adornment, such as brooches, rings, necklaces, earrings, pendants, bracelets, and cufflinks. Jewellery may be attached to the body or the clothes. From a western perspective, the term is restricted to durable ornaments, excluding flowers for example. For many centuries metal such as gold often combined with gemstones, has been the normal material for jewellery, but other materials such as shells and other plant materials may be used.', 2),
+('Jewelry', 1700, 20, 'Jewellery or jewelry consists of decorative items worn for personal adornment, such as brooches, rings, necklaces, earrings, pendants, bracelets, and cufflinks. Jewellery may be attached to the body or the clothes. From a western perspective, the term is restricted to durable ornaments, excluding flowers for example. For many centuries metal such as gold often combined with gemstones, has been the normal material for jewellery, but other materials such as shells and other plant materials may be used.', 2);
 
 insert into hotel_management.receipt(customer_name, purchased_date, notes, total_price)
 values
-('Anna Kim', '2022-03-04', 'None', 51),
-('Kenny John', '2022-03-05', 'Discount 10%', 75),
-('Anthony Simon', '2022-03-08', 'None', 100),
-('Andy Higg', '2022-03-09', 'Pay additional 5$ for service fee', 40),
-('Cindy Hugh', '2022-03-13', 'None', 77),
-('Clara Bill', '2022-03-14', 'None', 89),
-('Nancy Drew', '2022-03-15', 'Discount 15%', 2890),
-('Gibson Hope', '2022-03-18', 'Discount 5%', 311),
-('Kim Ash', '2022-03-19', 'None', 540),
-('Lucas Hopper', '2022-03-20', 'Not include VAT', 718);
+('Anna Kim', '2022-03-04 00:00:00', 'None', 51),
+('Kenny John', '2022-03-05 00:00:00', 'Discount 10%', 75),
+('Anthony Simon', '2022-03-08 00:00:00', 'None', 100),
+('Andy Higg', '2022-03-09 00:00:00', 'Pay additional 5$ for service fee', 40),
+('Cindy Hugh', '2022-03-13 00:00:00', 'None', 77),
+('Clara Bill', '2022-03-14 00:00:00', 'None', 89),
+('Nancy Drew', '2022-03-15 00:00:00', 'Discount 15%', 2890),
+('Gibson Hope', '2022-03-18 00:00:00', 'Discount 5%', 311),
+('Kim Ash', '2022-03-19 00:00:00', 'None', 148),
+('Lucas Hopper', '2022-03-20 00:00:00', 'Not include VAT', 718);
 
 insert into hotel_management.receipt_detail(receipt_id, quantity, product_name, product_type, price)
 values
@@ -174,17 +174,17 @@ values
 (8, 1, 'Champange', 1, 280),
 (8, 1, 'Pepsi', 1, 5),
 (9, 1, 'Vodka', 1, 140),
-(9, 1, 'Cap', 2, 400),
+(9, 1, 'Cap', 2, 8),
 (10, 2, 'White Wine', 1, 350),
 (10, 1, 'Crab Bisque Soup', 0, 12),
 (10, 1, 'Caramel Custard', 0, 6);
 
 insert into hotel_management.import_invoice(imported_date, notes, total_price)
 values
-('2020-02-11', 'None', 1445),
-('2020-02-12', 'Bank transfer', 3660),
-('2020-02-13', 'None', 9547),
-('2020-02-14', 'Bank transfer', 7453);
+('2022-02-11 00:00:00', 'None', 1445),
+('2022-02-12 00:00:00', 'Bank transfer', 3660),
+('2022-02-13 00:00:00', 'None', 9547),
+('2022-02-14 00:00:00', 'Bank transfer', 7453);
 
 insert into hotel_management.import_invoice_detail(import_invoice_id, quantity, product_name, product_type, price)
 values

@@ -5,8 +5,7 @@ public class ServiceInvoice {
 	private int id;
 	private String serviceName;
 	private int numberOfCustomers;
-	private int totalPrice;
-	private int timeUsed;
+	private int price;
 	private String note;
 	private int roomId;
 	private String roomName;
@@ -16,8 +15,7 @@ public class ServiceInvoice {
 			int id,
 			String serviceName,
 			int numberOfCustomers,
-			int totalPrice,
-			int timeUsed,
+			int price,
 			String note,
 			int roomId,
 			String roomName,
@@ -26,8 +24,7 @@ public class ServiceInvoice {
 		this.id = id;
 		this.serviceName = serviceName;
 		this.numberOfCustomers = numberOfCustomers;
-		this.totalPrice = totalPrice;
-		this.timeUsed = timeUsed;
+		this.price = price;
 		this.note = note;
 		this.roomId = roomId;
 		this.roomName = roomName;
@@ -46,12 +43,8 @@ public class ServiceInvoice {
 		return numberOfCustomers;
 	}
 
-	public int getTotalPrice() {
-		return totalPrice;
-	}
-
-	public int getTimeUsed() {
-		return timeUsed;
+	public int getPrice() {
+		return price;
 	}
 
 	public String getNote() {
@@ -74,12 +67,22 @@ public class ServiceInvoice {
 		return id == another.id
 				&& serviceName.equals(another.serviceName)
 				&& numberOfCustomers == another.numberOfCustomers
-				&& totalPrice == another.totalPrice
-				&& timeUsed == another.timeUsed
+				&& price == another.price
 				&& note.equals(another.note)
 				&& roomId == another.roomId
 				&& roomName.equals(another.roomName)
 				&& serviceId == another.serviceId;
+	}
+
+	public void copyFrom(ServiceInvoice another) {
+		this.id = another.id;
+		this.serviceName = another.serviceName;
+		this.numberOfCustomers = another.numberOfCustomers;
+		this.price = another.price;
+		this.note = another.note;
+		this.roomId = another.roomId;
+		this.roomName = another.roomName;
+		this.serviceId = another.serviceId;
 	}
 
 }

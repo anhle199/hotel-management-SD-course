@@ -11,18 +11,17 @@ import utils.UtilFunctions;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class StatisticsPanel extends JPanel {
 	// Constants.
 	public static final String[] STATISTIC_OPTION_NAMES = {
-			"Statistics of revenue by room type in month",
+			"Statistics of revenue for each room type in month",
 			"Statistics of room occupancy rate (top 5 rooms) in month",
 			"Statistics of revenue of purchased products (top 5 products) in month",
 			"Statistics of costs of imported products (top 5 products) in month",
 	};
 	public static final String[] VALUE_AXIS_NAMES = {
-			"Number of rooms", "Number of rented times", "Prices", "Prices"
+			"Price ($)", "Number of rented times", "Price ($)", "Price ($)"
 	};
 	public static final String[] CATEGORY_NAMES = {
 			"Room type", "Room name", "Product name", "Product name"
@@ -61,19 +60,6 @@ public class StatisticsPanel extends JPanel {
 		refreshButton.setBounds(950, 20, 110, 40);
 		UtilFunctions.configureTopBarButtonOnMainThread(refreshButton);
 		add(refreshButton);
-
-		statisticComboBox.addItemListener(event -> {
-			resetChart();
-			generateChartData();
-		});
-		monthComboBox.addItemListener(event -> {
-			resetChart();
-			generateChartData();
-		});
-		refreshButton.addActionListener(event -> {
-			resetChart();
-			generateChartData();
-		});
 	}
 
 	private void initBarChart() {
@@ -83,12 +69,6 @@ public class StatisticsPanel extends JPanel {
 		chartPanel.setBounds(20, 80, 1040, 707);
 		chartPanel.setBorder(BorderFactory.createLineBorder(Constants.Colors.TABLE_BORDER_COLOR, 1));
 		add(chartPanel);
-	}
-
-	// Column key is one of all categories.
-	// Row key is one of all columns in column key.
-	public void setValue(Number value, String rowKey, String columnKey) {
-		dataset.setValue(value, rowKey, columnKey);
 	}
 
 	public void setValues(ArrayList<Number> values, ArrayList<String> rowKeys, ArrayList<String> columnKeys) {
@@ -177,56 +157,6 @@ public class StatisticsPanel extends JPanel {
 				return i;
 
 		return 0;
-	}
-
-	private void generateChartData() {
-		String statisticOption = String.valueOf(statisticComboBox.getSelectedItem());
-		ArrayList<String> columnKeys = new ArrayList<>(List.of(""));
-		ArrayList<Number> values = new ArrayList<>();
-
-		switch (statisticOption) {
-			case "Statistics of revenue by room type in month": {
-				ArrayList<String> rowKeys = new ArrayList<>(
-						List.of("Affordable", "Normal", "Luxury")
-				);
-
-				Random numberGenerator = new Random();
-				for (int i = 0; i < rowKeys.size(); i++) {
-					values.add(numberGenerator.nextInt(190) + 10);
-				}
-
-				setValues(values, rowKeys, columnKeys);
-				break;
-			}
-			case "Statistics of room occupancy rate (top 5 rooms) in month": {
-				ArrayList<String> rowKeys = new ArrayList<>(
-						List.of("Room 101", "Room 103", "Room 201", "Room 303", "Room 405")
-				);
-
-				Random numberGenerator = new Random();
-				for (int i = 0; i < rowKeys.size(); i++) {
-					values.add(numberGenerator.nextInt(190) + 10);
-				}
-
-				setValues(values, rowKeys, columnKeys);
-				break;
-			}
-			case "Statistics of revenue of purchased products (top 5 products) in month":
-			case "Statistics of costs of imported products (top 5 products) in month": {
-
-				ArrayList<String> rowKeys = new ArrayList<>(
-						List.of("Product 1", "Product 2", "Product 3", "Product 4", "Product 5")
-				);
-
-				Random numberGenerator = new Random();
-				for (int i = 0; i < rowKeys.size(); i++) {
-					values.add((numberGenerator.nextInt(190) + 10) * 10000);
-				}
-
-				setValues(values, rowKeys, columnKeys);
-				break;
-			}
-		}
 	}
 
 	public JComboBox<String> getStatisticComboBox() {
