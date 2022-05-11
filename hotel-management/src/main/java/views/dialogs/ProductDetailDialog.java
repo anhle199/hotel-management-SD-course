@@ -27,7 +27,7 @@ public class ProductDetailDialog extends JDialog {
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setPreferredSize(new Dimension(460, 408));
+		panel.setPreferredSize(new Dimension(480, 408));
 
 		initSubviews(panel);
 		setViewMode(viewMode);
@@ -40,8 +40,8 @@ public class ProductDetailDialog extends JDialog {
 
 	private void initSubviews(JPanel panel) {
 		// Sizes and coordinates
-		Dimension labelSize = new Dimension(80, 40);
-		Dimension textFieldSize = new Dimension(320, 40);
+		Dimension labelSize = new Dimension(90, 40);
+		Dimension textFieldSize = new Dimension(330, 40);
 		int padding = 20;
 		int spacingTextFields = 12;
 		int xTextField = padding * 2 + labelSize.width;
@@ -98,7 +98,7 @@ public class ProductDetailDialog extends JDialog {
 
 		// Number formatter
 		NumberFormatter quantityFormatter = new NumberFormatter(numberFormat);
-		quantityFormatter.setMinimum(Constants.MIN_QUANTITY);
+		quantityFormatter.setMinimum(Constants.MIN_QUANTITY_IN_ADDING_PRODUCT);
 		quantityFormatter.setMaximum(Constants.MAX_QUANTITY);
 		quantityFormatter.setAllowsInvalid(false);
 		quantityFormatter.setCommitsOnValidEdit(true);
@@ -106,17 +106,19 @@ public class ProductDetailDialog extends JDialog {
 		// Quantity Text Field.
 		quantityTextField = new JFormattedTextField(quantityFormatter);
 		quantityTextField.setBounds(xTextField, quantityLabel.getY(), textFieldSize.width, textFieldSize.height);
+		quantityTextField.setValue(Constants.MIN_QUANTITY_IN_ADDING_PRODUCT);
+		quantityTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		UtilFunctions.configureDialogTextFieldOnMainThread(quantityTextField);
 		panel.add(quantityTextField);
 
 		// Description Label.
-		JLabel noteLabel = new JLabel("Description");
-		noteLabel.setBounds(padding, quantityLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
-		panel.add(noteLabel);
+		JLabel descriptionLabel = new JLabel("Description");
+		descriptionLabel.setBounds(padding, quantityLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		panel.add(descriptionLabel);
 
 		// Description Text Field.
 		descriptionTextArea = new JTextArea();
-		descriptionTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
+		descriptionTextArea.setBounds(xTextField, descriptionLabel.getY(), textFieldSize.width, 100);
 		descriptionTextArea.setLineWrap(true);
 		descriptionTextArea.setWrapStyleWord(true);
 		UtilFunctions.configureDialogTextFieldOnMainThread(descriptionTextArea);
@@ -124,7 +126,7 @@ public class ProductDetailDialog extends JDialog {
 
 		// Positive Button.
 		positiveButton = new JButton(viewMode.getPositiveButtonTitle());
-		positiveButton.setBounds(xTextField, noteLabel.getY() + descriptionTextArea.getHeight() + padding, 100, textFieldSize.height);
+		positiveButton.setBounds(xTextField, descriptionLabel.getY() + descriptionTextArea.getHeight() + padding, 100, textFieldSize.height);
 		UtilFunctions.configureTopBarButtonOnMainThread(positiveButton);
 		panel.add(positiveButton);
 
@@ -143,7 +145,7 @@ public class ProductDetailDialog extends JDialog {
 		productNameTextField.setEnabled(fieldEditable);
 		productTypeComboBox.setEnabled(fieldEditable);
 		priceTextField.setEnabled(fieldEditable);
-		quantityTextField.setEnabled(fieldEditable);
+		quantityTextField.setEnabled(false);
 		descriptionTextArea.setEnabled(fieldEditable);
 
 		positiveButton.setText(viewMode.getPositiveButtonTitle());

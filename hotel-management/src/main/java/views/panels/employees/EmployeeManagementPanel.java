@@ -11,7 +11,6 @@ import java.awt.*;
 public class EmployeeManagementPanel extends JPanel {
 
 	public static final int HIDDEN_COLUMN_USER_ID = 1;
-	public static final int HIDDEN_COLUMN_PASSWORD = 6;
 
 	// Top Bar.
 	private JButton addButton;
@@ -52,17 +51,15 @@ public class EmployeeManagementPanel extends JPanel {
 				"Username",
 				"Gender",
 				"Year of birth",
-				"password",
 		};
-		final int [] columnWidths = {50, 0, 243, 243, 242, 242, 0};
+		final int [] columnWidths = {40, 0, 560, 250, 70, 100};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.CENTER,
 		};
 
 		scrollableTable = new ScrollableTablePanel(

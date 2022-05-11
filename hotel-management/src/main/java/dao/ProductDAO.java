@@ -203,26 +203,42 @@ public class ProductDAO implements DAO<Product, Integer> {
 		if (connection == null)
 			throw DBConnectionException.INSTANCE;
 
-		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatementUpdateProduct = null;
+		PreparedStatement preparedStatementUpdateReceiptDetail = null;
+		PreparedStatement preparedStatementUpdateImportInvoiceDetail = null;
 
 		try {
-			// Declare sql statement and create PreparedStatement for it.
-			String sqlStatement = "update `hotel_management`.`product` " +
+			// Declare sql statements and create PreparedStatement for it.
+			String updateProductStatement = "update `hotel_management`.`product` " +
 					"set `name` = ?, `price` = ?, `stock` = ?, `description` = ?, `product_type` = ? where `id` = ?";
+			String updateReceiptDetailStatement = "update `hotel_management`.`receipt_detail` " +
+					"set `product_name` = ?, `product_type` = ? where `product_id` = ?";
+			String updateImportInvoiceDetailStatement = "update `hotel_management`.`import_invoice_detail` " +
+					"set `product_name` = ?, `product_type` = ? where `product_id` = ?";
 
-			preparedStatement = connection.prepareStatement(sqlStatement);
+			preparedStatementUpdateProduct = connection.prepareStatement(updateProductStatement);
+			preparedStatementUpdateReceiptDetail = connection.prepareStatement(updateReceiptDetailStatement);
+			preparedStatementUpdateImportInvoiceDetail = connection.prepareStatement(updateImportInvoiceDetailStatement);
 
 			// Set values for PreparedStatement.
-			preparedStatement.setNString(1, entity.getName());
-			preparedStatement.setInt(2, entity.getPrice());
-			preparedStatement.setInt(3, entity.getStock());
-			preparedStatement.setNString(4, entity.getDescription());
-			preparedStatement.setInt(5, entity.getProductType());
-			preparedStatement.setInt(6, entity.getId());
+			preparedStatementUpdateProduct.setNString(1, entity.getName());
+			preparedStatementUpdateProduct.setInt(2, entity.getPrice());
+			preparedStatementUpdateProduct.setInt(3, entity.getStock());
+			preparedStatementUpdateProduct.setNString(4, entity.getDescription());
+			preparedStatementUpdateProduct.setInt(5, entity.getProductType());
+			preparedStatementUpdateProduct.setInt(6, entity.getId());
+			preparedStatementUpdateReceiptDetail.setNString(1, entity.getName());
+			preparedStatementUpdateReceiptDetail.setInt(2, entity.getProductType());
+			preparedStatementUpdateReceiptDetail.setInt(3, entity.getId());
+			preparedStatementUpdateImportInvoiceDetail.setNString(1, entity.getName());
+			preparedStatementUpdateImportInvoiceDetail.setInt(2, entity.getProductType());
+			preparedStatementUpdateImportInvoiceDetail.setInt(3, entity.getId());
 
 			// Execute queries.
 			connection.setAutoCommit(false);
-			preparedStatement.executeUpdate();
+			preparedStatementUpdateProduct.executeUpdate();
+			preparedStatementUpdateReceiptDetail.executeUpdate();
+			preparedStatementUpdateImportInvoiceDetail.executeUpdate();
 			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("ProductDAO.java - update - catch - " + e.getMessage());
@@ -240,8 +256,12 @@ public class ProductDAO implements DAO<Product, Integer> {
 			try {
 				connection.setAutoCommit(true);
 
-				if (preparedStatement != null)
-					preparedStatement.close();
+				if (preparedStatementUpdateProduct != null)
+					preparedStatementUpdateProduct.close();
+				if (preparedStatementUpdateReceiptDetail != null)
+					preparedStatementUpdateReceiptDetail.close();
+				if (preparedStatementUpdateImportInvoiceDetail != null)
+					preparedStatementUpdateImportInvoiceDetail.close();
 			} catch (SQLException e) {
 				System.out.println("ProductDAO.java - update - finally/catch - " + e.getMessage());
 				System.out.println("ProductDAO.java - update - finally/catch - " + Arrays.toString(e.getStackTrace()));
@@ -256,14 +276,30 @@ public class ProductDAO implements DAO<Product, Integer> {
 		if (connection == null)
 			throw DBConnectionException.INSTANCE;
 
-		Statement statement = null;
+		Statement statementDeleteProduct = null;
+		PreparedStatement preparedStatementUpdateReceiptDetail = null;
+		PreparedStatement preparedStatementUpdateImportInvoiceDetail = null;
 
 		try {
-			String sqlStatement = "delete from `hotel_management`.`product` where `id` = " + id;
-			statement = connection.createStatement();
+			String deleteProductStatement = "delete from `hotel_management`.`product` where `id` = " + id;
+			String updateReceiptDetailStatement = "update `hotel_management`.`receipt_detail` " +
+					"set `product_id` = ? where `product_id` = ?";
+			String updateImportInvoiceDetailStatement = "update `hotel_management`.`import_invoice_detail` " +
+					"set `product_id` = ? where `product_id` = ?";
+
+			statementDeleteProduct = connection.createStatement();
+			preparedStatementUpdateReceiptDetail = connection.prepareStatement(updateReceiptDetailStatement);
+			preparedStatementUpdateImportInvoiceDetail = connection.prepareStatement(updateImportInvoiceDetailStatement);
+
+			preparedStatementUpdateReceiptDetail.setNull(1, Types.INTEGER);
+			preparedStatementUpdateReceiptDetail.setInt(2, id);
+			preparedStatementUpdateImportInvoiceDetail.setNull(1, Types.INTEGER);
+			preparedStatementUpdateImportInvoiceDetail.setInt(2, id);
 
 			connection.setAutoCommit(false);
-			statement.executeUpdate(sqlStatement);
+			statementDeleteProduct.executeUpdate(deleteProductStatement);
+			preparedStatementUpdateReceiptDetail.executeUpdate();
+			preparedStatementUpdateImportInvoiceDetail.executeUpdate();
 			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("ProductDAO.java - delete - catch - " + e.getMessage());
@@ -281,9 +317,12 @@ public class ProductDAO implements DAO<Product, Integer> {
 			try {
 				connection.setAutoCommit(true);
 
-				if (statement != null) {
-					statement.close();
-				}
+				if (statementDeleteProduct != null)
+					statementDeleteProduct.close();
+				if (preparedStatementUpdateReceiptDetail != null)
+					preparedStatementUpdateReceiptDetail.close();
+				if (preparedStatementUpdateImportInvoiceDetail != null)
+					preparedStatementUpdateImportInvoiceDetail.close();
 			} catch (SQLException e) {
 				System.out.println("ProductDAO.java - delete - finally/catch - " + e.getMessage());
 				System.out.println("ProductDAO.java - delete - finally/catch - " + Arrays.toString(e.getStackTrace()));

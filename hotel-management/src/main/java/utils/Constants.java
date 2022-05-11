@@ -1,8 +1,13 @@
 package utils;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.awt.*;
 
 public class Constants {
+
+	// Environment variables
+	public static final Dotenv DOTENV = Dotenv.load();
 
 	public static class Fonts {
 		public static final String FONT_NAME = "SF Pro Display";
@@ -45,6 +50,7 @@ public class Constants {
 		public static final String BADGE_WHITE = "src/main/resources/icons/ic_round_badge_white_24dp.png";
 		public static final String INSERT_CHART_WHITE = "src/main/resources/icons/ic_round_insert_chart_white_24dp.png";
 		public static final String LOGOUT_WHITE = "src/main/resources/icons/ic_round_logout_white_24dp.png";
+		public static final String LOCK_RESET_WHITE = "src/main/resources/icons/ic_round_lock_reset_white_24dp.png";
 
 		public static final String SEARCH_BLACK = "src/main/resources/icons/ic_round_search_black_24dp.png";
 		public static final String MORE_HORIZ_WHITE = "src/main/resources/icons/ic_round_more_horiz_white_24dp.png";
@@ -65,6 +71,7 @@ public class Constants {
 	public static final int MAX_CUSTOMERS = 1000;
 
 	public static final int MIN_QUANTITY = 1;
+	public static final int MIN_QUANTITY_IN_ADDING_PRODUCT = 0;
 	public static final int MAX_QUANTITY = 100;
 
 	public static final String TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss";

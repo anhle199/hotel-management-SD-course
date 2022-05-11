@@ -4,7 +4,9 @@ import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.ImportInvoice;
 import models.ImportInvoiceDetail;
+import models.Product;
 import utils.Pair;
+import utils.UtilFunctions;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -66,7 +68,8 @@ public class ImportInvoiceDAO implements DAO<ImportInvoice, Integer> {
 
 	public void insert(
 			ImportInvoice entity,
-			ArrayList<ImportInvoiceDetail> importInvoiceDetailList
+			ArrayList<ImportInvoiceDetail> importInvoiceDetailList,
+			ArrayList<Integer> currentQuantityList
 	) throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
@@ -75,6 +78,7 @@ public class ImportInvoiceDAO implements DAO<ImportInvoice, Integer> {
 
 		PreparedStatement preparedStatementInsertImportInvoice = null;
 		PreparedStatement preparedStatementInsertImportInvoiceDetail = null;
+		PreparedStatement preparedStatementUpdateQuantity = null;
 
 		try {
 			// Declare sql statement and create PreparedStatement for it.
@@ -96,33 +100,42 @@ public class ImportInvoiceDAO implements DAO<ImportInvoice, Integer> {
 				int importInvoiceId = generatedKeys.getInt(1);
 
 				String insertReceiptDetailStatement = "insert into `hotel_management`.`import_invoice_detail` " +
-						"(`import_invoice_id`, `quantity`, `product_name`, `product_type`, `price`) values (?, ?, ?, ?, ?)";
+						"(`import_invoice_id`, `quantity`, `product_id`, `product_name`, `product_type`, `price`) values (?, ?, ?, ?, ?, ?)";
+				String updateQuantityStatement = "update `hotel_management`.`product` set `stock` = ? where `id` = ?";
 
 				preparedStatementInsertImportInvoiceDetail = connection.prepareStatement(insertReceiptDetailStatement);
+				preparedStatementUpdateQuantity = connection.prepareStatement(updateQuantityStatement);
 
-				for (ImportInvoiceDetail item: importInvoiceDetailList) {
+				for (int i = 0; i < importInvoiceDetailList.size(); i++) {
 					preparedStatementInsertImportInvoiceDetail.setInt(1, importInvoiceId);
-					preparedStatementInsertImportInvoiceDetail.setByte(2, item.getQuantity());
-					preparedStatementInsertImportInvoiceDetail.setNString(3, item.getProductName());
-					preparedStatementInsertImportInvoiceDetail.setInt(4, item.getProductType());
-					preparedStatementInsertImportInvoiceDetail.setInt(5, item.getPrice());
+					preparedStatementInsertImportInvoiceDetail.setInt(2, importInvoiceDetailList.get(i).getQuantity());
+					preparedStatementInsertImportInvoiceDetail.setInt(3, importInvoiceDetailList.get(i).getProductId());
+					preparedStatementInsertImportInvoiceDetail.setNString(4, importInvoiceDetailList.get(i).getProductName());
+					preparedStatementInsertImportInvoiceDetail.setInt(5, importInvoiceDetailList.get(i).getProductType());
+					preparedStatementInsertImportInvoiceDetail.setInt(6, importInvoiceDetailList.get(i).getPrice());
 					preparedStatementInsertImportInvoiceDetail.addBatch();
+
+					int newQuantity = importInvoiceDetailList.get(i).getQuantity() + currentQuantityList.get(i);
+					preparedStatementUpdateQuantity.setInt(1, newQuantity);
+					preparedStatementUpdateQuantity.setInt(2, importInvoiceDetailList.get(i).getProductId());
+					preparedStatementUpdateQuantity.addBatch();
 				}
 
 				preparedStatementInsertImportInvoiceDetail.executeBatch();
+				preparedStatementUpdateQuantity.executeBatch();
 				connection.commit();
 			} else {
 				connection.rollback();
 			}
 		} catch (SQLException e) {
-			System.out.println("ImportInvoiceDAO.java - insert 2 params - catch - " + e.getMessage());
-			System.out.println("ImportInvoiceDAO.java - insert 2 params - catch - " + Arrays.toString(e.getStackTrace()));
+			System.out.println("ImportInvoiceDAO.java - insert 3 params - catch - " + e.getMessage());
+			System.out.println("ImportInvoiceDAO.java - insert 3 params - catch - " + Arrays.toString(e.getStackTrace()));
 
 			try {
 				connection.rollback();
 			} catch (SQLException ex) {
-				System.out.println("ImportInvoiceDAO.java - insert 2 params - catch/catch - " + ex.getMessage());
-				System.out.println("ImportInvoiceDAO.java - insert 2 params - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+				System.out.println("ImportInvoiceDAO.java - insert 3 params - catch/catch - " + ex.getMessage());
+				System.out.println("ImportInvoiceDAO.java - insert 3 params - catch/catch - " + Arrays.toString(ex.getStackTrace()));
 			}
 
 			throw DBConnectionException.INSTANCE;
@@ -134,9 +147,11 @@ public class ImportInvoiceDAO implements DAO<ImportInvoice, Integer> {
 					preparedStatementInsertImportInvoice.close();
 				if (preparedStatementInsertImportInvoiceDetail != null)
 					preparedStatementInsertImportInvoiceDetail.close();
+				if (preparedStatementUpdateQuantity != null)
+					preparedStatementUpdateQuantity.close();
 			} catch (SQLException e) {
-				System.out.println("ImportInvoiceDAO.java - insert 2 params - finally/catch - " + e.getMessage());
-				System.out.println("ImportInvoiceDAO.java - insert 2 params - finally/catch - " + Arrays.toString(e.getStackTrace()));
+				System.out.println("ImportInvoiceDAO.java - insert 3 params - finally/catch - " + e.getMessage());
+				System.out.println("ImportInvoiceDAO.java - insert 3 params - finally/catch - " + Arrays.toString(e.getStackTrace()));
 			}
 		}
 	}
@@ -163,10 +178,10 @@ public class ImportInvoiceDAO implements DAO<ImportInvoice, Integer> {
 		PreparedStatement preparedStatement = null;
 
 		try {
-			String sqlStatement = "select iid.product_name as 'product_name', sum(iid.quantity * iid.price) as 'total_price_per_product'" +
+			String sqlStatement = "select iid.product_name as 'product_name', rd.product_type as 'product_type', sum(iid.quantity * iid.price) as 'total_price_per_product'" +
 					" from `hotel_management`.`import_invoice` ii join `hotel_management`.`import_invoice_detail` iid" +
 					" on ii.id = iid.import_invoice_id where month(ii.imported_date) = ? and year(ii.imported_date) = ?" +
-					" group by iid.product_name order by `total_price_per_product` desc";
+					" group by iid.product_name, iid.product_type order by `total_price_per_product` desc";
 
 			preparedStatement = connection.prepareStatement(sqlStatement);
 			preparedStatement.setInt(1, month);
@@ -175,8 +190,10 @@ public class ImportInvoiceDAO implements DAO<ImportInvoice, Integer> {
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next() && rowKeysAndStatsValues.size() < 5) {
+				Product.ProductTypeEnum productTypeEnum = Product.ProductTypeEnum.valueOf(resultSet.getInt("product_type"));
+				String capitalizedProductType = UtilFunctions.capitalizeFirstLetterInString(productTypeEnum.name());
 				rowKeysAndStatsValues.add(new Pair<>(
-						resultSet.getString("product_name"),
+						resultSet.getString("product_name") + " - " + capitalizedProductType,
 						resultSet.getInt("total_price_per_product")
 				));
 			}

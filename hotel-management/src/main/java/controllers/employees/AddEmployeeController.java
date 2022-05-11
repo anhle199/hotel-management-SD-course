@@ -89,39 +89,39 @@ public class AddEmployeeController implements ActionListener {
 		displayUI();
 	}
 
-	private boolean checkEmptyFields(String fullName, String username, String password) {
+	private boolean checkNotEmptyFields(String fullName, String username, String password) {
 		return !fullName.isEmpty() && !username.isEmpty() && !password.isEmpty();
 	}
 
 	private boolean validateEmployeeInfoAndShowMAlert(User employee) throws DBConnectionException {
 		UserDAO daoModel = new UserDAO();
 
-		if (checkEmptyFields(employee.getFullName(), employee.getUsername(), employee.getPassword())) {
+		if (!checkNotEmptyFields(employee.getFullName(), employee.getUsername(), employee.getPassword())) {
 			UtilFunctions.showErrorMessage(
 					addEmployeeDialog,
 					"Add Employee",
 					"All fields must not be empty."
 			);
 			return false;
-		} else if (ValidationHandler.validateFullName(employee.getFullName())) {
+		} else if (!ValidationHandler.validateFullName(employee.getFullName())) {
+			UtilFunctions.showErrorMessage(
+					addEmployeeDialog,
+					"Add Employee",
+					"Full name is invalid."
+			);
+			return false;
+		} else if (!ValidationHandler.validateUsername(employee.getUsername())) {
 			UtilFunctions.showErrorMessage(
 					addEmployeeDialog,
 					"Add Employee",
 					"Username is invalid."
 			);
 			return false;
-		} else if (ValidationHandler.validateUsername(employee.getUsername())) {
+		} else if (!ValidationHandler.validatePassword(employee.getPassword())) {
 			UtilFunctions.showErrorMessage(
 					addEmployeeDialog,
 					"Add Employee",
-					"Username is invalid."
-			);
-			return false;
-		} else if (ValidationHandler.validatePassword(employee.getPassword())) {
-			UtilFunctions.showErrorMessage(
-					addEmployeeDialog,
-					"Add Employee",
-					"Username is invalid."
+					"Password is invalid."
 			);
 			return false;
 		} else if (daoModel.isExistingUsername(employee.getUsername())) {
@@ -137,12 +137,8 @@ public class AddEmployeeController implements ActionListener {
 	}
 
 	private User getUserInstanceFromInputFields() {
-		String username = UtilFunctions.removeRedundantWhiteSpace(
-				addEmployeeDialog.getUsernameTextField().getText()
-		);
-		String password = UtilFunctions.removeRedundantWhiteSpace(
-				addEmployeeDialog.getPasswordTextField().getPassword()
-		);
+		String username = addEmployeeDialog.getUsernameTextField().getText();
+		String password = addEmployeeDialog.getPasswordTextField().getPassword();
 		String employeeName = UtilFunctions.removeRedundantWhiteSpace(
 				addEmployeeDialog.getEmployeeNameTextField().getText()
 		);

@@ -14,7 +14,7 @@ import utils.UtilFunctions;
 import views.components.dialogs.ConnectionErrorDialog;
 import views.components.panels.ScrollableTablePanel;
 import views.components.table_model.NonEditableTableModel;
-import views.dialogs.AddProductToReceiptDialog;
+import views.dialogs.AddProductToImportInvoiceDialog;
 import views.dialogs.ProductReceiptDetailDialog;
 
 import javax.swing.*;
@@ -32,7 +32,7 @@ import java.util.Vector;
 public class ProductReceiptDetailController implements ActionListener, ItemListener, DocumentListener {
 
 	private final ProductReceiptDetailDialog productReceiptDetailDialog;
-	private AddProductToReceiptDialog addProductToReceiptDialog;
+	private AddProductToImportInvoiceDialog addProductToReceiptDialog;
 	private final ConnectionErrorDialog connectionErrorDialog;
 
 	private final Receipt receipt;
@@ -65,7 +65,8 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 		this.productReceiptListController = productReceiptListController;
 
 		if (viewMode == DetailDialogModeEnum.CREATE) {
-			this.addProductToReceiptDialog = new AddProductToReceiptDialog(mainFrame);
+			this.addProductToReceiptDialog = new AddProductToImportInvoiceDialog(mainFrame);
+			this.addProductToReceiptDialog.getPriceTextField().setEnabled(false);
 
 			// Add action listeners
 			this.productReceiptDetailDialog.getAddButton().addActionListener(this);
@@ -89,12 +90,10 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 			productReceiptDetailDialog.getCustomerNameTextField()
 									  .setText(receipt.getCustomerName());
 			productReceiptDetailDialog.getPurchasedDateTextField()
-									  .setText(
-											  UtilFunctions.formatTimestamp(
-													  Constants.TIMESTAMP_PATTERN,
-													  receipt.getPurchasedDate()
-											  )
-									  );
+									  .setText(UtilFunctions.formatTimestamp(
+											  Constants.TIMESTAMP_PATTERN,
+											  receipt.getPurchasedDate()
+									  ));
 			productReceiptDetailDialog.getTotalPriceTextField()
 									  .setText(String.valueOf(receipt.getTotalPrice()));
 			productReceiptDetailDialog.getNoteTextField()
@@ -102,8 +101,8 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 
 			loadReceiptDetailListAndAddToTable();
 		} else {
-			Timestamp nowAfterTwoHour = UtilFunctions.getTimestamp(LocalDateTime.now(), 1);
-			productReceiptDetailDialog.getPurchasedDatePanel().setSelectedDate(nowAfterTwoHour);
+			productReceiptDetailDialog.getPurchasedDatePanel()
+									  .setSelectedDate(UtilFunctions.getTimestamp(LocalDateTime.now()));
 
 			loadProductList();
 		}
@@ -115,7 +114,7 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 		try {
 			ReceiptDetailDAO daoModel = new ReceiptDetailDAO();
 			ArrayList<ReceiptDetail> receiptDetailList = daoModel.getAllByReceiptId(receipt.getId());
-			addReceiptDetailLstToTable(receiptDetailList);
+			addReceiptDetailListToTable(receiptDetailList);
 		} catch (DBConnectionException e) {
 			SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 			System.out.println("ProductReceiptDetailController.java - loadReceiptDetailListAndAddToTable - catch - Unavailable connection.");
@@ -133,7 +132,7 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 		}
 	}
 
-	public void addReceiptDetailLstToTable(ArrayList<ReceiptDetail> receiptDetailList) {
+	public void addReceiptDetailListToTable(ArrayList<ReceiptDetail> receiptDetailList) {
 		NonEditableTableModel tableModel = (NonEditableTableModel) productReceiptDetailDialog.getScrollableTable().getTableModel();
 		tableModel.removeAllRows();
 
@@ -156,21 +155,6 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 				receiptDetail.getPrice(),
 				receiptDetail.getQuantity(),
 		};
-	}
-
-	private ReceiptDetail mapRowValueToReceiptDetailInstance(Vector<Object> rowValue) {
-		Product.ProductTypeEnum productType = Product.ProductTypeEnum.valueOfIgnoreCase(
-				String.valueOf(rowValue.get(3))
-		);
-
-		return new ReceiptDetail(
-				(int) rowValue.get(ProductReceiptDetailDialog.HIDDEN_COLUMN_PRODUCT_ID),
-				-1,
-				(byte) rowValue.get(5),
-				String.valueOf(rowValue.get(2)),
-				productType.ordinal(),
-				(int) rowValue.get(4)
-		);
 	}
 
 	@Override
@@ -204,18 +188,32 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 	}
 
 	private void addButtonAction() {
-		Vector<String> productNameList = new Vector<>();
-		for (Product item: productList)
-			productNameList.add(item.getName());
+		if (productList.isEmpty()) {
+			UtilFunctions.showInfoMessage(
+					productReceiptDetailDialog,
+					"Add Product To Receipt",
+					"There are no products to add into receipt."
+			);
+		} else {
+			Vector<String> productNameList = new Vector<>();
+			for (Product item: productList)
+				productNameList.add(item.getName());
 
-		addProductToReceiptDialog.getProductNameComboBox()
-								 .setModel(new DefaultComboBoxModel<>(productNameList));
-		addProductToReceiptDialog.getQuantityTextField()
-								 .setValue(Constants.MIN_QUANTITY);
-		addProductToReceiptDialog.getTotalPriceTextField()
-								 .setText(String.valueOf(productList.get(0).getPrice()));
+			int price = productList.get(0).getPrice();
+			int quantity = productList.get(0).getStock();
 
-		addProductToReceiptDialog.setVisible(true);
+			addProductToReceiptDialog.getProductNameComboBox()
+									 .setModel(new DefaultComboBoxModel<>(productNameList));
+			addProductToReceiptDialog.getQuantityTextField()
+									 .setValue(Constants.MIN_QUANTITY);
+			addProductToReceiptDialog.getPriceTextField()
+									 .setValue(price);
+			addProductToReceiptDialog.getTotalPriceTextField()
+									 .setText(String.valueOf(price * Constants.MIN_QUANTITY));
+
+			addProductToReceiptDialog.setRangeQuantity(Constants.MIN_QUANTITY, quantity);
+			addProductToReceiptDialog.setVisible(true);
+		}
 	}
 
 	private void removeButtonAction() {
@@ -238,15 +236,29 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 
 			if (option == JOptionPane.YES_OPTION) {
 				NonEditableTableModel tableModel = (NonEditableTableModel) tablePanel.getTableModel();
+				Vector<Object> rowValue = tableModel.getRowValue(selectedRowIndex);
 
-				int removedProductId = (int) tableModel.getValueAt(
-						selectedRowIndex,
-						ProductReceiptDetailDialog.HIDDEN_COLUMN_PRODUCT_ID
-				);
-				int removedProductIndex = findIndexByProductId(selectedProductList, removedProductId);
-				productList.add(selectedProductList.get(removedProductIndex));
-				selectedProductList.remove(removedProductIndex);
+				// Update total price after removing product successfully.
+				int price = (int) rowValue.get(4);
+				int quantity = (int) rowValue.get(5);
+				int currentTotalPrice = Integer.parseInt(productReceiptDetailDialog.getTotalPriceTextField().getText());
+				productReceiptDetailDialog.getTotalPriceTextField()
+										  .setText(String.valueOf(currentTotalPrice - (price * quantity)));
 
+				// Remove product from saved list of products.
+				int removedProductId = (int) rowValue.get(ProductReceiptDetailDialog.HIDDEN_COLUMN_PRODUCT_ID);
+				int removedProductIndexInSelectedProductList = findIndexByProductId(selectedProductList, removedProductId);
+				int removedProductIndexInProductList = findIndexByProductId(productList, removedProductId);
+				Product removedProduct = selectedProductList.get(removedProductIndexInSelectedProductList);
+
+				selectedProductList.remove(removedProductIndexInSelectedProductList);
+				if (removedProductIndexInProductList == -1) {
+					productList.add(removedProduct.deepCopy());
+				} else {
+					productList.get(removedProductIndexInProductList).addStock(quantity);
+				}
+
+				// Remove product from table.
 				tableModel.removeRow(selectedRowIndex);
 			}
 		}
@@ -257,8 +269,6 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 			ReceiptDAO daoModel = new ReceiptDAO();
 			Receipt newReceipt = getReceiptInstanceFromInputFields();
 			ArrayList<ReceiptDetail> newReceiptDetailList = getReceiptDetailListFromInputFields();
-
-			newReceipt.setTotalPrice(calculateTotalPrice(newReceiptDetailList));
 
 			if (checkEmptyFields(newReceipt.getCustomerName())) {
 				UtilFunctions.showErrorMessage(
@@ -280,7 +290,8 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 				);
 
 				if (option == JOptionPane.YES_OPTION) {
-					daoModel.insert(newReceipt, newReceiptDetailList);
+					ArrayList<Integer> remainingQuantityList = getRemainingProductQuantityListFromReceiptDetailList(newReceiptDetailList);
+					daoModel.insert(newReceipt, newReceiptDetailList, remainingQuantityList);
 					UtilFunctions.showInfoMessage(productReceiptDetailDialog, "Create Receipt", "Create successfully.");
 
 					productReceiptDetailDialog.setVisible(false);
@@ -294,27 +305,49 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 	}
 
 	private void addButtonActionOfAddProductToReceiptDialog() {
+		int quantity = Integer.parseInt(String.valueOf(addProductToReceiptDialog.getQuantityTextField().getValue()));
 		int selectedProductIndex = addProductToReceiptDialog.getProductNameComboBox().getSelectedIndex();
-		Product selectedProduct = productList.get(selectedProductIndex);
-		byte quantity = Byte.parseByte(
-				String.valueOf(addProductToReceiptDialog.getQuantityTextField().getValue())
-		);
+		Product selectedProduct = productList.get(selectedProductIndex).deepCopy();
+		selectedProduct.setStock(quantity);
 
 		ReceiptDetail addedReceiptDetail = new ReceiptDetail(
 				-1,
-				receipt.getId(),
+				-1,
 				quantity,
+				selectedProduct.getId(),
 				selectedProduct.getName(),
 				selectedProduct.getProductType(),
 				selectedProduct.getPrice()
 		);
 
-		selectedProductList.add(selectedProduct);
-		productList.remove(selectedProductIndex);
+		// That product will be changed quantity or be removed.
+		productList.get(selectedProductIndex).addStock(-quantity);
+		if (productList.get(selectedProductIndex).getStock() == 0) {
+			productList.remove(selectedProductIndex);
+		}
 
+		// Add product into table and selectedProductList.
 		NonEditableTableModel tableModel = (NonEditableTableModel) productReceiptDetailDialog.getScrollableTable().getTableModel();
-		int no = tableModel.getRowCount() + 1;
-		tableModel.addRow(mapReceiptDetailInstanceToRowValue(no, addedReceiptDetail, selectedProduct.getId()));
+		int productIndexInSelectedProductList = findIndexByProductId(selectedProductList, selectedProduct.getId());
+		if (productIndexInSelectedProductList == -1) {
+			selectedProductList.add(selectedProduct);
+
+			int no = tableModel.getRowCount() + 1;
+			tableModel.addRow(mapReceiptDetailInstanceToRowValue(no, addedReceiptDetail, selectedProduct.getId()));
+		} else {
+			selectedProductList.get(productIndexInSelectedProductList).addStock(quantity);
+			tableModel.setValueAt(
+					selectedProductList.get(productIndexInSelectedProductList).getStock(),
+					productIndexInSelectedProductList,
+					5
+			);
+		}
+
+		// Update total price after adding product successfully.
+		int price = selectedProduct.getPrice();
+		int currentTotalPrice = Integer.parseInt(productReceiptDetailDialog.getTotalPriceTextField().getText());
+		productReceiptDetailDialog.getTotalPriceTextField()
+								  .setText(String.valueOf(currentTotalPrice + (price * quantity)));
 
 		addProductToReceiptDialog.setVisible(false);
 	}
@@ -324,6 +357,14 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 		connectionErrorDialog.setVisible(false);
 
 		SingletonDBConnection.getInstance().connect();
+
+		// clear data
+		productList.clear();
+		selectedProductList.clear();
+		NonEditableTableModel tableModel = (NonEditableTableModel) productReceiptDetailDialog.getScrollableTable().getTableModel();
+		tableModel.removeAllRows();
+
+		// reload data
 		displayUI();
 	}
 
@@ -331,17 +372,17 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 		int index = addProductToReceiptDialog.getProductNameComboBox().getSelectedIndex();
 		Product selectedProduct = productList.get(index);
 
-		int quantity = Integer.parseInt(
-				String.valueOf(addProductToReceiptDialog.getQuantityTextField().getValue())
-		);
-		int totalPrice = selectedProduct.getPrice() * quantity;
+		int price = selectedProduct.getPrice();
+		int quantity = Integer.parseInt(addProductToReceiptDialog.getQuantityTextField().getText());
 
+		addProductToReceiptDialog.getPriceTextField()
+								 .setValue(price);
 		addProductToReceiptDialog.getTotalPriceTextField()
-								 .setText(String.valueOf(totalPrice));
+								 .setText(String.valueOf(price * quantity));
 	}
 
 	private boolean checkEmptyFields(String customerName) {
-		return !customerName.isEmpty();
+		return customerName.isEmpty();
 	}
 
 	private Receipt getReceiptInstanceFromInputFields() {
@@ -356,30 +397,38 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 		String note = UtilFunctions.removeRedundantWhiteSpace(
 				productReceiptDetailDialog.getNoteTextField().getText()
 		);
+		int totalPrice = Integer.parseInt(productReceiptDetailDialog.getTotalPriceTextField().getText());
 
-		return new Receipt(-1, customerName, purchasedDate, note, 0);
+		return new Receipt(-1, customerName, purchasedDate, note, totalPrice);
 	}
 
 	private ArrayList<ReceiptDetail> getReceiptDetailListFromInputFields() {
-		NonEditableTableModel tableModel = (NonEditableTableModel) productReceiptDetailDialog.getScrollableTable().getTableModel();
-		int rowCount = tableModel.getRowCount();
-
 		ArrayList<ReceiptDetail> receiptDetailList = new ArrayList<>();
-		for (int i = 0; i < rowCount; i++) {
-			receiptDetailList.add(mapRowValueToReceiptDetailInstance(tableModel.getRowValue(i)));
+		for (Product item: selectedProductList) {
+			receiptDetailList.add(new ReceiptDetail(
+					-1,
+					-1,
+					item.getStock(),
+					item.getId(),
+					item.getName(),
+					item.getProductType(),
+					item.getPrice()
+			));
 		}
 
 		return receiptDetailList;
 	}
 
-	private int calculateTotalPrice(ArrayList<ReceiptDetail> receiptDetailList) {
-		int sum = 0;
-
+	private ArrayList<Integer> getRemainingProductQuantityListFromReceiptDetailList(
+			ArrayList<ReceiptDetail> receiptDetailList
+	) {
+		ArrayList<Integer> quantityList = new ArrayList<>();
 		for (ReceiptDetail item: receiptDetailList) {
-			sum += item.getPrice() * item.getQuantity();
+			int index = findIndexByProductId(productList, item.getProductId());
+			quantityList.add(index == -1 ? 0 : productList.get(index).getStock());
 		}
 
-		return sum;
+		return quantityList;
 	}
 
 	private int findIndexByProductId(ArrayList<Product> productList, int productId) {
@@ -387,15 +436,15 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 			if (productList.get(i).getId() == productId)
 				return i;
 
-		return 0;
+		return -1;
 	}
 
 
 	// MARK: Document Listener methods
 
 	@Override
-	public void insertUpdate(DocumentEvent e) {
-		// Do nothing
+	public void insertUpdate(DocumentEvent event) {
+		roomNameComboBoxActionOfAddProductToReceiptDialog();
 	}
 
 	@Override
@@ -405,9 +454,7 @@ public class ProductReceiptDetailController implements ActionListener, ItemListe
 
 	@Override
 	public void changedUpdate(DocumentEvent event) {
-		if (event.getDocument() == addProductToReceiptDialog.getQuantityTextField().getDocument()) {
-			roomNameComboBoxActionOfAddProductToReceiptDialog();
-		}
+		// Do nothing
 	}
 
 }

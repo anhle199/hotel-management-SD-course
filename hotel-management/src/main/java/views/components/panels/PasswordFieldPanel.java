@@ -61,25 +61,25 @@ public class PasswordFieldPanel extends JPanel {
 		this.visibilityIcon = new ImagePanel(Constants.IconNames.VISIBILITY_BLACK, 24, 24);
 		this.visibilityIcon.setForeground(Constants.Colors.GRAY);
 		this.visibilityIcon.setBackground(Constants.Colors.TRANSPARENT);
+		this.visibilityIcon.setVisible(false);
 		add(visibilityIcon);
 
 		this.visibilityOffIcon = new ImagePanel(Constants.IconNames.VISIBILITY_OFF_BLACK, 24, 24);
 		this.visibilityOffIcon.setForeground(Constants.Colors.GRAY);
 		this.visibilityOffIcon.setBackground(Constants.Colors.TRANSPARENT);
-		this.visibilityOffIcon.setVisible(false);
 		add(visibilityOffIcon);
 
 		visibilityIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				toggleVisibilityPasswordAction();
+				setPasswordVisibility(false);
 			}
 		});
 
 		visibilityOffIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				toggleVisibilityPasswordAction();
+				setPasswordVisibility(true);
 			}
 		});
 	}
@@ -103,10 +103,6 @@ public class PasswordFieldPanel extends JPanel {
 		placeholder.setBounds(0, 0, passwordFieldWidth, leadingIconSize.height);
 	}
 
-//	public JPasswordField getPasswordField() {
-//		return passwordField;
-//	}
-
 	public String getPassword() {
 		return String.valueOf(passwordField.getPassword());
 	}
@@ -115,13 +111,12 @@ public class PasswordFieldPanel extends JPanel {
 		passwordField.setText(value);
 	}
 
-	public void toggleVisibilityPasswordAction() {
-		boolean showingPassword = visibilityOffIcon.isVisible();
-		char passwordEcho = showingPassword ? HIDE_PASSWORD_ECHO_CHAR : SHOW_PASSWORD_ECHO_CHAR;
+	public void setPasswordVisibility(boolean isVisiblePassword) {
+		char passwordEcho = isVisiblePassword ? SHOW_PASSWORD_ECHO_CHAR : HIDE_PASSWORD_ECHO_CHAR;
 
 		passwordField.setEchoChar(passwordEcho);
-		visibilityIcon.setVisible(showingPassword);
-		visibilityOffIcon.setVisible(!showingPassword);
+		visibilityIcon.setVisible(isVisiblePassword);
+		visibilityOffIcon.setVisible(!isVisiblePassword);
 	}
 
 }

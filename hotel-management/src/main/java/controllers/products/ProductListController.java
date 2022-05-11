@@ -66,6 +66,11 @@ public class ProductListController implements ActionListener {
 		}
 	}
 
+	public void reloadTableDataWithCurrentSearchValue() {
+		String searchText = productListPanel.getSearchBar().getText();
+		loadProductListAndReloadTableData(UtilFunctions.removeRedundantWhiteSpace(searchText));
+	}
+
 	public void addProductListToTable(ArrayList<Product> productList) {
 		NonEditableTableModel tableModel = (NonEditableTableModel) productListPanel.getScrollableTable().getTableModel();
 		tableModel.removeAllRows();
@@ -125,10 +130,7 @@ public class ProductListController implements ActionListener {
 	}
 
 	private void searchButtonAction() {
-		String searchText = UtilFunctions.removeRedundantWhiteSpace(
-				productListPanel.getSearchBar().getText()
-		);
-		loadProductListAndReloadTableData(searchText);
+		reloadTableDataWithCurrentSearchValue();
 	}
 
 	private void addButtonAction() {
@@ -167,6 +169,7 @@ public class ProductListController implements ActionListener {
 							"Remove Product",
 							"This product is removed successfully."
 					);
+					reloadTableDataWithCurrentSearchValue();
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 					System.out.println("ProductListController.java - removeButtonAction - catch - Unavailable connection.");

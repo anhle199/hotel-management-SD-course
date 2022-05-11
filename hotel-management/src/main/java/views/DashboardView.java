@@ -22,6 +22,7 @@ public class DashboardView extends JPanel {
 
 	// Components at the left panel.
 	private JLabel usernameLabel;
+	private ImagePanel changePasswordImage;
 	private ButtonWithResizableIcon roomManagementButton;
 	private ButtonWithResizableIcon serviceManagementButton;
 	private ButtonWithResizableIcon productManagementButton;
@@ -59,7 +60,7 @@ public class DashboardView extends JPanel {
 
 		// Account Info Panel.
 		JPanel accountInfoPanel = new JPanel();
-		accountInfoPanel.setBounds(20, 40, 280, 70);
+		accountInfoPanel.setBounds(20, 40, 240, 70);
 		accountInfoPanel.setLayout(null);
 		accountInfoPanel.setBackground(Constants.Colors.TRANSPARENT);
 		leftPanel.add(accountInfoPanel);
@@ -72,7 +73,7 @@ public class DashboardView extends JPanel {
 
 		// User's Name Label.
 		usernameLabel = new JLabel("Username", SwingConstants.LEFT);
-		usernameLabel.setBounds(78, 18, 194, 16);
+		usernameLabel.setBounds(78, 18, 154, 16);
 		usernameLabel.setFont(Constants.Fonts.HEADLINE);
 		usernameLabel.setForeground(Constants.Colors.WHITE);
 		accountInfoPanel.add(usernameLabel);
@@ -80,17 +81,24 @@ public class DashboardView extends JPanel {
 		// Role Label.
 		String roleAsString = RoleManager.getInstance().isEmployee() ? "Employee" : "Manager";
 		JLabel roleLabel = new JLabel(roleAsString, SwingConstants.LEFT);
-		roleLabel.setBounds(78, 38, 194, 16);
+		roleLabel.setBounds(78, 38, 154, 16);
 		roleLabel.setFont(new Font(Constants.Fonts.FONT_NAME, Font.PLAIN, 11));
 		roleLabel.setForeground(Constants.Colors.WHITE);
 		accountInfoPanel.add(roleLabel);
 
+		// Change Password Image.
+		changePasswordImage = new ImagePanel(Constants.IconNames.LOCK_RESET_WHITE, 32, 32);
+		changePasswordImage.setBounds(268, 59, 32, 32);
+		changePasswordImage.setBackground(Constants.Colors.TRANSPARENT);
+		leftPanel.add(changePasswordImage);
+
 		// Sidebar Items.
 		initSidebarItems(leftPanel);
 
+		Dimension iconSize = new Dimension(28, 28);
+
 		// Logout Button.
 		Icon logoutIcon = new ImageIcon(Constants.IconNames.LOGOUT_WHITE);
-		Dimension iconSize = new Dimension(28, 28);
 		logoutButton = new ButtonWithResizableIcon("Logout", logoutIcon, iconSize);
 		logoutButton.setBounds(20, 775, 280, 52);
 		logoutButton.setBorder(BorderFactory.createLineBorder(Constants.Colors.WHITE, 1));
@@ -216,6 +224,10 @@ public class DashboardView extends JPanel {
 
 	public JLabel getUsernameLabel() {
 		return usernameLabel;
+	}
+
+	public ImagePanel getChangePasswordImage() {
+		return changePasswordImage;
 	}
 
 	public ButtonWithResizableIcon getRoomManagementButton() {

@@ -125,6 +125,7 @@ public class EmployeeManagementController implements ActionListener {
 							"Remove Employee",
 							"This employee is removed successfully."
 					);
+					loadEmployeeListAndReloadTableData();
 				} catch (DBConnectionException e) {
 					SwingUtilities.invokeLater(() -> connectionErrorDialog.setVisible(true));
 					System.out.println("EmployeeManagementController.java - removeButtonAction - catch - Unavailable connection.");

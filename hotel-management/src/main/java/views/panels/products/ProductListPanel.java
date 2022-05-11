@@ -51,7 +51,7 @@ public class ProductListPanel extends JPanel {
 
 		// Top Bar Buttons Panel.
 		JPanel topBarButtonsPanel = new JPanel();
-		topBarButtonsPanel.setBounds(764, 0, 212, 40);
+		topBarButtonsPanel.setBounds(826, 0, 212, 40);
 		topBarButtonsPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
 		topBarPanel.add(topBarButtonsPanel);
 
@@ -75,18 +75,18 @@ public class ProductListPanel extends JPanel {
 				"id",
 				"Product name",
 				"Product type",
-				"Price",
+				"Price ($)",
 				"Quantity",
 				"Description"
 		};
-		final int [] columnWidths = {50, 0, 195, 195, 195, 195, 190};
+		final int [] columnWidths = {40, 0, 350, 94, 80, 80, 375};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 		};
 

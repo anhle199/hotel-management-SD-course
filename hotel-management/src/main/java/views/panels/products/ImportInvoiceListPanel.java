@@ -40,13 +40,13 @@ public class ImportInvoiceListPanel extends JPanel {
 	}
 
 	private void initTable() {
-		final String[] columnNames = {"", "id", "Imported date", "Total price", "Note"};
-		final int [] columnWidths = {50, 0, 400, 140, 430};
+		final String[] columnNames = {"", "id", "Imported date", "Total price ($)", "Note"};
+		final int [] columnWidths = {40, 0, 150, 100, 730};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.RIGHT,
 				DefaultTableCellRenderer.LEFT,
 		};
 

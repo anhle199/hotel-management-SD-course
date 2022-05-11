@@ -49,7 +49,6 @@ public class AddEmployeeDialog extends JDialog {
 		// Employee Name Combo Box.
 		employeeNameTextField = new JTextField();
 		employeeNameTextField.setBounds(xTextField, employeeNameLabel.getY(), textFieldSize.width, textFieldSize.height);
-		employeeNameTextField.setEnabled(false);
 		panel.add(employeeNameTextField);
 
 		// Gender Label.
@@ -60,7 +59,6 @@ public class AddEmployeeDialog extends JDialog {
 		// Gender Combo Box.
 		genderComboBox = new JComboBox<>(User.GenderEnum.allCases());
 		genderComboBox.setBounds(xTextField, genderLabel.getY(), textFieldSize.width, textFieldSize.height);
-		genderComboBox.setEnabled(false);
 		panel.add(genderComboBox);
 
 		// Year Of Birth Label.
@@ -77,7 +75,6 @@ public class AddEmployeeDialog extends JDialog {
 		// Year Of Birth Combo Box.
 		yearOfBirthComboBox = new JComboBox<>(yearList);
 		yearOfBirthComboBox.setBounds(xTextField, yearOfBirthLabel.getY(), textFieldSize.width, textFieldSize.height);
-		yearOfBirthComboBox.setEnabled(false);
 		panel.add(yearOfBirthComboBox);
 
 		// Username Label.
@@ -88,7 +85,6 @@ public class AddEmployeeDialog extends JDialog {
 		// Username Text Field
 		usernameTextField = new JTextField();
 		usernameTextField.setBounds(xTextField, usernameLabel.getY(), textFieldSize.width, textFieldSize.height);
-		usernameTextField.setEnabled(false);
 		panel.add(usernameTextField);
 
 		// Password Label.
@@ -99,7 +95,6 @@ public class AddEmployeeDialog extends JDialog {
 		// Password Text Field
 		passwordTextField = new PasswordTextField(textFieldSize);
 		passwordTextField.setBounds(xTextField, passwordLabel.getY(), textFieldSize.width, textFieldSize.height);
-		passwordTextField.setEnabled(false);
 		panel.add(passwordTextField);
 
 		// Edit Button.

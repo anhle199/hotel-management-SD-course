@@ -1,5 +1,7 @@
 package db;
 
+import utils.Constants;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,9 +10,6 @@ import java.util.Arrays;
 public class SingletonDBConnection {
 
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static final String DB_URL ="jdbc:mysql://127.0.0.1:3306/";
-	private static final String DB_USER ="root";
-	private static final String DB_PASSWORD ="password";
 
 	private Connection connection = null;
 
@@ -34,7 +33,11 @@ public class SingletonDBConnection {
 			Class.forName(JDBC_DRIVER);
 
 			System.out.println("Connecting to the database");
-			connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			connection = DriverManager.getConnection(
+					Constants.DOTENV.get("DB_URL"),
+					Constants.DOTENV.get("DB_USER"),
+					Constants.DOTENV.get("DB_PASSWORD")
+			);
 			System.out.println("Connected to the database");
 		} catch (SQLException sqlException) {
 			System.out.println("Can not connect to MySQL");

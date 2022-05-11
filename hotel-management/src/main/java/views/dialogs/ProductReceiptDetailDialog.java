@@ -47,15 +47,16 @@ public class ProductReceiptDetailDialog extends JDialog {
 
 	private void initSubviews(JPanel panel) {
 		// Sizes and coordinates
-		Dimension labelSize = new Dimension(100, 40);
+		Dimension leftLabelSize = new Dimension(100, 40);
+		Dimension rightLabelSize = new Dimension(90, 40);
 		Dimension textFieldSize = new Dimension(340, 40);
 		int padding = 20;
 		int spacingTextFields = 12;
-		int xTextField = padding * 2 + labelSize.width;
+		int xTextField = padding * 2 + leftLabelSize.width;
 
 		// Customer Name Label.
 		JLabel customerNameLabel = new JLabel("Customer name");
-		customerNameLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
+		customerNameLabel.setBounds(padding, padding, leftLabelSize.width, leftLabelSize.height);
 		panel.add(customerNameLabel);
 
 		// Customer Name Text Field.
@@ -66,7 +67,7 @@ public class ProductReceiptDetailDialog extends JDialog {
 
 		// Product Type Label.
 		JLabel purchasedDateLabel = new JLabel("Purchased date");
-		purchasedDateLabel.setBounds(padding, customerNameLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		purchasedDateLabel.setBounds(padding, customerNameLabel.getY() + leftLabelSize.height + spacingTextFields, leftLabelSize.width, leftLabelSize.height);
 		panel.add(purchasedDateLabel);
 
 		if (viewMode == DetailDialogModeEnum.CREATE) {
@@ -84,23 +85,24 @@ public class ProductReceiptDetailDialog extends JDialog {
 
 		// Total Price Label.
 		JLabel totalPriceLabel = new JLabel("Total price ($)");
-		totalPriceLabel.setBounds(customerNameTextField.getX() + textFieldSize.width + 40, customerNameLabel.getY(), labelSize.width, labelSize.height);
+		totalPriceLabel.setBounds(customerNameTextField.getX() + textFieldSize.width + 50, customerNameLabel.getY(), rightLabelSize.width, rightLabelSize.height);
 		panel.add(totalPriceLabel);
 
 		// Total Price Text Field.
-		totalPriceTextField = new JFormattedTextField();
-		totalPriceTextField.setBounds(totalPriceLabel.getX() + labelSize.width + padding, totalPriceLabel.getY(), textFieldSize.width, textFieldSize.height);
+		totalPriceTextField = new JTextField(String.valueOf(Constants.MIN_PRICE));
+		totalPriceTextField.setBounds(totalPriceLabel.getX() + rightLabelSize.width + padding, totalPriceLabel.getY(), textFieldSize.width, textFieldSize.height);
+		totalPriceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		UtilFunctions.configureDialogTextFieldOnMainThread(totalPriceTextField);
 		panel.add(totalPriceTextField);
 
 		// Note Label.
 		JLabel noteLabel = new JLabel("Note");
-		noteLabel.setBounds(totalPriceLabel.getX(), totalPriceLabel.getY() + labelSize.height + spacingTextFields, labelSize.width, labelSize.height);
+		noteLabel.setBounds(totalPriceLabel.getX(), totalPriceLabel.getY() + rightLabelSize.height + spacingTextFields, rightLabelSize.width, rightLabelSize.height);
 		panel.add(noteLabel);
 
 		// Note Text Field.
 		noteTextField = new JTextField();
-		noteTextField.setBounds(noteLabel.getX() + labelSize.width + padding, noteLabel.getY(), textFieldSize.width, textFieldSize.height);
+		noteTextField.setBounds(noteLabel.getX() + rightLabelSize.width + padding, noteLabel.getY(), textFieldSize.width, textFieldSize.height);
 		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextField);
 		panel.add(noteTextField);
 
@@ -147,17 +149,17 @@ public class ProductReceiptDetailDialog extends JDialog {
 				"productId",
 				"Product name",
 				"Product type",
-				"Price",
+				"Price ($)",
 				"Quantity",
 		};
-		final int [] columnWidths = {50, 0, 305, 195, 195, 195};
+		final int [] columnWidths = {40, 0, 645, 95, 80, 80};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.RIGHT,
+				DefaultTableCellRenderer.CENTER,
 		};
 
 		scrollableTable = new ScrollableTablePanel(

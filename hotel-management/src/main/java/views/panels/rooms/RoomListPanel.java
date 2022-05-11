@@ -33,7 +33,7 @@ public class RoomListPanel extends JPanel {
 	private JComboBox<String> roomStatusComboBox;
 	private JComboBox<String> roomTypeComboBox;
 //	private TextFieldPanel rangeDatePicker;
-	private TextFieldPanel rangePriceInput;
+//	private TextFieldPanel rangePriceInput;
 	private JComboBox<String> sortCriterionComboBox;
 
 	private ScrollableTablePanel scrollableTable;
@@ -133,16 +133,28 @@ public class RoomListPanel extends JPanel {
 
 		// Filter Criterion Panel.
 		JPanel filterCriterionPanel = new JPanel();
-		filterCriterionPanel.setBounds(0, 0, 202, 40);
+		filterCriterionPanel.setBounds(0, 0, 320, 40);
 		filterCriterionPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 0, 0));
 		filterBarPanel.add(filterCriterionPanel);
+
+		JLabel roomStatusLabel = new JLabel("Status:");
+		roomStatusLabel.setPreferredSize(new Dimension(50, 40));
+		roomStatusLabel.setFont(Constants.Fonts.HEADLINE);
+		filterCriterionPanel.add(roomStatusLabel);
+		filterCriterionPanel.add(Box.createHorizontalStrut(2));
 
 		// Room Status Combo Box.
 		roomStatusComboBox = new JComboBox<>();
 		roomStatusComboBox.setPreferredSize(new Dimension(90, 40));
 		roomStatusComboBox.setFont(Constants.Fonts.BODY);
 		filterCriterionPanel.add(roomStatusComboBox);
-		filterCriterionPanel.add(Box.createHorizontalStrut(12));
+		filterCriterionPanel.add(Box.createHorizontalStrut(30));
+
+		JLabel roomTypeLabel = new JLabel("Type:");
+		roomTypeLabel.setPreferredSize(new Dimension(46, 40));
+		roomTypeLabel.setFont(Constants.Fonts.HEADLINE);
+		filterCriterionPanel.add(roomTypeLabel);
+		filterCriterionPanel.add(Box.createHorizontalStrut(2));
 
 		// Room Type Combo Box.
 		roomTypeComboBox = new JComboBox<>();

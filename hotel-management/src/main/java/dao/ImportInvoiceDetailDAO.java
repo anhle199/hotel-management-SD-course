@@ -40,7 +40,8 @@ public class ImportInvoiceDetailDAO implements DAO<ImportInvoiceDetail, Integer>
 						new ImportInvoiceDetail(
 								resultSet.getInt("id"),
 								resultSet.getInt("import_invoice_id"),
-								resultSet.getByte("quantity"),
+								resultSet.getInt("quantity"),
+								resultSet.getInt("product_id"),
 								resultSet.getNString("product_name"),
 								resultSet.getInt("product_type"),
 								resultSet.getInt("price")

@@ -47,7 +47,6 @@ public class AddProductToImportInvoiceDialog extends JDialog {
 		// Product Name Text Field.
 		productNameComboBox = new JComboBox<>();
 		productNameComboBox.setBounds(xTextField, productNameLabel.getY(), textFieldSize.width, textFieldSize.height);
-		productNameComboBox.setEnabled(false);
 		panel.add(productNameComboBox);
 
 		// Quantity Label.
@@ -69,7 +68,8 @@ public class AddProductToImportInvoiceDialog extends JDialog {
 		// Quantity Text Field.
 		quantityTextField = new JFormattedTextField(quantityFormatter);
 		quantityTextField.setBounds(xTextField, quantityLabel.getY(), textFieldSize.width, textFieldSize.height);
-		quantityTextField.setEnabled(false);
+		quantityTextField.setValue(Constants.MIN_QUANTITY);
+		quantityTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(quantityTextField);
 
 		// Price Label.
@@ -87,8 +87,8 @@ public class AddProductToImportInvoiceDialog extends JDialog {
 		// Price Text Field.
 		priceTextField = new JFormattedTextField(priceFormatter);
 		priceTextField.setBounds(xTextField, priceLabel.getY(), textFieldSize.width, textFieldSize.height);
-		totalPriceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
-		priceTextField.setEnabled(false);
+		priceTextField.setValue(Constants.MIN_PRICE);
+		priceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(priceTextField);
 
 		// Total Price Label.
@@ -139,6 +139,11 @@ public class AddProductToImportInvoiceDialog extends JDialog {
 
 	public JButton getCancelButton() {
 		return cancelButton;
+	}
+
+	public void setRangeQuantity(int minQuantity, int maxQuantity)  {
+		((NumberFormatter) quantityTextField.getFormatter()).setMinimum(minQuantity);
+		((NumberFormatter) quantityTextField.getFormatter()).setMaximum(maxQuantity);
 	}
 
 }

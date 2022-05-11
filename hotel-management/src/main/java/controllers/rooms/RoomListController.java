@@ -41,7 +41,7 @@ public class RoomListController implements ActionListener {
 		this.roomListPanel.getSearchButton().addActionListener(this);
 		this.roomListPanel.getAddButton().addActionListener(this);
 		this.roomListPanel.getRemoveButton().addActionListener(this);
-		this.roomListPanel.getUpdateRulesMenuItem().addActionListener(this);
+//		this.roomListPanel.getUpdateRulesMenuItem().addActionListener(this);
 		this.connectionErrorDialog.getReconnectButton().addActionListener(this);
 
 		// Add double-click listener for each row on the table
