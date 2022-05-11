@@ -71,6 +71,10 @@ public class LoginView extends JPanel {
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setVisible(true);
+
+		usernameField.setText("");
+		passwordField.setPassword("");
+		passwordField.setPasswordVisibility(false);
 	}
 
 	public JFrame getMainFrame() {

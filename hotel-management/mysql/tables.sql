@@ -150,7 +150,8 @@ default collate = utf8mb4_bin;
 create table if not exists `hotel_management`.`receipt_detail` (
     `id` int not null auto_increment,
     `receipt_id` int not null,
-    `quantity` tinyint not null,
+    `quantity` int not null,
+    `product_id` int,
     `product_name` nvarchar(60) not null,
     `product_type` int not null,
     `price` int not null,
@@ -180,7 +181,8 @@ default collate = utf8mb4_bin;
 create table if not exists `hotel_management`.`import_invoice_detail` (
     `id` int not null auto_increment,
     `import_invoice_id` int not null,
-    `quantity` tinyint not null,
+    `quantity` int not null,
+    `product_id` int,
     `product_name` nvarchar(60) not null,
     `product_type` int not null,
     `price` int not null,

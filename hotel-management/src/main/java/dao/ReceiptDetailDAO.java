@@ -40,7 +40,8 @@ public class ReceiptDetailDAO implements DAO<ReceiptDetail, Integer> {
 						new ReceiptDetail(
 								resultSet.getInt("id"),
 								resultSet.getInt("receipt_id"),
-								resultSet.getByte("quantity"),
+								resultSet.getInt("quantity"),
+								resultSet.getInt("product_id"),
 								resultSet.getNString("product_name"),
 								resultSet.getInt("product_type"),
 								resultSet.getInt("price")

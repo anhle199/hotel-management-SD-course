@@ -1,5 +1,6 @@
 package controllers.products;
 
+import utils.RoleManager;
 import views.tabbed_panels.ProductManagementTabbed;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ public class ProductManagementController implements ChangeListener {
 	private final ProductManagementTabbed productManagementTabbed;
 	private final ProductListController productListController;
 	private final ProductReceiptListController productReceiptListController;
-	private final ImportInvoiceListController importInvoiceListController;
+	private ImportInvoiceListController importInvoiceListController;
 
 	private int currentTabIndex;
 
@@ -25,10 +26,13 @@ public class ProductManagementController implements ChangeListener {
 				productManagementTabbed.getProductReceiptListPanel(),
 				mainFrame
 		);
-		this.importInvoiceListController = new ImportInvoiceListController(
-				productManagementTabbed.getImportInvoiceListPanel(),
-				mainFrame
-		);
+		if (RoleManager.getInstance().isManager()) {
+			this.importInvoiceListController = new ImportInvoiceListController(
+					productManagementTabbed.getImportInvoiceListPanel(),
+					mainFrame
+			);
+		}
+
 		this.currentTabIndex = ProductManagementTabbed.PRODUCT_LIST_PANEL_INDEX;
 
 		// Add change listener

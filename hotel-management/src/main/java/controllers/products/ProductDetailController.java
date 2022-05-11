@@ -19,7 +19,7 @@ public class ProductDetailController implements ActionListener {
 	private final ConnectionErrorDialog connectionErrorDialog;
 
 	private final Product product;
-	private final DetailDialogModeEnum viewMode;
+	private DetailDialogModeEnum viewMode;
 
 	private final ProductListController productListController;
 
@@ -53,20 +53,31 @@ public class ProductDetailController implements ActionListener {
 
 	public void displayUI() {
 		productDetailDialog.getProductTypeComboBox()
-				.setModel(new DefaultComboBoxModel<>(Product.ProductTypeEnum.allCases()));
+				.setModel(new DefaultComboBoxModel<>(Product.ProductTypeEnum.allCasesExceptTypeAll()));
 
 		if (product != null) {
+			String capitalizedProductType = UtilFunctions.capitalizeFirstLetterInString(
+					Product.ProductTypeEnum.valueOf(product.getProductType()).name()
+			);
+
 			productDetailDialog.getProductNameTextField()
-					.setText(product.getName());
+							   .setText(product.getName());
+			productDetailDialog.getProductTypeComboBox()
+							   .setSelectedItem(capitalizedProductType);
 			productDetailDialog.getPriceTextField()
-					.setText(String.valueOf(product.getPrice()));
+							   .setValue(product.getPrice());
 			productDetailDialog.getQuantityTextField()
-					.setText(String.valueOf(product.getStock()));
+							   .setValue(product.getStock());
 			productDetailDialog.getDescriptionTextArea()
-					.setText(product.getDescription());
+							   .setText(product.getDescription());
 		}
 
 		productDetailDialog.setVisible(true);
+	}
+
+	private void setViewMode(DetailDialogModeEnum mode) {
+		productDetailDialog.setViewMode(mode);
+		viewMode = mode;
 	}
 
 	@Override
@@ -109,7 +120,7 @@ public class ProductDetailController implements ActionListener {
 	}
 
 	private void editButtonAction() {
-		productDetailDialog.setViewMode(DetailDialogModeEnum.EDITING);
+		setViewMode(DetailDialogModeEnum.EDITING);
 	}
 
 	private void saveButtonAction() {
@@ -127,9 +138,12 @@ public class ProductDetailController implements ActionListener {
 				UtilFunctions.showErrorMessage(
 						productDetailDialog,
 						"Edit Product",
-						"All fields (except note field) must not be empty."
+						"All fields (except Description) must not be empty."
 				);
-			} else if (daoModel.isExistingProductName(newProduct.getName())) {
+			} else if (
+					!newProduct.getName().equals(product.getName()) &&
+					daoModel.isExistingProductName(newProduct.getName())
+			) {
 				UtilFunctions.showErrorMessage(
 						productDetailDialog,
 						"Edit Product",
@@ -145,6 +159,10 @@ public class ProductDetailController implements ActionListener {
 				if (option == JOptionPane.YES_OPTION) {
 					daoModel.update(newProduct);
 					UtilFunctions.showInfoMessage(productDetailDialog, "Edit Product", "Save successfully.");
+
+					this.product.copyFrom(newProduct);
+					setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+					productListController.reloadTableDataWithCurrentSearchValue();
 				}
 			}
 		} catch (DBConnectionException e) {
@@ -182,7 +200,7 @@ public class ProductDetailController implements ActionListener {
 					UtilFunctions.showInfoMessage(productDetailDialog, "Create Product", "Create successfully.");
 
 					productDetailDialog.setVisible(false);
-					productListController.loadProductListAndReloadTableData("");
+					productListController.reloadTableDataWithCurrentSearchValue();
 				}
 			}
 		} catch (DBConnectionException e) {
@@ -192,24 +210,26 @@ public class ProductDetailController implements ActionListener {
 	}
 
 	private void rollbackAllChanges() {
-		Product.ProductTypeEnum productType = Product.ProductTypeEnum.valueOf(product.getProductType());
+		String capitalizedProductType = UtilFunctions.capitalizeFirstLetterInString(
+				Product.ProductTypeEnum.valueOf(product.getProductType()).name()
+		);
 
 		productDetailDialog.getProductNameTextField()
 				.setText(product.getName());
 		productDetailDialog.getProductTypeComboBox()
-				.setSelectedItem(productType.name());
+				.setSelectedItem(capitalizedProductType);
 		productDetailDialog.getPriceTextField()
-				.setText(String.valueOf(product.getPrice()));
+				.setValue(product.getPrice());
 		productDetailDialog.getQuantityTextField()
-				.setText(String.valueOf(product.getStock()));
+				.setValue(product.getStock());
 		productDetailDialog.getDescriptionTextArea()
 				.setText(product.getDescription());
 
-		productDetailDialog.setViewMode(DetailDialogModeEnum.VIEW_ONLY);
+		setViewMode(DetailDialogModeEnum.VIEW_ONLY);
 	}
 
 	private boolean checkEmptyFields(String productName) {
-		return !productName.isEmpty();
+		return productName.isEmpty();
 	}
 
 	private Product getProductInstanceFromInputFields() {

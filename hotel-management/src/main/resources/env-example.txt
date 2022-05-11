@@ -1,0 +1,6 @@
+// change filename to .env
+// '127.0.0.1' can be replaced by 'localhost'
+// '3306' is a port number to that MySQL server running on.
+DB_URL="jdbc:mysql://127.0.0.1:3306/"
+DB_USER="user"
+DB_PASSWORD="password"

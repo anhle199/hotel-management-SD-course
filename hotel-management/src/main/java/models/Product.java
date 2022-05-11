@@ -44,6 +44,18 @@ public class Product {
 		return productType;
 	}
 
+	public void addStock(int stock) {
+		this.stock += stock;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
 	public boolean equals(Product another) {
 		return id == another.id
 				&& name.equals(another.name)
@@ -82,6 +94,27 @@ public class Product {
 					UtilFunctions.capitalizeFirstLetterInString(SOUVENIR.name()),
 			};
 		}
+
+		public static String[] allCasesExceptTypeAll() {
+			return new String[]{
+					UtilFunctions.capitalizeFirstLetterInString(FOOD.name()),
+					UtilFunctions.capitalizeFirstLetterInString(DRINK.name()),
+					UtilFunctions.capitalizeFirstLetterInString(SOUVENIR.name()),
+			};
+		}
+	}
+
+	public void copyFrom(Product another) {
+		this.id = another.id;
+		this.name = another.name;
+		this.price = another.price;
+		this.stock = another.stock;
+		this.description = another.description;
+		this.productType = another.productType;
+	}
+
+	public Product deepCopy() {
+		return new Product(id, name, price, stock, description, productType);
 	}
 
 }

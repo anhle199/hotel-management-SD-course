@@ -22,12 +22,14 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class ImportInvoiceDetailController implements ActionListener, DocumentListener {
+public class ImportInvoiceDetailController implements ActionListener, ItemListener, DocumentListener {
 
 	private final ImportInvoiceDetailDialog importInvoiceDetailDialog;
 	private AddProductToImportInvoiceDialog addProductToImportInvoiceDialog;
@@ -73,6 +75,9 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 			this.addProductToImportInvoiceDialog.getAddButton().addActionListener(this);
 			this.addProductToImportInvoiceDialog.getCancelButton().addActionListener(this);
 
+			// Add item listener
+			this.addProductToImportInvoiceDialog.getProductNameComboBox().addItemListener(this);
+
 			// Add document listener
 			this.addProductToImportInvoiceDialog.getQuantityTextField().getDocument().addDocumentListener(this);
 			this.addProductToImportInvoiceDialog.getPriceTextField().getDocument().addDocumentListener(this);
@@ -82,13 +87,11 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 
 	public void displayUI() {
 		if (importInvoice != null) {
-			importInvoiceDetailDialog.getImportedDateTextField()
-									 .setText(
-											 UtilFunctions.formatTimestamp(
-													 Constants.TIMESTAMP_PATTERN,
-													 importInvoice.getImportedDate()
-											 )
-									 );
+			importInvoiceDetailDialog.getImportDateTextField()
+									 .setText(UtilFunctions.formatTimestamp(
+											 Constants.TIMESTAMP_PATTERN,
+											 importInvoice.getImportedDate()
+									 ));
 			importInvoiceDetailDialog.getTotalPriceTextField()
 									 .setText(String.valueOf(importInvoice.getTotalPrice()));
 			importInvoiceDetailDialog.getNoteTextField()
@@ -96,8 +99,8 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 
 			loadImportInvoiceDetailListAndAddToTable();
 		} else {
-			Timestamp nowAfterOneHour = UtilFunctions.getTimestamp(LocalDateTime.now(), 1);
-			importInvoiceDetailDialog.getImportedDatePanel().setSelectedDate(nowAfterOneHour);
+			importInvoiceDetailDialog.getImportedDatePanel()
+									 .setSelectedDate(UtilFunctions.getTimestamp(LocalDateTime.now()));
 
 			loadProductList();
 		}
@@ -168,9 +171,10 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 		);
 
 		return new ImportInvoiceDetail(
-				(int) rowValue.get(ImportInvoiceDetailDialog.HIDDEN_COLUMN_PRODUCT_ID),
 				-1,
-				(byte) rowValue.get(5),
+				-1,
+				(int) rowValue.get(5),
+				(int) rowValue.get(ImportInvoiceDetailDialog.HIDDEN_COLUMN_PRODUCT_ID),
 				String.valueOf(rowValue.get(2)),
 				productType.ordinal(),
 				(int) rowValue.get(4)
@@ -200,21 +204,48 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 		}
 	}
 
+	@Override
+	public void itemStateChanged(ItemEvent event) {
+		roomNameComboBoxActionOfAddProductToReceiptDialog();
+	}
+
 	private void addButtonAction() {
-		Vector<String> productNameList = new Vector<>();
-		for (Product item : productList)
-			productNameList.add(item.getName());
+		if (productList.isEmpty()) {
+			UtilFunctions.showInfoMessage(
+					importInvoiceDetailDialog,
+					"Add Product To Import Invoice",
+					"There are no products to add into receipt."
+			);
+		} else {
+			Vector<String> productNameList = new Vector<>();
+			for (Product item : productList)
+				productNameList.add(item.getName());
 
-		addProductToImportInvoiceDialog.getProductNameComboBox()
-									   .setModel(new DefaultComboBoxModel<>(productNameList));
-		addProductToImportInvoiceDialog.getQuantityTextField()
-									   .setValue(Constants.MIN_QUANTITY);
-		addProductToImportInvoiceDialog.getPriceTextField()
-									   .setValue(Constants.MIN_PRICE);
-		addProductToImportInvoiceDialog.getTotalPriceTextField()
-									   .setText(String.valueOf(Constants.MIN_PRICE * Constants.MIN_QUANTITY));
+			addProductToImportInvoiceDialog.getProductNameComboBox()
+										   .setModel(new DefaultComboBoxModel<>(productNameList));
+			addProductToImportInvoiceDialog.getQuantityTextField()
+										   .setValue(Constants.MIN_QUANTITY);
 
-		addProductToImportInvoiceDialog.setVisible(true);
+			// Obtain index of selected product in selectedProductList.
+			int indexInProductNameComboBox = addProductToImportInvoiceDialog.getProductNameComboBox().getSelectedIndex();
+			Product selectedProduct = productList.get(indexInProductNameComboBox);
+			int indexInSelectedProductList = findIndexByProductId(selectedProductList, selectedProduct.getId());
+			int totalPrice;
+
+			// Check and disable Price ($) field.
+			if (indexInSelectedProductList != -1) {
+				int price = selectedProductList.get(indexInSelectedProductList).getPrice();
+				totalPrice = price * Constants.MIN_QUANTITY;
+				addProductToImportInvoiceDialog.getPriceTextField().setValue(price);
+				addProductToImportInvoiceDialog.getPriceTextField().setEnabled(false);
+			} else {
+				totalPrice = Constants.MIN_PRICE * Constants.MIN_QUANTITY;
+				addProductToImportInvoiceDialog.getPriceTextField().setValue(Constants.MIN_PRICE);
+			}
+			addProductToImportInvoiceDialog.getTotalPriceTextField().setText(String.valueOf(totalPrice));
+
+			addProductToImportInvoiceDialog.setVisible(true);
+		}
 	}
 
 	private void removeButtonAction() {
@@ -237,15 +268,20 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 
 			if (option == JOptionPane.YES_OPTION) {
 				NonEditableTableModel tableModel = (NonEditableTableModel) tablePanel.getTableModel();
+				Vector<Object> rowValue = tableModel.getRowValue(selectedRowIndex);
 
-				int removedProductId = (int) tableModel.getValueAt(
-						selectedRowIndex,
-						ImportInvoiceDetailDialog.HIDDEN_COLUMN_PRODUCT_ID
-				);
+				// Update total price after removing product successfully.
+				int price = (int) rowValue.get(4);
+				int quantity = (int) rowValue.get(5);
+				int currentTotalPrice = Integer.parseInt(importInvoiceDetailDialog.getTotalPriceTextField().getText());
+				importInvoiceDetailDialog.getTotalPriceTextField()
+										 .setText(String.valueOf(currentTotalPrice - (price * quantity)));
+
+				int removedProductId = (int) rowValue.get(ImportInvoiceDetailDialog.HIDDEN_COLUMN_PRODUCT_ID);
 				int removedProductIndex = findIndexByProductId(selectedProductList, removedProductId);
-				productList.add(selectedProductList.get(removedProductIndex));
 				selectedProductList.remove(removedProductIndex);
 
+				// Remove product from table.
 				tableModel.removeRow(selectedRowIndex);
 			}
 		}
@@ -254,12 +290,10 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 	private void createButtonAction() {
 		try {
 			ImportInvoiceDAO daoModel = new ImportInvoiceDAO();
-			ImportInvoice importInvoice = getImportInvoiceInstanceFromInputFields();
-			ArrayList<ImportInvoiceDetail> importInvoiceDetailList = getImportInvoiceDetailListFromInputFields();
+			ImportInvoice newImportInvoice = getImportInvoiceInstanceFromInputFields();
+			ArrayList<ImportInvoiceDetail> newImportInvoiceDetailList = getImportInvoiceDetailListFromInputFields();
 
-			importInvoice.setTotalPrice(calculateTotalPrice(importInvoiceDetailList));
-
-			if (importInvoiceDetailList.isEmpty()) {
+			if (newImportInvoiceDetailList.isEmpty()) {
 				UtilFunctions.showErrorMessage(
 						importInvoiceDetailDialog,
 						"Create Import Invoice",
@@ -273,7 +307,8 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 				);
 
 				if (option == JOptionPane.YES_OPTION) {
-					daoModel.insert(importInvoice, importInvoiceDetailList);
+					ArrayList<Integer> currentQuantityList = getCurrentProductQuantityListFromImportInvoiceDetailList(newImportInvoiceDetailList);
+					daoModel.insert(newImportInvoice, newImportInvoiceDetailList, currentQuantityList);
 					UtilFunctions.showInfoMessage(
 							importInvoiceDetailDialog,
 							"Create Import Invoice",
@@ -291,28 +326,44 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 	}
 
 	private void addButtonActionOfAddProductToImportInvoiceDialog() {
+		int price = Integer.parseInt(String.valueOf(addProductToImportInvoiceDialog.getPriceTextField().getValue()));
+		int quantity = Integer.parseInt(String.valueOf(addProductToImportInvoiceDialog.getQuantityTextField().getValue()));
 		int selectedProductIndex = addProductToImportInvoiceDialog.getProductNameComboBox().getSelectedIndex();
-		Product selectedProduct = productList.get(selectedProductIndex);
-		byte quantity = Byte.parseByte(
-				String.valueOf(addProductToImportInvoiceDialog.getQuantityTextField().getValue())
-		);
+		Product selectedProduct = productList.get(selectedProductIndex).deepCopy();
+		selectedProduct.setStock(quantity);
+		selectedProduct.setPrice(price);
 
 		ImportInvoiceDetail addedImportInvoiceDetail = new ImportInvoiceDetail(
 				-1,
-				importInvoice.getId(),
+				-1,
 				quantity,
+				selectedProduct.getId(),
 				selectedProduct.getName(),
 				selectedProduct.getProductType(),
-				selectedProduct.getPrice()
+				price
 		);
 
-		selectedProductList.add(selectedProduct);
-		productList.remove(selectedProductIndex);
+		// Add product into table and selectedProductList.
+		NonEditableTableModel tableModel = (NonEditableTableModel) importInvoiceDetailDialog.getScrollableTable().getTableModel();
+		int productIndexInSelectedProductList = findIndexByProductId(selectedProductList, selectedProduct.getId());
+		if (productIndexInSelectedProductList == -1) {
+			selectedProductList.add(selectedProduct);
 
-		NonEditableTableModel tableModel = (NonEditableTableModel) importInvoiceDetailDialog.getScrollableTable()
-																							.getTableModel();
-		int no = tableModel.getRowCount() + 1;
-		tableModel.addRow(mapImportInvoiceDetailInstanceToRowValue(no, addedImportInvoiceDetail, selectedProduct.getId()));
+			int no = tableModel.getRowCount() + 1;
+			tableModel.addRow(mapImportInvoiceDetailInstanceToRowValue(no, addedImportInvoiceDetail, selectedProduct.getId()));
+		} else {
+			selectedProductList.get(productIndexInSelectedProductList).addStock(quantity);
+			tableModel.setValueAt(
+					selectedProductList.get(productIndexInSelectedProductList).getStock(),
+					productIndexInSelectedProductList,
+					5
+			);
+		}
+
+		// Update total price after adding product successfully.
+		int currentTotalPrice = Integer.parseInt(importInvoiceDetailDialog.getTotalPriceTextField().getText());
+		importInvoiceDetailDialog.getTotalPriceTextField()
+								  .setText(String.valueOf(currentTotalPrice + (price * quantity)));
 
 		addProductToImportInvoiceDialog.setVisible(false);
 	}
@@ -322,7 +373,35 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 		connectionErrorDialog.setVisible(false);
 
 		SingletonDBConnection.getInstance().connect();
+
+		// clear data
+		productList.clear();
+		selectedProductList.clear();
+		NonEditableTableModel tableModel = (NonEditableTableModel) importInvoiceDetailDialog.getScrollableTable().getTableModel();
+		tableModel.removeAllRows();
+
+		// reload data
 		displayUI();
+	}
+
+	private void roomNameComboBoxActionOfAddProductToReceiptDialog() {
+		int indexInProductNameComboBox = addProductToImportInvoiceDialog.getProductNameComboBox().getSelectedIndex();
+		Product selectedProduct = productList.get(indexInProductNameComboBox);
+		int indexInSelectedProductList = findIndexByProductId(selectedProductList, selectedProduct.getId());
+
+		int price;
+		if (indexInSelectedProductList == -1) {
+			addProductToImportInvoiceDialog.getPriceTextField().setValue(Constants.MIN_PRICE);
+			addProductToImportInvoiceDialog.getPriceTextField().setEnabled(true);
+			price = Integer.parseInt(addProductToImportInvoiceDialog.getPriceTextField().getText());
+		} else {
+			price = selectedProductList.get(indexInSelectedProductList).getPrice();
+			addProductToImportInvoiceDialog.getPriceTextField().setValue(price);
+			addProductToImportInvoiceDialog.getPriceTextField().setEnabled(false);
+		}
+
+		int quantity = Integer.parseInt(addProductToImportInvoiceDialog.getQuantityTextField().getText());
+		addProductToImportInvoiceDialog.getTotalPriceTextField().setText(String.valueOf(price * quantity));
 	}
 
 	private ImportInvoice getImportInvoiceInstanceFromInputFields() {
@@ -334,8 +413,9 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 		String note = UtilFunctions.removeRedundantWhiteSpace(
 				importInvoiceDetailDialog.getNoteTextField().getText()
 		);
+		int totalPrice = Integer.parseInt(importInvoiceDetailDialog.getTotalPriceTextField().getText());
 
-		return new ImportInvoice(-1, importedDate, note, 0);
+		return new ImportInvoice(-1, importedDate, note, totalPrice);
 	}
 
 	private ArrayList<ImportInvoiceDetail> getImportInvoiceDetailListFromInputFields() {
@@ -351,14 +431,16 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 		return importInvoiceDetailList;
 	}
 
-	private int calculateTotalPrice(ArrayList<ImportInvoiceDetail> importInvoiceDetailList) {
-		int sum = 0;
-
-		for (ImportInvoiceDetail item : importInvoiceDetailList) {
-			sum += item.getPrice() * item.getQuantity();
+	private ArrayList<Integer> getCurrentProductQuantityListFromImportInvoiceDetailList(
+			ArrayList<ImportInvoiceDetail> importInvoiceDetailList
+	) {
+		ArrayList<Integer> quantityList = new ArrayList<>();
+		for (ImportInvoiceDetail item: importInvoiceDetailList) {
+			int index = findIndexByProductId(productList, item.getProductId());
+			quantityList.add(productList.get(index).getStock());
 		}
 
-		return sum;
+		return quantityList;
 	}
 
 	private int findIndexByProductId(ArrayList<Product> productList, int productId) {
@@ -366,15 +448,18 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 			if (productList.get(i).getId() == productId)
 				return i;
 
-		return 0;
+		return -1;
 	}
 
 
 	// MARK: Document Listener methods
 
 	@Override
-	public void insertUpdate(DocumentEvent e) {
-		// Do nothing
+	public void insertUpdate(DocumentEvent event) {
+		int quantity = Integer.parseInt(addProductToImportInvoiceDialog.getQuantityTextField().getText());
+		int price = Integer.parseInt(addProductToImportInvoiceDialog.getPriceTextField().getText());
+
+		addProductToImportInvoiceDialog.getTotalPriceTextField().setText(String.valueOf(price * quantity));
 	}
 
 	@Override
@@ -384,15 +469,7 @@ public class ImportInvoiceDetailController implements ActionListener, DocumentLi
 
 	@Override
 	public void changedUpdate(DocumentEvent event) {
-		int quantity = Integer.parseInt(
-				String.valueOf(addProductToImportInvoiceDialog.getQuantityTextField().getValue())
-		);
-		int price = Integer.parseInt(
-				String.valueOf(addProductToImportInvoiceDialog.getPriceTextField().getValue())
-		);
-
-		addProductToImportInvoiceDialog.getTotalPriceTextField()
-									   .setText(String.valueOf(price * quantity));
+		// Do nothing
 	}
 
 }

@@ -116,6 +116,50 @@ public class UserDAO implements DAO<User, Integer> {
 		return userOptional;
 	}
 
+	public Optional<User> getByUsername(String username) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
+
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		Optional<User> userOptional = Optional.empty();
+		PreparedStatement preparedStatement = null;
+
+		try {
+			String sqlStatement = "select * from `hotel_management`.`user` where `username` = ?";
+			preparedStatement = connection.prepareStatement(sqlStatement);
+
+			preparedStatement.setString(1, username);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				userOptional = Optional.of(new User(
+						resultSet.getInt("id"),
+						resultSet.getString("username"),
+						resultSet.getString("password"),
+						resultSet.getByte("role"),
+						resultSet.getString("full_name"),
+						resultSet.getByte("gender"),
+						resultSet.getShort("year_of_birth")
+				));
+			}
+		} catch (SQLException e) {
+			System.out.println("UserDAO.java - getByUsername - catch - " + e.getMessage());
+			System.out.println("UserDAO.java - getByUsername - catch - " + Arrays.toString(e.getStackTrace()));
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				System.out.println("UserDAO.java - getByUsername - finally/catch - " + e.getMessage());
+				System.out.println("UserDAO.java - getByUsername - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		return userOptional;
+	}
+
 	@Override
 	public void insert(User entity) throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
@@ -170,7 +214,57 @@ public class UserDAO implements DAO<User, Integer> {
 
 	@Override
 	public void update(User entity) throws DBConnectionException {
+		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
+		if (connection == null)
+			throw DBConnectionException.INSTANCE;
+
+		PreparedStatement preparedStatementUpdateUser = null;
+
+		try {
+			// Declare sql statement and create PreparedStatement for it.
+			String updateServiceStatement = "update `hotel_management`.`user`" +
+					" set `username` = ?, `password` = ?, `role` = ?," +
+					" `full_name` = ?, `gender` = ?, `year_of_birth` = ? where `id` = ?";
+
+			preparedStatementUpdateUser = connection.prepareStatement(updateServiceStatement);
+
+			// Set values for PreparedStatement.
+			preparedStatementUpdateUser.setString(1, entity.getUsername());
+			preparedStatementUpdateUser.setString(2, entity.getPassword());
+			preparedStatementUpdateUser.setByte(3, entity.getRole());
+			preparedStatementUpdateUser.setNString(4, entity.getFullName());
+			preparedStatementUpdateUser.setByte(5, entity.getGender());
+			preparedStatementUpdateUser.setShort(6, entity.getYearOfBirth());
+			preparedStatementUpdateUser.setInt(7, entity.getId());
+
+			// Execute querie.
+			connection.setAutoCommit(false);
+			preparedStatementUpdateUser.executeUpdate();
+			connection.commit();
+		} catch (SQLException e) {
+			System.out.println("UserDAO.java - update - catch - " + e.getMessage());
+			System.out.println("UserDAO.java - update - catch - " + Arrays.toString(e.getStackTrace()));
+
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				System.out.println("UserDAO.java - update - catch/catch - " + ex.getMessage());
+				System.out.println("UserDAO.java - update - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+			}
+
+			throw DBConnectionException.INSTANCE;
+		} finally {
+			try {
+				connection.setAutoCommit(true);
+
+				if (preparedStatementUpdateUser != null)
+					preparedStatementUpdateUser.close();
+			} catch (SQLException e) {
+				System.out.println("UserDAO.java - update - finally/catch - " + e.getMessage());
+				System.out.println("UserDAO.java - update - finally/catch - " + Arrays.toString(e.getStackTrace()));
+			}
+		}
 	}
 
 	@Override

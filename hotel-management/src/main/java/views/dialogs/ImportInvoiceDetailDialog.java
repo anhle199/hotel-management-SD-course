@@ -17,7 +17,7 @@ public class ImportInvoiceDetailDialog extends JDialog {
 
 	private DetailDialogModeEnum viewMode;
 
-	private JTextField importedDateTextField;
+	private JTextField importDateTextField;
 	private DateChooserPanel importedDatePanel;
 	private JTextField totalPriceTextField;
 	private JTextField noteTextField;
@@ -46,15 +46,16 @@ public class ImportInvoiceDetailDialog extends JDialog {
 
 	private void initSubviews(JPanel panel) {
 		// Sizes and coordinates
-		Dimension labelSize = new Dimension(100, 40);
+		Dimension leftLabelSize = new Dimension(100, 40);
+		Dimension rightLabelSize = new Dimension(90, 40);
 		Dimension textFieldSize = new Dimension(340, 40);
 		int padding = 20;
 		int spacingTextFields = 12;
-		int xTextField = padding * 2 + labelSize.width;
+		int xTextField = padding * 2 + leftLabelSize.width;
 
 		// Imported Date Label.
-		JLabel importedDateLabel = new JLabel("Imported date");
-		importedDateLabel.setBounds(padding, padding, labelSize.width, labelSize.height);
+		JLabel importedDateLabel = new JLabel("Import date");
+		importedDateLabel.setBounds(padding, padding, leftLabelSize.width, leftLabelSize.height);
 		panel.add(importedDateLabel);
 
 		if (viewMode == DetailDialogModeEnum.CREATE) {
@@ -64,31 +65,32 @@ public class ImportInvoiceDetailDialog extends JDialog {
 			panel.add(importedDatePanel);
 		} else {
 			// Imported Date Text Field.
-			importedDateTextField = new JTextField();
-			importedDateTextField.setBounds(xTextField, importedDateLabel.getY(), textFieldSize.width, textFieldSize.height);
-			UtilFunctions.configureDialogTextFieldOnMainThread(importedDateTextField);
-			panel.add(importedDateTextField);
+			importDateTextField = new JTextField();
+			importDateTextField.setBounds(xTextField, importedDateLabel.getY(), textFieldSize.width, textFieldSize.height);
+			UtilFunctions.configureDialogTextFieldOnMainThread(importDateTextField);
+			panel.add(importDateTextField);
 		}
 
 
 		// Total Price Label.
 		JLabel totalPriceLabel = new JLabel("Total price ($)");
 		totalPriceLabel.setBounds(
-				importedDateLabel.getX() + labelSize.width + 20 + textFieldSize.width + 40,
+				importedDateLabel.getX() + leftLabelSize.width + 20 + textFieldSize.width + 50,
 				importedDateLabel.getY(),
-				labelSize.width,
-				labelSize.height
+				rightLabelSize.width,
+				rightLabelSize.height
 		);
 		panel.add(totalPriceLabel);
 
 		// Total Price Text Field.
-		totalPriceTextField = new JFormattedTextField();
+		totalPriceTextField = new JTextField(String.valueOf(Constants.MIN_PRICE));
 		totalPriceTextField.setBounds(
-				totalPriceLabel.getX() + labelSize.width + padding,
+				totalPriceLabel.getX() + rightLabelSize.width + padding,
 				totalPriceLabel.getY(),
 				textFieldSize.width,
 				textFieldSize.height
 		);
+		totalPriceTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		UtilFunctions.configureDialogTextFieldOnMainThread(totalPriceTextField);
 		panel.add(totalPriceTextField);
 
@@ -96,18 +98,18 @@ public class ImportInvoiceDetailDialog extends JDialog {
 		JLabel noteLabel = new JLabel("Note");
 		noteLabel.setBounds(
 				importedDateLabel.getX(),
-				importedDateLabel.getY() + labelSize.height + spacingTextFields,
-				labelSize.width,
-				labelSize.height
+				importedDateLabel.getY() + leftLabelSize.height + spacingTextFields,
+				leftLabelSize.width,
+				leftLabelSize.height
 		);
 		panel.add(noteLabel);
 
 		// Note Text Field.
 		noteTextField = new JTextField();
 		noteTextField.setBounds(
-				noteLabel.getX() + labelSize.width + padding,
+				noteLabel.getX() + leftLabelSize.width + padding,
 				noteLabel.getY(),
-				(textFieldSize.width * 2) + 40 + labelSize.width + 20,
+				(textFieldSize.width * 2) + 40 + leftLabelSize.width + 20,
 				textFieldSize.height
 		);
 		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextField);
@@ -151,15 +153,15 @@ public class ImportInvoiceDetailDialog extends JDialog {
 	}
 
 	private void initTable(JPanel panel) {
-		final String[] columnNames = {"", "productId", "Product name", "Product type", "Price", "Quantity"};
-		final int [] columnWidths = {50, 0, 305, 195, 195, 195};
+		final String[] columnNames = {"", "productId", "Product name", "Product type", "Price ($)", "Quantity"};
+		final int [] columnWidths = {40, 0, 645, 95, 80, 80};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.RIGHT,
+				DefaultTableCellRenderer.CENTER,
 		};
 
 		scrollableTable = new ScrollableTablePanel(
@@ -195,12 +197,12 @@ public class ImportInvoiceDetailDialog extends JDialog {
 		if (viewMode == DetailDialogModeEnum.CREATE) {
 			importedDatePanel.setEnabled(true);
 		} else {
-			importedDateTextField.setEnabled(false);
+			importDateTextField.setEnabled(false);
 		}
 	}
 
-	public JTextField getImportedDateTextField() {
-		return importedDateTextField;
+	public JTextField getImportDateTextField() {
+		return importDateTextField;
 	}
 
 	public DateChooserPanel getImportedDatePanel() {

@@ -2,9 +2,11 @@ package dao;
 
 import db.DBConnectionException;
 import db.SingletonDBConnection;
+import models.Product;
 import models.Receipt;
 import models.ReceiptDetail;
 import utils.Pair;
+import utils.UtilFunctions;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -65,7 +67,11 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 
 	}
 
-	public void insert(Receipt entity, ArrayList<ReceiptDetail> receiptDetailList) throws DBConnectionException {
+	public void insert(
+			Receipt entity,
+			ArrayList<ReceiptDetail> receiptDetailList,
+			ArrayList<Integer> remainingQuantityList
+	) throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
 		if (connection == null)
@@ -73,6 +79,7 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 
 		PreparedStatement preparedStatementInsertReceipt = null;
 		PreparedStatement preparedStatementInsertReceiptDetail = null;
+		PreparedStatement preparedStatementUpdateQuantity = null;
 
 		try {
 			// Declare sql statement and create PreparedStatement for it.
@@ -94,34 +101,41 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 			if (generatedKeys.next()) {
 				int receiptId = generatedKeys.getInt(1);
 
-				String insertReceiptDetailStatement = "insert into `hotel_management`.`receipt_detail` " +
-						"(`receipt_id`, `quantity`, `product_name`, `product_type`, `price`) values (?, ?, ?, ?, ?)";
+				String insertReceiptDetailStatement = "insert into `hotel_management`.`receipt_detail`" +
+						" (`receipt_id`, `quantity`, `product_name`, `product_type`, `price`) values (?, ?, ?, ?, ?)";
+				String updateQuantityStatement = "update `hotel_management`.`product` set `stock` = ? where `id` = ?";
 
 				preparedStatementInsertReceiptDetail = connection.prepareStatement(insertReceiptDetailStatement);
+				preparedStatementUpdateQuantity = connection.prepareStatement(updateQuantityStatement);
 
-				for (ReceiptDetail item: receiptDetailList) {
+				for (int i = 0; i < receiptDetailList.size(); i++) {
 					preparedStatementInsertReceiptDetail.setInt(1, receiptId);
-					preparedStatementInsertReceiptDetail.setByte(2, item.getQuantity());
-					preparedStatementInsertReceiptDetail.setNString(3, item.getProductName());
-					preparedStatementInsertReceiptDetail.setInt(4, item.getProductType());
-					preparedStatementInsertReceiptDetail.setInt(5, item.getPrice());
+					preparedStatementInsertReceiptDetail.setInt(2, receiptDetailList.get(i).getQuantity());
+					preparedStatementInsertReceiptDetail.setNString(3, receiptDetailList.get(i).getProductName());
+					preparedStatementInsertReceiptDetail.setInt(4, receiptDetailList.get(i).getProductType());
+					preparedStatementInsertReceiptDetail.setInt(5, receiptDetailList.get(i).getPrice());
 					preparedStatementInsertReceiptDetail.addBatch();
+
+					preparedStatementUpdateQuantity.setInt(1, remainingQuantityList.get(i));
+					preparedStatementUpdateQuantity.setInt(2, receiptDetailList.get(i).getProductId());
+					preparedStatementUpdateQuantity.addBatch();
 				}
 
 				preparedStatementInsertReceiptDetail.executeBatch();
+				preparedStatementUpdateQuantity.executeBatch();
 				connection.commit();
 			} else {
 				connection.rollback();
 			}
 		} catch (SQLException e) {
-			System.out.println("ReceiptDAO.java - insert 2 params - catch - " + e.getMessage());
-			System.out.println("ReceiptDAO.java - insert 2 params - catch - " + Arrays.toString(e.getStackTrace()));
+			System.out.println("ReceiptDAO.java - insert 3 params - catch - " + e.getMessage());
+			System.out.println("ReceiptDAO.java - insert 3 params - catch - " + Arrays.toString(e.getStackTrace()));
 
 			try {
 				connection.rollback();
 			} catch (SQLException ex) {
-				System.out.println("ReceiptDAO.java - insert 2 params - catch/catch - " + ex.getMessage());
-				System.out.println("ReceiptDAO.java - insert 2 params - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+				System.out.println("ReceiptDAO.java - insert 3 params - catch/catch - " + ex.getMessage());
+				System.out.println("ReceiptDAO.java - insert 3 params - catch/catch - " + Arrays.toString(ex.getStackTrace()));
 			}
 
 			throw DBConnectionException.INSTANCE;
@@ -133,9 +147,11 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 					preparedStatementInsertReceipt.close();
 				if (preparedStatementInsertReceiptDetail != null)
 					preparedStatementInsertReceiptDetail.close();
+				if (preparedStatementUpdateQuantity != null)
+					preparedStatementUpdateQuantity.close();
 			} catch (SQLException e) {
-				System.out.println("ReceiptDAO.java - insert 2 params - finally/catch - " + e.getMessage());
-				System.out.println("ReceiptDAO.java - insert 2 params - finally/catch - " + Arrays.toString(e.getStackTrace()));
+				System.out.println("ReceiptDAO.java - insert 3 params - finally/catch - " + e.getMessage());
+				System.out.println("ReceiptDAO.java - insert 3 params - finally/catch - " + Arrays.toString(e.getStackTrace()));
 			}
 		}
 	}
@@ -162,10 +178,10 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 		PreparedStatement preparedStatement = null;
 
 		try {
-			String sqlStatement = "select rd.product_name as 'product_name', sum(rd.quantity * rd.price) as 'total_price_per_product'" +
+			String sqlStatement = "select rd.product_name as 'product_name', rd.product_type as 'product_type', sum(rd.quantity * rd.price) as 'total_price_per_product'" +
 					" from `hotel_management`.`receipt` r join `hotel_management`.`receipt_detail` rd" +
 					" on r.id = rd.receipt_id where (month(r.purchased_date) = ? and year(r.purchased_date) = ?)" +
-					" group by rd.product_name order by `total_price_per_product` desc";
+					" group by rd.product_name, rd.product_type order by `total_price_per_product` desc";
 
 			preparedStatement = connection.prepareStatement(sqlStatement);
 			preparedStatement.setInt(1, month);
@@ -174,8 +190,11 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next() && rowKeysAndStatsValues.size() < 5) {
+				Product.ProductTypeEnum productTypeEnum = Product.ProductTypeEnum.valueOf(resultSet.getInt("product_type"));
+				String capitalizedProductType = UtilFunctions.capitalizeFirstLetterInString(productTypeEnum.name());
+
 				rowKeysAndStatsValues.add(new Pair<>(
-						resultSet.getString("product_name"),
+						resultSet.getString("product_name") + " - " + capitalizedProductType,
 						resultSet.getInt("total_price_per_product")
 				));
 			}

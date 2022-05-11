@@ -45,16 +45,16 @@ public class ProductReceiptListPanel extends JPanel {
 				"id",
 				"Customer name",
 				"Purchased date",
-				"Total price",
+				"Total price ($)",
 				"Note",
 		};
-		final int [] columnWidths = {50, 0, 419, 150, 140, 260};
+		final int [] columnWidths = {40, 0, 300, 150, 100, 429};
 		final int[] columnHorizontalAlignments = {
 				DefaultTableCellRenderer.CENTER,
 				DefaultTableCellRenderer.LEFT,
 				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
-				DefaultTableCellRenderer.LEFT,
+				DefaultTableCellRenderer.CENTER,
+				DefaultTableCellRenderer.RIGHT,
 				DefaultTableCellRenderer.LEFT,
 		};
 
