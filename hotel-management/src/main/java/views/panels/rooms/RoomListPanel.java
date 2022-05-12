@@ -85,20 +85,18 @@ public class RoomListPanel extends JPanel {
 		topBarButtonsPanel.add(Box.createHorizontalStrut(12));
 		topBarButtonsPanel.add(removeButton);
 
-		if (RoleManager.getInstance().isManager()) {
-			Icon moreIcon = new ImageIcon(Constants.IconNames.MORE_HORIZ_WHITE);
-			Dimension iconSize = new Dimension(24, 24);
+		Icon moreIcon = new ImageIcon(Constants.IconNames.MORE_HORIZ_WHITE);
+		Dimension iconSize = new Dimension(24, 24);
 
-			// More Icon Button.
-			moreButton = new ButtonWithResizableIcon(moreIcon, iconSize);
-			moreButton.setPreferredSize(new Dimension(50, 40));
-			moreButton.setHorizontalAlignment(SwingConstants.CENTER);
-			UtilFunctions.configureTopBarButtonOnMainThread(moreButton);
-			topBarButtonsPanel.add(Box.createHorizontalStrut(12));
-			topBarButtonsPanel.add(moreButton);
+		// More Icon Button.
+		moreButton = new ButtonWithResizableIcon(moreIcon, iconSize);
+		moreButton.setPreferredSize(new Dimension(50, 40));
+		moreButton.setHorizontalAlignment(SwingConstants.CENTER);
+		UtilFunctions.configureTopBarButtonOnMainThread(moreButton);
+		topBarButtonsPanel.add(Box.createHorizontalStrut(12));
+		topBarButtonsPanel.add(moreButton);
 
-			initMoreButtonMenu();
-		}
+		initMoreButtonMenu();
 	}
 
 	private void initMoreButtonMenu() {
@@ -111,9 +109,11 @@ public class RoomListPanel extends JPanel {
 		});
 		moreButtonMenu.add(filterMenuItem);
 
-		// Update Rules Menu Item.
-		updateRulesMenuItem = new JMenuItem("Update Rules");
-		moreButtonMenu.add(updateRulesMenuItem);
+		if (RoleManager.getInstance().isManager()) {
+			// Update Rules Menu Item.
+			updateRulesMenuItem = new JMenuItem("Update Rules");
+			moreButtonMenu.add(updateRulesMenuItem);
+		}
 
 		// Add an action listener for More button to show menu popup.
 		moreButton.addActionListener((event) -> {

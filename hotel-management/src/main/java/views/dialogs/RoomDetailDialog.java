@@ -21,10 +21,6 @@ public class RoomDetailDialog extends JDialog {
 	private JButton positiveButton;
 	private JButton negativeButton;
 
-	public RoomDetailDialog(JFrame frame) {
-		this(frame, DetailDialogModeEnum.VIEW_ONLY);
-	}
-
 	public RoomDetailDialog(JFrame frame, DetailDialogModeEnum mode) {
 		super(frame, "Room Detail", true);
 		this.viewMode = mode;
@@ -106,7 +102,7 @@ public class RoomDetailDialog extends JDialog {
 		// Note Text Field.
 		noteTextArea = new JTextArea();
 		noteTextArea.setBounds(xTextField, noteLabel.getY(), textFieldSize.width, 100);
-		noteTextArea.setEnabled(false);
+		noteTextArea.setEnabled(fieldEditable);
 		noteTextArea.setLineWrap(true);
 		noteTextArea.setWrapStyleWord(true);
 		UtilFunctions.configureDialogTextFieldOnMainThread(noteTextArea);
