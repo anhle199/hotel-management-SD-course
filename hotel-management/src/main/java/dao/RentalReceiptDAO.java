@@ -4,6 +4,7 @@ import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.RentalInvoice;
 import models.RentalReceipt;
+import models.Room;
 import utils.Pair;
 
 import java.sql.*;
@@ -76,6 +77,7 @@ public class RentalReceiptDAO implements DAO<RentalReceipt, Integer> {
 
 		PreparedStatement preparedStatementInsertRentalReceipt = null;
 		PreparedStatement preparedStatementUpdatePaymentStatus = null;
+		PreparedStatement preparedStatementUpdateRoomStatus = null;
 
 		try {
 			// Declare sql statement and create PreparedStatement for it.
@@ -83,9 +85,11 @@ public class RentalReceiptDAO implements DAO<RentalReceipt, Integer> {
 					"(`start_date`, `end_date`, `price`, `total_price`, `room_name`," +
 					" `room_type_name`, `room_id`) values (?, ?, ?, ?, ?, ?, ?)";
 			String updatePaymentStatusStatement = "update `hotel_management`.`rental_invoice` set `is_paid` = ? where `id` = ?";
+			String updateRoomStatusStatement = "update `hotel_management`.`room` set `status` = ? where `id` = ?";
 
 			preparedStatementInsertRentalReceipt = connection.prepareStatement(insertRentalReceiptStatement);
 			preparedStatementUpdatePaymentStatus = connection.prepareStatement(updatePaymentStatusStatement);
+			preparedStatementUpdateRoomStatus = connection.prepareStatement(updateRoomStatusStatement);
 
 			// Set values for PreparedStatement.
 			preparedStatementInsertRentalReceipt.setTimestamp(1, entity.getStartDate());
@@ -97,6 +101,8 @@ public class RentalReceiptDAO implements DAO<RentalReceipt, Integer> {
 
 			preparedStatementUpdatePaymentStatus.setByte(1, RentalInvoice.PaymentStatusEnum.PAID.byteValue());
 			preparedStatementUpdatePaymentStatus.setInt(2, rentalInvoiceId);
+			preparedStatementUpdateRoomStatus.setByte(1, Room.RoomStatusEnum.AVAILABLE.byteValue());
+			preparedStatementUpdateRoomStatus.setInt(2, entity.getRoomId());
 
 			if (entity.getRoomId() == 0 || entity.getRoomId() == -1) {
 				preparedStatementInsertRentalReceipt.setNull(7, Types.INTEGER);
@@ -108,6 +114,7 @@ public class RentalReceiptDAO implements DAO<RentalReceipt, Integer> {
 			connection.setAutoCommit(false);
 			preparedStatementInsertRentalReceipt.executeUpdate();
 			preparedStatementUpdatePaymentStatus.executeUpdate();
+			preparedStatementUpdateRoomStatus.executeUpdate();
 			connection.commit();
 		} catch (SQLException e) {
 			System.out.println("RentalReceiptDAO.java - insert 2 params - catch - " + e.getMessage());
@@ -129,6 +136,8 @@ public class RentalReceiptDAO implements DAO<RentalReceipt, Integer> {
 					preparedStatementInsertRentalReceipt.close();
 				if (preparedStatementUpdatePaymentStatus != null)
 					preparedStatementUpdatePaymentStatus.close();
+				if (preparedStatementUpdateRoomStatus != null)
+					preparedStatementUpdateRoomStatus.close();
 			} catch (SQLException e) {
 				System.out.println("RentalReceiptDAO.java - insert 2 params - finally/catch - " + e.getMessage());
 				System.out.println("RentalReceiptDAO.java - insert 2 params - finally/catch - " + Arrays.toString(e.getStackTrace()));

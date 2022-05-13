@@ -10,7 +10,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public class UtilFunctions {
 
@@ -183,6 +186,16 @@ public class UtilFunctions {
 		diffInDate += (diffInDate == 0) ? 1 : 0;
 
 		return unitPrice * diffInDate;
+	}
+
+	public static boolean isInToday(Timestamp timestamp) {
+		LocalDate now = LocalDate.now(ZoneId.ofOffset("GMT", ZoneOffset.ofHours(7)));
+		String timestampInString = formatTimestamp(Constants.DATE_PATTERN, timestamp);
+		String[] tokens = timestampInString.split("-");  // [year, month, day]
+
+		return now.getYear() == Integer.parseInt(tokens[0]) &&
+				now.getMonthValue() == Integer.parseInt(tokens[1]) &&
+				now.getDayOfMonth() == Integer.parseInt(tokens[2]);
 	}
 
 }

@@ -157,12 +157,22 @@ public class RentalInvoiceListController implements ActionListener {
 			RentalInvoice.PaymentStatusEnum paymentStatus = RentalInvoice.PaymentStatusEnum.valueOfIgnoreCase(
 					String.valueOf(tableModel.getValueAt(selectedRowIndex, 6))
 			);
+			Timestamp endDate = Timestamp.valueOf(
+					tableModel.getValueAt(selectedRowIndex, 5) + " " + Constants.END_TIME_STRING_VALUE
+			);
+
 
 			if (paymentStatus == RentalInvoice.PaymentStatusEnum.PAID) {
 				UtilFunctions.showWarningMessage(
 						rentalInvoiceListPanel,
 						"Pay Rental Invoice",
 						"This invoice has been paid."
+				);
+			} else if (!UtilFunctions.isInToday(endDate)) {
+				UtilFunctions.showWarningMessage(
+						rentalInvoiceListPanel,
+						"Pay Rental Invoice",
+						"You can only pay the room rental charges on the last day."
 				);
 			} else {
 				int option = JOptionPane.showConfirmDialog(
