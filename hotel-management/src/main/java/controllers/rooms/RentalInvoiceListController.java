@@ -6,6 +6,7 @@ import db.DBConnectionException;
 import db.SingletonDBConnection;
 import models.RentalInvoice;
 import models.RentalReceipt;
+import models.Room;
 import utils.Constants;
 import utils.DetailDialogModeEnum;
 import utils.UtilFunctions;
@@ -21,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -233,11 +235,24 @@ public class RentalInvoiceListController implements ActionListener {
 			);
 
 			if (option == JOptionPane.YES_OPTION) {
-				int rentalInvoiceId = (int) tablePanel.getTableModel()
-											 .getValueAt(selectedRowIndex, RentalInvoiceListPanel.HIDDEN_COLUMN_RENTAL_INVOICE_ID);
+				NonEditableTableModel tableModel = (NonEditableTableModel) tablePanel.getTableModel();
+				Vector<Object> rowValue = tableModel.getRowValue(selectedRowIndex);
+				int rentalInvoiceId = (int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_RENTAL_INVOICE_ID);
+				int roomId = (int) rowValue.get(RentalInvoiceListPanel.HIDDEN_COLUMN_ROOM_ID);
+
+				Timestamp endDate = Timestamp.valueOf(rowValue.get(5) + " " + Constants.END_TIME_STRING_VALUE);
+				RentalInvoice.PaymentStatusEnum paymentStatus = RentalInvoice.PaymentStatusEnum.valueOfIgnoreCase(
+						String.valueOf(rowValue.get(6))
+				);
+
+				byte newRoomStatus = -1;
+				Timestamp now = UtilFunctions.getTimestamp(LocalDateTime.now());
+				if (now.before(endDate) && paymentStatus == RentalInvoice.PaymentStatusEnum.NOT_PAID) {
+					newRoomStatus = Room.RoomStatusEnum.AVAILABLE.byteValue();
+				}
 
 				try {
-					daoModel.delete(rentalInvoiceId);
+					daoModel.delete(rentalInvoiceId, roomId, newRoomStatus);
 
 					UtilFunctions.showInfoMessage(
 							rentalInvoiceListPanel,

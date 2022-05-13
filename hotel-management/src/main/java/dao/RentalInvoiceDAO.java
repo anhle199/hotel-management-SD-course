@@ -230,29 +230,44 @@ public class RentalInvoiceDAO implements DAO<RentalInvoice, Integer> {
 
 	@Override
 	public void delete(Integer id) throws DBConnectionException {
+
+	}
+
+	public void delete(Integer id, int roomId, byte newRoomStatus) throws DBConnectionException {
 		Connection connection = SingletonDBConnection.getInstance().getConnection();
 
 		if (connection == null)
 			throw DBConnectionException.INSTANCE;
 
-		Statement statement = null;
+		Statement statementDeleteRentalInvoice = null;
+		PreparedStatement preparedStatementUpdateRoomStatus = null;
 
 		try {
-			String sqlStatement = "delete from `hotel_management`.`rental_invoice` where `id` = " + id;
-			statement = connection.createStatement();
+			String deleteRentalInvoiceStatement = "delete from `hotel_management`.`rental_invoice` where `id` = " + id;
+			statementDeleteRentalInvoice = connection.createStatement();
 
 			connection.setAutoCommit(false);
-			statement.executeUpdate(sqlStatement);
+			statementDeleteRentalInvoice.executeUpdate(deleteRentalInvoiceStatement);
+
+			if (roomId > 0 && newRoomStatus != -1) {
+				String updateRoomStatusStatement = "update `hotel_management`.`room` set `status` = ? where `id` = ?";
+				preparedStatementUpdateRoomStatus = connection.prepareStatement(updateRoomStatusStatement);
+
+				preparedStatementUpdateRoomStatus.setByte(1, newRoomStatus);
+				preparedStatementUpdateRoomStatus.setInt(2, roomId);
+
+				preparedStatementUpdateRoomStatus.executeUpdate();
+			}
 			connection.commit();
 		} catch (SQLException e) {
-			System.out.println("RentalInvoiceDAO.java - delete - catch - " + e.getMessage());
-			System.out.println("RentalInvoiceDAO.java - delete - catch - " + Arrays.toString(e.getStackTrace()));
+			System.out.println("RentalInvoiceDAO.java - delete 3 params - catch - " + e.getMessage());
+			System.out.println("RentalInvoiceDAO.java - delete 3 params - catch - " + Arrays.toString(e.getStackTrace()));
 
 			try {
 				connection.rollback();
 			} catch (SQLException ex) {
-				System.out.println("RentalInvoiceDAO.java - delete - catch/catch - " + ex.getMessage());
-				System.out.println("RentalInvoiceDAO.java - delete - catch/catch - " + Arrays.toString(ex.getStackTrace()));
+				System.out.println("RentalInvoiceDAO.java - delete 3 params - catch/catch - " + ex.getMessage());
+				System.out.println("RentalInvoiceDAO.java - delete 3 params - catch/catch - " + Arrays.toString(ex.getStackTrace()));
 			}
 
 			throw DBConnectionException.INSTANCE;
@@ -260,12 +275,13 @@ public class RentalInvoiceDAO implements DAO<RentalInvoice, Integer> {
 			try {
 				connection.setAutoCommit(true);
 
-				if (statement != null) {
-					statement.close();
-				}
+				if (statementDeleteRentalInvoice != null)
+					statementDeleteRentalInvoice.close();
+				if (preparedStatementUpdateRoomStatus != null)
+					preparedStatementUpdateRoomStatus.close();
 			} catch (SQLException e) {
-				System.out.println("RentalInvoiceDAO.java - delete - finally/catch - " + e.getMessage());
-				System.out.println("RentalInvoiceDAO.java - delete - finally/catch - " + Arrays.toString(e.getStackTrace()));
+				System.out.println("RentalInvoiceDAO.java - delete 3 params - finally/catch - " + e.getMessage());
+				System.out.println("RentalInvoiceDAO.java - delete 3 params - finally/catch - " + Arrays.toString(e.getStackTrace()));
 			}
 		}
 	}

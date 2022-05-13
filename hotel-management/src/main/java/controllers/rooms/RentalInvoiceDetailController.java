@@ -200,10 +200,6 @@ public class RentalInvoiceDetailController implements ActionListener, ItemListen
 		}
 
 		int totalPrice = UtilFunctions.calculateTotalPrice(price, startDate, endDate);
-		System.out.println(startDate);
-		System.out.println(endDate);
-		System.out.println(price);
-		System.out.println(totalPrice);
 		rentalInvoiceDetailDialog.getPriceTextField().setText(String.valueOf(totalPrice));
 	}
 
