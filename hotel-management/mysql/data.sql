@@ -6,7 +6,7 @@ values
 ('opallatina0', '931145d4ddd1811be545e4ac88a81f1fdbfaf0779c437efba16b884595274d11', 0, 'Obie Pallatina', '1', 1988),
 ('mcommusso1', '931145d4ddd1811be545e4ac88a81f1fdbfaf0779c437efba16b884595274d11', 1, 'Mikael Commusso', '1', 1985),
 ('lgurney2', '931145d4ddd1811be545e4ac88a81f1fdbfaf0779c437efba16b884595274d11', 0, 'Lovell Gurney', '1', 1987),
-('mlackie3', '931145d4ddd1811be545e4ac88a81f1fdbfaf0779c437efba16b884595274d11', 1, 'Meyer Lackie', '1', 1997),2
+('mlackie3', '931145d4ddd1811be545e4ac88a81f1fdbfaf0779c437efba16b884595274d11', 1, 'Meyer Lackie', '1', 1997),
 ('fdenacamp4', '931145d4ddd1811be545e4ac88a81f1fdbfaf0779c437efba16b884595274d11', 1, 'Ford Denacamp', '1', 1997),
 ('aschimpke5', '931145d4ddd1811be545e4ac88a81f1fdbfaf0779c437efba16b884595274d11', 1, 'Averell Schimpke', '1', 1980),
 ('jvinson6', '931145d4ddd1811be545e4ac88a81f1fdbfaf0779c437efba16b884595274d11', 0, 'Jemmy Vinson', '0', 1984),
